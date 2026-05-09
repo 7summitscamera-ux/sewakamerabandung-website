@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/design-system.css">
+<link rel="icon" type="image/png" href="/logo-7summits-mark.png">
 <style>
 /* ====== PDP-specific layout ====== */
 .page{padding-top:96px;padding-bottom:120px;min-height:100vh;background:var(--bg)}
@@ -31,7 +32,7 @@
   position:relative;box-shadow:var(--sh-2);
 }
 .hero-img-main img{width:100%;height:100%;object-fit:contain;padding:32px}
-.hero-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.hero-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;margin-top:14px}
 .hero-thumb{
   aspect-ratio:1;background:var(--surface);border:1px solid var(--bd);
   border-radius:var(--r-2);overflow:hidden;cursor:pointer;
@@ -612,7 +613,7 @@ function renderProduct(p, en, all, otherEnrich){
   const avail = stok > 0;
   const kelArr = (en.includes || p.kelengkapan || '').split(/[,;·]+/).map(s => s.trim()).filter(Boolean);
   const imgUrl = en.image_url || '';
-  const img2 = en.image_url_2 || '';
+  const allImages = [en.image_url, en.image_url_2, en.image_url_3, en.image_url_4, en.image_url_5, en.image_url_6].filter(Boolean);
   const desc = en.description || `Sewa ${cleanModel(nama)} di Bandung. Unit terjaga, ready untuk produksi profesional. Harga sewa Rp ${Number(harga).toLocaleString('id-ID')}/hari, tersedia di lokasi ${p.cabang_id||'-'}.`;
   const cabang = p.cabang_id || '-';
 
@@ -694,12 +695,9 @@ function renderProduct(p, en, all, otherEnrich){
   document.getElementById('product-content').innerHTML = `
   <section class="hero-grid">
     <div class="hero-gallery">
-      <div class="hero-img-main">${heroImgHtml}</div>
+      <div class="hero-img-main" id="pdp-main-img">${heroImgHtml}</div>
       <div class="hero-thumbs">
-        <div class="hero-thumb active">${imgUrl ? `<img src="${escHtml(imgUrl)}" alt="thumb">` : '<div class="hero-thumb-empty">—</div>'}</div>
-        <div class="hero-thumb">${img2 ? `<img src="${escHtml(img2)}" alt="thumb 2">` : '<div class="hero-thumb-empty">+</div>'}</div>
-        <div class="hero-thumb"><div class="hero-thumb-empty">+</div></div>
-        <div class="hero-thumb"><div class="hero-thumb-empty">+</div></div>
+        ${allImages.length ? allImages.map((src,i) => `<div class="hero-thumb${i===0?' active':''}" onclick="pdpSwapImg('${escHtml(src)}',this)"><img src="${escHtml(src)}" alt="thumb ${i+1}"></div>`).join('') : `<div class="hero-thumb active"><div class="hero-thumb-empty">—</div></div><div class="hero-thumb"><div class="hero-thumb-empty">+</div></div><div class="hero-thumb"><div class="hero-thumb-empty">+</div></div><div class="hero-thumb"><div class="hero-thumb-empty">+</div></div>`}
       </div>
     </div>
 
@@ -793,6 +791,13 @@ function renderProduct(p, en, all, otherEnrich){
   }
 }
 
+window.pdpSwapImg = function(src, el) {
+  const main = document.getElementById('pdp-main-img');
+  if (main) main.innerHTML = `<img src="${src}" alt="">`;
+  document.querySelectorAll('.hero-thumb').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+};
+
 let _currentProduct = null;
 window.addThisToCart = function() {
   if (!_currentProduct) return;
@@ -805,5 +810,6 @@ window.addThisToCart = function() {
 
 loadProduct();
 </script>
+<script src="/branding-loader.js" defer></script>
 </body>
 </html>
