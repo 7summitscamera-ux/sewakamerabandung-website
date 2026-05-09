@@ -654,7 +654,11 @@ async function loadFeaturedProducts(catFilter) {
   catFilter = catFilter || '';
   const grid = document.getElementById('prod-grid');
   if (!grid) return;
-  grid.innerHTML = '<div class="prod-loading"><div class="spinner"></div>Memuat gear...</div>';
+  const isPrerendered = grid.querySelector('.prod-card');
+  if (!isPrerendered || catFilter) {
+    // No pre-rendered content (or category filter active) — show loading
+    grid.innerHTML = '<div class="prod-loading"><div class="spinner"></div>Memuat gear...</div>';
+  }
   try {
     const { data: enrichments } = await sb.from('product_enrichments').select('*').eq('is_featured', true).order('sort_order').limit(12);
     const enrichMap = {};
@@ -738,21 +742,26 @@ function filterByCategory(cat, el) {
   loadFeaturedProducts(cat);
 }
 async function loadFAQ() {
+  const grid = document.getElementById('faq-grid');
+  if (!grid) return;
+  // Skip if pre-rendered already populated (build-time prerender)
+  if (grid.querySelector('.faq-item')) return;
   try {
     const { data } = await sb.from('faqs').select('*').eq('is_active', true).order('sort_order').limit(6);
     if (!data || !data.length) return;
-    const grid = document.getElementById('faq-grid');
-    if (grid) grid.innerHTML = data.map(function(f,i){
+    grid.innerHTML = data.map(function(f,i){
       return '<div class="faq-item'+(i===0?' open':'')+'"><div class="faq-q" onclick="this.closest(\'.faq-item\').classList.toggle(\'open\')">'+f.question+'<div class="faq-q-icon">+</div></div><div class="faq-a"><div class="faq-a-inner">'+f.answer+'</div></div></div>';
     }).join('');
   } catch(e) {}
 }
 async function loadLocations() {
+  const grid = document.getElementById('loc-grid');
+  if (!grid) return;
+  // Skip if pre-rendered (build-time)
+  if (grid.querySelector('.loc-card')) return;
   try {
     const { data } = await sb.from('locations').select('*').eq('is_active', true);
     if (!data || !data.length) return;
-    const grid = document.getElementById('loc-grid');
-    if (!grid) return;
     grid.innerHTML = data.map(function(loc, i) {
       return '<div class="loc-card">'
         + '<span class="loc-tag">Lokasi '+(i+1)+' · '+loc.branch_name.split(' ').pop()+'</span>'

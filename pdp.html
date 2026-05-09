@@ -572,6 +572,8 @@ const slug = (location.pathname.match(/\/product\/([^\/?#]+)/) || [])[1] || new 
 
 async function loadProduct(){
   const root = document.getElementById('product-content');
+  // If pre-rendered (build-time static file already has full content), skip refetch.
+  if (root && root.querySelector('.hero-grid')) { wireUpPrerendered(); return; }
   if (!slug) { renderError('URL tidak valid', 'Slug produk tidak ditemukan di URL.'); return; }
   try {
     const { data: produkAll, error: e1 } = await sbB.from('produk')
@@ -797,6 +799,45 @@ window.pdpSwapImg = function(src, el) {
   document.querySelectorAll('.hero-thumb').forEach(t => t.classList.remove('active'));
   if (el) el.classList.add('active');
 };
+
+// Wire up the inquiry-cart integration when the page is build-time pre-rendered.
+function wireUpPrerendered(){
+  // Pull product data from the embedded JSON-LD (Product schema) the prerender wrote
+  try {
+    const lds = document.querySelectorAll('script[type="application/ld+json"]');
+    for (const s of lds) {
+      const j = JSON.parse(s.textContent);
+      if (j && j['@type'] === 'Product') {
+        _currentProduct = {
+          id: j.sku || '',
+          slug: (location.pathname.match(/\/product\/([^/?#]+)/)||[])[1] || slugify(j.name||''),
+          name: j.name || '',
+          kategori: j.category || '',
+          harga: (j.offers && j.offers.price) || 0,
+          image: Array.isArray(j.image) ? j.image[0] : (j.image || '')
+        };
+        break;
+      }
+    }
+  } catch(e){}
+  // If already in cart, mark the CTA
+  if (_currentProduct && window.sc7Cart) {
+    const inCart = (sc7Cart.read() || []).some(x => x.id === _currentProduct.id);
+    if (inCart) {
+      const btn = document.getElementById('cta-add');
+      if (btn) { btn.classList.add('added'); btn.innerHTML = '✓ Sudah di Daftar Inquiry'; }
+    }
+  }
+  // Mobile sticky CTA (matches dynamic render)
+  if (!document.querySelector('.mobile-cta') && _currentProduct) {
+    const m = document.createElement('div');
+    m.className = 'mobile-cta';
+    m.innerHTML = `<div class="mobile-cta-price">${fmtRp(_currentProduct.harga)} <small>/hari</small></div>
+      <button class="mobile-cta-add" onclick="document.getElementById('cta-add').click()">＋ Inquiry</button>
+      <a class="btn-p" href="${BOOKING_HREF}" target="_blank">Booking →</a>`;
+    document.body.appendChild(m);
+  }
+}
 
 let _currentProduct = null;
 window.addThisToCart = function() {
