@@ -154,6 +154,33 @@ tr:hover td{background:#FAFBF7}
 /* PROD ROW IMG */
 .prod-thumb{width:42px;height:42px;border-radius:8px;background:var(--bg-2);object-fit:contain;border:1px solid var(--bd);padding:3px;display:block}
 
+/* VIEW MODE SWITCHER */
+.view-toggle{display:inline-flex;gap:0;background:var(--bg-2);border:1px solid var(--bd);border-radius:999px;padding:3px;flex-shrink:0}
+.view-toggle button{font-family:inherit;font-size:12px;font-weight:600;color:var(--ink-3);padding:7px 14px;border:none;background:transparent;border-radius:999px;cursor:pointer;transition:var(--tr-fast);display:inline-flex;align-items:center;gap:6px}
+.view-toggle button:hover{color:var(--ink)}
+.view-toggle button.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(15,18,23,.08)}
+.view-toggle svg{width:14px;height:14px}
+
+/* GALLERY view */
+.prod-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:18px}
+.gcard{background:var(--surface);border:1px solid var(--bd);border-radius:14px;overflow:hidden;cursor:pointer;transition:var(--tr-fast);display:flex;flex-direction:column}
+.gcard:hover{border-color:var(--bd-2);box-shadow:0 6px 18px rgba(15,18,23,.06);transform:translateY(-2px)}
+.gcard-img{aspect-ratio:1;background:var(--bg-2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border-bottom:1px solid var(--bd)}
+.gcard-img img{width:100%;height:100%;object-fit:contain;background:#fff;padding:14px}
+.gcard-img-ph{font-size:36px;color:var(--ink-5)}
+.gcard-feat{position:absolute;top:8px;right:8px;background:var(--green-deep);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;letter-spacing:.04em}
+.gcard-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:6px}
+.gcard-cat{font-size:10.5px;font-weight:600;color:var(--green-deep);letter-spacing:.08em;text-transform:uppercase}
+.gcard-name{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:-.005em}
+.gcard-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;border-top:1px solid var(--bd)}
+.gcard-price{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.015em}
+.gcard-price small{font-size:10.5px;font-weight:400;color:var(--ink-4)}
+
+/* COMPACT view */
+.prod-compact td{padding:6px 12px;font-size:12.5px}
+.prod-compact .prod-thumb{width:28px;height:28px;border-radius:6px;padding:2px}
+.prod-compact th{padding:8px 12px}
+
 /* IMAGE GRID for product enrichment */
 .imgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
 .img-slot{aspect-ratio:1;background:var(--bg-2);border:1px dashed var(--bd-strong);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
@@ -507,21 +534,38 @@ tr:hover td{background:#FAFBF7}
             <option value="25">25 / page</option>
             <option value="100">100 / page</option>
           </select>
+          <div class="view-toggle" id="produk-view">
+            <button data-view="gallery" onclick="setProdView('gallery')" title="Gallery">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              Gallery
+            </button>
+            <button data-view="list" class="active" onclick="setProdView('list')" title="List">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              List
+            </button>
+            <button data-view="compact" onclick="setProdView('compact')" title="Compact">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="5" x2="21" y2="5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="13" x2="21" y2="13"/><line x1="3" y1="17" x2="21" y2="17"/><line x1="3" y1="21" x2="21" y2="21"/></svg>
+              Compact
+            </button>
+          </div>
           <button class="btn btn-ghost btn-sm" onclick="loadProduk()">↻ Refresh</button>
         </div>
-        <div class="tbl-wrap" style="border-radius:0;border-left:0;border-right:0;border-top:0">
-          <table id="tbl-produk">
-            <thead><tr>
-              <th style="width:60px">Foto</th>
-              <th>Nama Produk</th>
-              <th>Kategori</th>
-              <th>Harga / hari</th>
-              <th>Stok</th>
-              <th>Featured</th>
-              <th style="width:80px">Aksi</th>
-            </tr></thead>
-            <tbody id="produk-tbody"><tr><td colspan="7" class="empty-state"><div class="empty-state-ico">⏳</div>Memuat produk...</td></tr></tbody>
-          </table>
+        <div id="produk-view-wrap">
+          <div class="tbl-wrap" id="produk-list-wrap" style="border-radius:0;border-left:0;border-right:0;border-top:0">
+            <table id="tbl-produk">
+              <thead><tr>
+                <th style="width:60px">Foto</th>
+                <th>Nama Produk</th>
+                <th>Kategori</th>
+                <th>Harga / hari</th>
+                <th>Stok</th>
+                <th>Featured</th>
+                <th style="width:80px">Aksi</th>
+              </tr></thead>
+              <tbody id="produk-tbody"><tr><td colspan="7" class="empty-state"><div class="empty-state-ico">⏳</div>Memuat produk...</td></tr></tbody>
+            </table>
+          </div>
+          <div class="prod-gallery" id="produk-gallery-wrap" style="display:none"></div>
         </div>
         <div class="pagination">
           <div class="pagination-info" id="produk-info">—</div>
@@ -894,12 +938,17 @@ async function saveAll(){
   fields.forEach(k => { if ($(k)) payload[k] = $(k).value || null; });
   // Cast numerics
   ['font_weight_headline','font_weight_body','font_size_base'].forEach(k => { if (payload[k]) payload[k] = parseInt(payload[k]); });
-  payload.youtube_videos = collectYtVideos();
+  payload.youtube_videos = collectYtVideos(true);
   payload.updated_at = new Date().toISOString();
   const { error } = await sb.from('site_settings').upsert(payload, { onConflict:'id' });
   btn.disabled = false; btn.textContent = 'Simpan Perubahan';
-  if (error) { toast('Gagal simpan: ' + error.message, 'error'); console.error(error); }
-  else { toast('Tersimpan! Refresh halaman publik untuk lihat perubahan.'); _settings = payload; }
+  if (error) {
+    const hint = /column .* does not exist|relation .* does not exist/i.test(error.message)
+      ? ' — Tabel/kolom belum ada. Jalankan migrations.sql di Supabase SQL editor dulu.'
+      : '';
+    toast('Gagal simpan: ' + error.message + hint, 'error');
+    console.error(error);
+  } else { toast('Tersimpan! Refresh halaman publik untuk lihat perubahan.'); _settings = payload; }
 }
 
 // ====================================================================
@@ -925,22 +974,29 @@ function ytUpdatePreview(i){
   const div = document.querySelectorAll('#yt-list .form-row')[i].querySelector('.form-group div');
   div.innerHTML = ytPreview(url);
 }
-function collectYtVideos(){
+function collectYtVideos(filterEmpty){
   const urls = document.querySelectorAll('[data-yt-url]');
   const titles = document.querySelectorAll('[data-yt-title]');
   const arr = [];
   urls.forEach((u,i) => {
-    if (u.value.trim()) arr.push({ url: u.value.trim(), title: titles[i]?.value || '' });
+    const url = u.value.trim(), title = titles[i]?.value || '';
+    if (filterEmpty && !url) return;
+    arr.push({ url, title });
   });
   return arr;
 }
 function ytAdd(){
-  const arr = collectYtVideos();
+  const arr = collectYtVideos(false);
   arr.push({ url:'', title:'' });
   renderYt(arr);
+  // focus the new URL input
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-yt-url]');
+    inputs[inputs.length-1]?.focus();
+  }, 30);
 }
 function ytRemove(i){
-  const arr = collectYtVideos();
+  const arr = collectYtVideos(false);
   arr.splice(i,1);
   renderYt(arr);
 }
@@ -1197,6 +1253,19 @@ function filteredProduk(){
     return true;
   });
 }
+let _produkView = (typeof localStorage!=='undefined' && localStorage.getItem('admin.produk.view')) || 'list';
+function setProdView(v){
+  _produkView = v;
+  try { localStorage.setItem('admin.produk.view', v); } catch(e){}
+  document.querySelectorAll('#produk-view button').forEach(b => b.classList.toggle('active', b.dataset.view===v));
+  renderProduk();
+}
+function applyViewMode(){
+  document.querySelectorAll('#produk-view button').forEach(b => b.classList.toggle('active', b.dataset.view===_produkView));
+  $('produk-list-wrap').style.display = _produkView === 'gallery' ? 'none' : 'block';
+  $('produk-gallery-wrap').style.display = _produkView === 'gallery' ? 'grid' : 'none';
+  $('produk-list-wrap')?.firstElementChild?.classList.toggle('prod-compact', _produkView === 'compact');
+}
 function renderProduk(){
   const items = filteredProduk();
   const ps = parseInt($('produk-page-size').value) || 50;
@@ -1205,23 +1274,63 @@ function renderProduk(){
   const start = (_produkPage-1) * ps;
   const slice = items.slice(start, start+ps);
 
-  const tb = $('produk-tbody');
-  if (!slice.length) { tb.innerHTML = '<tr><td colspan="7" class="empty-state">Tidak ada produk yang cocok.</td></tr>'; }
-  else {
-    tb.innerHTML = slice.map(p => {
-      const e = _enrichMap[p.id] || {};
-      const stok = (p.stok_total||0) - (p.stok_dalam_perbaikan||0);
-      const img = e.image_url || '';
-      return `<tr>
-        <td>${img?`<img src="${escHtml(img)}" class="prod-thumb" onerror="this.style.display='none'">`:'<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink-5)">📷</div>'}</td>
-        <td><div style="font-weight:600;color:var(--ink)">${escHtml(p.nama_produk)}</div></td>
-        <td>${escHtml(p.kategori_produk||'-')}</td>
-        <td>${fmtRp(p.harga_sewa_per_hari)}</td>
-        <td>${stok}</td>
-        <td>${e.is_featured?'<span class="badge active">⭐ Featured</span>':'—'}</td>
-        <td><button class="btn btn-ghost btn-xs" onclick="prodOpen('${p.id}')">Edit</button></td>
-      </tr>`;
-    }).join('');
+  applyViewMode();
+
+  if (_produkView === 'gallery') {
+    const wrap = $('produk-gallery-wrap');
+    if (!slice.length) { wrap.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-ico">📷</div>Tidak ada produk yang cocok.</div>'; }
+    else {
+      wrap.innerHTML = slice.map(p => {
+        const e = _enrichMap[p.id] || {};
+        const img = e.image_url || '';
+        return `<div class="gcard" onclick="prodOpen('${p.id}')">
+          <div class="gcard-img">${img?`<img src="${escHtml(img)}" loading="lazy" onerror="this.style.display='none'">`:'<div class="gcard-img-ph">📷</div>'}${e.is_featured?'<div class="gcard-feat">⭐ Featured</div>':''}</div>
+          <div class="gcard-body">
+            <div class="gcard-cat">${escHtml(p.kategori_produk||'-')}</div>
+            <div class="gcard-name">${escHtml(p.nama_produk)}</div>
+            <div class="gcard-foot">
+              <div class="gcard-price">${fmtRp(p.harga_sewa_per_hari)} <small>/ hari</small></div>
+              <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();prodOpen('${p.id}')">Edit</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  } else {
+    const tb = $('produk-tbody');
+    if (!slice.length) { tb.innerHTML = '<tr><td colspan="7" class="empty-state">Tidak ada produk yang cocok.</td></tr>'; }
+    else if (_produkView === 'compact') {
+      tb.innerHTML = slice.map(p => {
+        const e = _enrichMap[p.id] || {};
+        const stok = (p.stok_total||0) - (p.stok_dalam_perbaikan||0);
+        const img = e.image_url || '';
+        return `<tr>
+          <td>${img?`<img src="${escHtml(img)}" class="prod-thumb">`:'<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-5)">📷</div>'}</td>
+          <td style="font-weight:600;color:var(--ink)">${escHtml(p.nama_produk)}</td>
+          <td>${escHtml(p.kategori_produk||'-')}</td>
+          <td>${fmtRp(p.harga_sewa_per_hari)}</td>
+          <td>${stok}</td>
+          <td>${e.is_featured?'⭐':'—'}</td>
+          <td><button class="btn btn-ghost btn-xs" onclick="prodOpen('${p.id}')">Edit</button></td>
+        </tr>`;
+      }).join('');
+    } else {
+      // list (default)
+      tb.innerHTML = slice.map(p => {
+        const e = _enrichMap[p.id] || {};
+        const stok = (p.stok_total||0) - (p.stok_dalam_perbaikan||0);
+        const img = e.image_url || '';
+        return `<tr>
+          <td>${img?`<img src="${escHtml(img)}" class="prod-thumb" onerror="this.style.display='none'">`:'<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink-5)">📷</div>'}</td>
+          <td><div style="font-weight:600;color:var(--ink)">${escHtml(p.nama_produk)}</div></td>
+          <td>${escHtml(p.kategori_produk||'-')}</td>
+          <td>${fmtRp(p.harga_sewa_per_hari)}</td>
+          <td>${stok}</td>
+          <td>${e.is_featured?'<span class="badge active">⭐ Featured</span>':'—'}</td>
+          <td><button class="btn btn-ghost btn-xs" onclick="prodOpen('${p.id}')">Edit</button></td>
+        </tr>`;
+      }).join('');
+    }
   }
 
   $('produk-info').textContent = `${start+1}–${Math.min(start+ps, items.length)} dari ${items.length} produk`;
