@@ -381,6 +381,70 @@ async function prerenderLokasiPage(html, locations) {
   return injectBeforeClose(html, 'head', businessLd.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`).join('\n'));
 }
 
+// Category-aware product FAQ generator. Picks 6-7 questions most relevant to
+// the gear category, plus universal rental questions. Each answer is concise
+// and AEO-optimized (direct, includes price, location, brand where useful).
+function buildProductFaqs({ cleaned, kat, harga, brand, name, cabang, available }) {
+  const k = (kat || '').toUpperCase();
+  const lower = (name || '').toLowerCase();
+  const harga3 = harga * 2;
+  const fmt = (n) => Number(n || 0).toLocaleString('id-ID');
+  const brandStr = brand ? brand : (cleaned.split(' ')[0] || 'gear');
+
+  // Universal questions — appear on every PDP
+  const universal = [
+    { q: `Berapa harga sewa ${cleaned} di Bandung?`, a: `Sewa ${cleaned} di <strong>7summits Camera Bandung</strong> adalah <strong>Rp ${fmt(harga)}/hari</strong>. Dengan promo 3 hari bayar 2 hari, total 3 hari hanya <strong>Rp ${fmt(harga3)}</strong> — hemat ~33% vs sewa harian biasa.` },
+    { q: `Apa saja syarat sewa ${cleaned}?`, a: `Cukup <strong>KTP aktif + KTP penjamin</strong> (kerabat dekat) + foto selfie dengan KTP. Tidak perlu rekening bank, tidak perlu deposit besar. Untuk gear premium di atas Rp 500rb/hari, deposit menyesuaikan harga unit.` },
+    { q: `Bisakah ${cleaned} diantar ke lokasi shoot?`, a: `Bisa. Tersedia antar-jemput via ojek online di area Bandung Kota (ongkos sesuai jarak). Pickup mandiri di lokasi <strong>Cisaranten</strong> atau <strong>Sriwijaya</strong> gratis. Hubungi WhatsApp untuk koordinasi antar.` },
+    { q: `Bagaimana cara booking ${cleaned}?`, a: `Tiga cara: (1) Booking online di <a href="https://booking.sewakamerabandung.id">booking.sewakamerabandung.id</a> — pilih tanggal, langsung konfirm. (2) Tambah ke <strong>Daftar Inquiry</strong> dan submit via WhatsApp untuk konsultasi dulu. (3) Walk-in ke lokasi (jam buka 09:00–20:00 WIB, 7 hari/minggu). Tim respon < 30 menit di jam kerja.` }
+  ];
+
+  // Category-specific questions
+  const byCategory = {
+    KAMERA: [
+      { q: `Apakah ${cleaned} tersedia hari ini?`, a: available ? `Saat ini ${cleaned} <strong>tersedia</strong> dan siap booking. Tetap cek tanggal di sistem booking untuk memastikan availability di periode shoot kamu.` : `Stok ${cleaned} sedang penuh saat ini. Tetap cek tanggal lain di sistem booking, atau chat admin untuk rekomendasi alternatif sejenis.` },
+      { q: `Apakah ${cleaned} bisa shooting video 4K?`, a: /a7s|a7iv|fx3|fx30|r5|r6|r7|x-?h\d|x-?t4|s5/i.test(name) ? `Ya, ${cleaned} mendukung 4K (mayoritas hingga 4K 60p atau lebih, beberapa model sampai 120p slow-motion). Cek detail di section Spesifikasi di atas.` : (lower.includes('4k') || /a6\d|x-?[ts]\d|m50|r10|r50|z6|z7/i.test(name) ? `Ya, ${cleaned} mendukung perekaman 4K. Cek detail framerate dan codec di section Spesifikasi.` : `${cleaned} mendukung perekaman video sesuai spesifikasi pabrik. Cek section Spesifikasi di atas untuk resolusi & framerate maksimum.`) },
+      { q: `Termasuk lensa atau body only?`, a: `Default: <strong>body only</strong> + baterai + charger + memory card slot ready. Lensa disewa terpisah agar kamu bisa pilih sesuai project (24-70mm, 50mm prime, 70-200mm tele, dll). Lihat <a href="/katalog?cat=LENSA">katalog lensa kompatibel</a>.` },
+      { q: `Bagaimana kalau gear rusak saat dipinjam?`, a: `Kerusakan ringan akibat penggunaan normal di-cover. Untuk accidental damage (jatuh, tetes air ringan), tersedia <strong>Damage Waiver Protection</strong> Rp 50rb/transaksi yang cover kerusakan hingga Rp 5jt. Detail di section "Damage Waiver" di homepage.` }
+    ],
+    LENSA: [
+      { q: `Apakah lensa ${cleaned} kompatibel dengan body Sony?`, a: /for sony|fe |e-mount/i.test(name) ? `Ya — lensa ini mount Sony E (Full-Frame / APS-C). Kompatibel dengan Sony A7 series, FX3/FX30, A6400, A7CII, dst. Cek detail mount di Spesifikasi.` : (/canon|ef-?m|rf/i.test(name) ? `Tidak, ini mount Canon. Tapi kami juga menyediakan lensa Sony E-mount terpisah — lihat <a href="/katalog?cat=LENSA&brand=Sony">katalog lensa Sony</a>.` : `Cek mount lensa di section Spesifikasi. Tim juga bantu rekomendasi via WhatsApp kalau kamu sebut body kamera yang dipakai.`) },
+      { q: `Termasuk lens cap, hood, dan filter?`, a: `<strong>Standar termasuk</strong>: lens cap (depan & belakang) + lens hood (bawaan pabrik). UV/ND filter disediakan terpisah sebagai add-on, tinggal request saat booking.` },
+      { q: `Apakah lensa ini ada image stabilization?`, a: lower.includes('oss') || lower.includes('vr') || lower.includes('is ') || lower.includes('os ') ? `Ya, lensa ini punya optical stabilization built-in — sangat membantu untuk handheld + low-light + telephoto.` : `Cek detail "Stabilization" di section Spesifikasi. Untuk gerak cinematic + footage smooth, kombinasikan dengan <a href="/katalog?cat=VIDEO%20SUPPORT">gimbal stabilizer</a>.` }
+    ],
+    LIGHTING: [
+      { q: `Apakah ${cleaned} bisa dipakai untuk video?`, a: lower.includes('led') || lower.includes('continuous') ? `Ya — ${cleaned} adalah continuous light (LED), cocok untuk video. CRI tinggi, output stabil, tidak ada flicker di shutter speed standar video.` : (lower.includes('flash') || lower.includes('strobe') || lower.includes('tt') || lower.includes('ad6') ? `Tidak — ${cleaned} adalah strobe/flash, untuk fotografi (single-burst). Untuk video kamu butuh continuous LED — lihat <a href="/katalog?cat=LIGHTING">opsi LED</a>.` : `Cek tipe lighting di section Spesifikasi. Continuous = video friendly, Strobe/Flash = foto saja.`) },
+      { q: `Termasuk light stand & softbox?`, a: `Stand + softbox disewa terpisah biar kamu bisa kombinasikan sesuai project. Tim sering paketkan saat booking — chat WhatsApp untuk request "${cleaned} + stand + softbox" dengan harga bundle.` },
+      { q: `Apakah perlu power outlet AC?`, a: lower.includes('battery') || lower.includes('v-mount') || /\bvb\b|\bb700\b/i.test(name) ? `${cleaned} bisa pakai battery (V-mount / built-in) untuk shoot outdoor. Tetap bawa power supply AC sebagai backup untuk shoot panjang.` : `Mayoritas continuous LED butuh AC outlet. Untuk shoot outdoor, kami sediakan <a href="/katalog?cat=VIDEO%20SUPPORT">V-mount battery + adapter</a>.` }
+    ],
+    'VIDEO SUPPORT': [
+      { q: `${cleaned} support kamera apa saja?`, a: lower.includes('gimbal') || lower.includes('crane') || lower.includes('weebill') || lower.includes('ronin') || lower.includes('rs') ? `Cek max payload di Spesifikasi. Sebagian besar gimbal modern support mirrorless full-frame + lensa standar (Sony A7, Canon R6, FX3 dengan lensa < 2kg). Untuk setup berat (rig + matte box), pakai gimbal pro RS4 Pro.` : (lower.includes('tripod') ? `Tripod ini support hampir semua kamera DSLR/mirrorless. Cek max load capacity di Spesifikasi untuk memastikan stabilitas dengan setup kamu.` : `Cek payload/compatibility di section Spesifikasi. Tim bisa rekomendasikan setup spesifik via WhatsApp.`) },
+      { q: `Berapa lama battery life ${cleaned}?`, a: lower.includes('gimbal') || lower.includes('crane') || lower.includes('rs ') ? `Mayoritas gimbal modern: 8-12 jam continuous use. Cek detail battery life per model di Spesifikasi.` : `Cek detail di Spesifikasi. Tim sertakan baterai cadangan untuk sewa > 1 hari.` },
+      { q: `Termasuk handle, plate, atau accessories?`, a: `Default termasuk komponen utama (gimbal/tripod/rig + handle bawaan + plate kamera standar). Mounting accessories tambahan (focus motor, expansion arm, top handle) disewa terpisah — tinggal request saat booking.` }
+    ],
+    'AUDIO SUPPORT': [
+      { q: `${cleaned} kompatibel dengan kamera mana?`, a: /lark|wireless|w-?\d|blink/i.test(name) ? `Wireless mic ini connect via 3.5mm TRS — kompatibel dengan semua kamera yang punya mic-in (Sony, Canon, Fuji, Nikon, smartphone via adapter). Untuk XLR (cinema camera) butuh adapter terpisah.` : (/shotgun|ntg/i.test(name) ? `Shotgun mic mount di hot-shoe kamera, output 3.5mm TRS. Kompatibel dengan mayoritas mirrorless/DSLR yang punya mic input.` : `Output 3.5mm TRS standar — kompatibel dengan semua kamera mirrorless/DSLR yang punya mic input. Untuk smartphone butuh adapter TRRS.`) },
+      { q: `Berapa lama battery wireless ${cleaned}?`, a: /lark m1|blink/i.test(name) ? `~7-8 jam per charge.` : (/lark m2/i.test(name) ? `~10 jam per charge, hingga 30 jam dengan charging case.` : `Cek detail battery life di Spesifikasi. Sertakan charging cable, dan tim biasa kasih cadangan untuk shoot panjang.`) },
+      { q: `Boleh dipakai untuk live event / wedding?`, a: `Cocok banget — wireless mic ini banyak dipakai untuk wedding, podcast, vlogging, live event di Bandung. Range 100-300m line-of-sight, low-latency, audio 24-bit. Cek tipe & range exact di Spesifikasi.` }
+    ],
+    LAINNYA: [
+      { q: `Apa saja yang termasuk dalam sewa ${cleaned}?`, a: `Cek section "Yang termasuk dalam sewa" di atas — list lengkap kelengkapan sudah disertakan. Kalau ada item spesifik yang kamu butuhkan tapi belum tertera, chat WhatsApp untuk konfirmasi.` },
+      { q: `Bisakah ${cleaned} dipaketkan dengan gear lain?`, a: `Bisa banget. Kami punya <a href="/#bundles">paket bundling</a> untuk kebutuhan umum (Wedding, Vlogger, Sineas, Wisuda) atau custom — tinggal chat admin via WhatsApp untuk diskusi setup yang pas.` }
+    ]
+  };
+
+  const cat = byCategory[k] || byCategory.LAINNYA;
+  // Combine: first 2 universal + 2-3 category + remaining universal
+  const combined = [
+    universal[0],            // price
+    universal[1],            // syarat
+    ...cat.slice(0, 3),      // category-specific
+    universal[2],            // antar-jemput
+    universal[3]             // booking
+  ];
+  return combined;
+}
+
 async function prerenderPdp(template, p, enrich, allProduk, enrichMap) {
   const e = enrich || {};
   const nama = p.nama_produk;
@@ -427,17 +491,11 @@ async function prerenderPdp(template, p, enrich, allProduk, enrichMap) {
       }).join('')
     : '<div style="grid-column:1/-1;color:var(--ink-4);text-align:center;padding:30px">Tidak ada produk serupa.</div>';
 
-  // FAQ (auto from generic + product-specific)
-  const FAQ_GENERIC = [
-    { q: `Berapa harga sewa ${cleaned}?`, a: `Sewa ${cleaned} di 7summits Camera Bandung adalah Rp ${Number(harga).toLocaleString('id-ID')}/hari. Promo 3 hari bayar 2 hari berlaku — total 3 hari = Rp ${Number(harga * 2).toLocaleString('id-ID')}.` },
-    { q: 'Apa saja syarat sewa?', a: 'KTP + KTP Penjamin (kerabat dekat), foto selfie dengan KTP, dan deposit (cash atau transfer). Untuk gear premium di atas Rp 500rb/hari, deposit menyesuaikan harga unit.' },
-    { q: 'Berapa lama minimum sewa?', a: 'Minimum sewa 1 hari (24 jam). Tersedia paket 3 hari bayar 2 hari untuk semua gear.' },
-    { q: 'Apakah bisa antar-jemput?', a: 'Tersedia antar-jemput di area Bandung Kota dengan ongkos sesuai jarak. Pickup mandiri di Cisaranten / Sriwijaya gratis.' },
-    { q: 'Bagaimana cara booking gear ini?', a: 'Klik tombol "Booking Sekarang" untuk masuk ke sistem booking, atau tambahkan ke daftar inquiry untuk konsultasi via WhatsApp dulu. Tim kami akan respon < 30 menit di jam operasional (09:00–20:00 WIB).' }
-  ];
-  const faqHtml = FAQ_GENERIC.map((f) => `<div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">${escHtml(f.q)}</div>
-    <div class="faq-a">${escHtml(f.a)}</div>
+  // Category-aware FAQ — picks 6-7 most relevant Q&A per product
+  const productFaqs = buildProductFaqs({ cleaned, kat, harga, brand, name: nama, cabang, available: avail });
+  const faqHtml = productFaqs.map((f) => `<div class="faq-item" onclick="this.closest('.faq-item').classList.toggle('open')">
+    <div class="faq-q">${escHtml(f.q)}<div class="faq-q-icon">+</div></div>
+    <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
   </div>`).join('');
 
   const productHtml = `<section class="hero-grid">
@@ -524,6 +582,30 @@ async function prerenderPdp(template, p, enrich, allProduk, enrichMap) {
     }
   };
   html = injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(productLd)}</script>`);
+
+  // Inject FAQPage JSON-LD (same Q&A as the rendered FAQ list)
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: productFaqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]+>/g, '') }
+    }))
+  };
+  html = injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(faqLd)}</script>`);
+
+  // Inject BreadcrumbList JSON-LD
+  const crumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Katalog', item: `${SITE_URL}/katalog` },
+      { '@type': 'ListItem', position: 3, name: cleaned, item: canonical }
+    ]
+  };
+  html = injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(crumbLd)}</script>`);
 
   return html;
 }
