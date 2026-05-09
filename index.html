@@ -4,10 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>7summits Camera — Professional Gear Platform Bandung</title>
-<meta name="description" content="Platform sewa kamera & gear produksi profesional di Bandung. Sony, DJI, Canon, Godox. Untuk filmmaker, fotografer, content creator & production house.">
-<meta property="og:title" content="7summits Camera — Professional Gear Platform">
-<meta property="og:description" content="767+ unit gear profesional. 2 lokasi Bandung. Booking online mudah.">
+<meta name="description" content="Sewa kamera Bandung mulai Rp 75rb/hari. Sony, Canon, DJI, Godox — 767+ unit gear pro. 5★ Google · 2 lokasi · promo 3 hari bayar 2. Booking online mudah.">
+<meta name="keywords" content="sewa kamera bandung, rental kamera bandung, sewa sony bandung, sewa drone dji, sewa lighting bandung, rental gear film bandung, sewa lensa cinema, sewa kamera mirrorless">
+<meta property="og:title" content="Sewa Kamera Bandung — 7summits Camera (5★ Google)">
+<meta property="og:description" content="Mulai Rp 75rb/hari. Sony · Canon · DJI · 767+ unit gear pro. 2 lokasi Bandung. Booking online mudah, syarat KTP saja.">
 <meta property="og:url" content="https://sewakamerabandung.id">
+<meta property="og:image" content="https://sewakamerabandung.id/logo-7summits-mark.png">
+<meta property="og:site_name" content="7summits Camera Bandung">
+<meta property="og:locale" content="id_ID">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sewa Kamera Bandung — 7summits Camera">
+<meta name="twitter:description" content="Mulai Rp 75rb/hari. 767+ unit gear pro. Booking online.">
 <link rel="canonical" href="https://sewakamerabandung.id">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +25,8 @@
 <style>
 /* ============ HERO (cinematic full-bleed) ============ */
 .hero{
-  position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;
-  padding:160px 0 80px;overflow:hidden;
+  position:relative;min-height:88vh;display:flex;flex-direction:column;justify-content:center;
+  padding:140px 0 72px;overflow:hidden;
   background:#0E1217;color:#fff;
   isolation:isolate;
 }
@@ -64,8 +71,22 @@
   padding:16px 28px;border-radius:var(--r-pill);
   cursor:pointer;border:1px solid transparent;transition:var(--tr);letter-spacing:-.005em;
 }
-.btn-hero-p{background:#fff;color:var(--ink)}
-.btn-hero-p:hover{background:#fff;transform:translateY(-2px);box-shadow:0 14px 38px rgba(255,255,255,0.20)}
+.btn-hero-p{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn-hero-p:hover{background:#E55818;transform:translateY(-2px);box-shadow:0 14px 38px rgba(240,104,36,.45)}
+
+/* Trust row in hero */
+.hero-trust-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
+.hero-trust-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:500;color:rgba(255,255,255,.92);
+  padding:7px 13px;border-radius:999px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(10px);text-decoration:none;transition:var(--tr-fast);
+}
+.hero-trust-pill:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.hero-trust-pill strong{font-weight:700;color:#fff}
+.hero-trust-stars{color:#FFC107;font-size:12px;letter-spacing:.5px}
+.hero-sub strong{color:#fff;font-weight:600}
 .btn-hero-s{background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.22);backdrop-filter:blur(12px)}
 .btn-hero-s:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
 .hero-meta{
@@ -289,13 +310,100 @@
 .hero-pill{animation-delay:.05s}
 .hero-h1{animation-delay:.15s}
 .hero-sub{animation-delay:.25s}
+.hero-trust-row{animation:fadeUp .8s .30s ease forwards;opacity:0}
 .hero-ctas{animation-delay:.35s}
 .hero-meta{animation-delay:.45s}
 .hero-bento{animation-delay:.55s}
 
+/* ============ BRAND GRID ============ */
+.sec-brands{padding:64px 0;background:var(--surface);border-bottom:1px solid var(--bd)}
+.brands-hdr{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:28px;flex-wrap:wrap}
+.brands-hdr .sec-lbl{margin-bottom:6px}
+.brands-hdr p{font-size:13.5px;color:var(--ink-3);max-width:560px}
+.brands-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.brand-card{
+  display:flex;align-items:center;justify-content:center;
+  height:72px;background:var(--bg-2);border:1px solid var(--bd);border-radius:14px;
+  font-family:'Inter',sans-serif;font-size:18px;font-weight:700;letter-spacing:.02em;
+  color:var(--ink);text-decoration:none;
+  transition:var(--tr-fast);text-align:center;padding:0 16px;
+}
+.brand-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(15,18,23,.08);border-color:var(--bd-strong);background:#fff}
+.brand-card[data-brand="sony"]{font-weight:900;letter-spacing:.04em}
+.brand-card[data-brand="canon"]{color:#CC0000;font-style:italic;font-weight:700}
+.brand-card[data-brand="dji"]{font-weight:900;letter-spacing:.06em;color:#000}
+.brand-card[data-brand="fuji"]{font-weight:900;letter-spacing:.06em;color:#005A2A}
+.brand-card[data-brand="nikon"]{font-weight:800;letter-spacing:.04em;color:#FFC000;text-shadow:0 1px 0 rgba(0,0,0,.15)}
+.brand-card[data-brand="godox"]{color:#F37021;font-weight:700;font-style:italic}
+.brand-card[data-brand="aputure"]{color:#9F8753;font-weight:600;text-transform:lowercase;letter-spacing:.04em;font-size:20px}
+.brand-card[data-brand="zhiyun"]{color:#FF6A00;font-weight:800;letter-spacing:.06em;font-size:16px}
+.brand-card[data-brand="hollyland"]{color:#FF6028;font-weight:700;font-size:15px}
+.brand-card[data-brand="saramonic"]{color:#C9263A;font-weight:700;font-size:15px}
+.brand-card[data-brand="manfrotto"]{color:#000;font-weight:600;font-size:14px;letter-spacing:.04em}
+.brand-card[data-brand="insta"]{color:#000;font-weight:900;font-size:14px;letter-spacing:.06em}
+
+/* ============ HOW IT WORKS ============ */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px}
+.how-step{
+  background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-4);
+  padding:28px 24px;position:relative;transition:var(--tr);
+}
+.how-step:hover{transform:translateY(-3px);box-shadow:var(--sh-3);border-color:var(--bd-strong)}
+.how-num{
+  position:absolute;top:18px;right:22px;
+  font-family:var(--font-display);font-size:38px;font-weight:800;
+  color:var(--bg-3);letter-spacing:-.04em;line-height:1;
+}
+.how-ico{
+  width:54px;height:54px;border-radius:14px;
+  background:var(--green-soft);border:1px solid var(--green-line);
+  display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;
+}
+.how-ttl{font-size:17px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin-bottom:10px}
+.how-desc{font-size:13.5px;color:var(--ink-3);line-height:1.65;font-weight:400}
+.how-desc a{color:var(--green-deep);font-weight:600;border-bottom:1px solid var(--green-line)}
+.how-desc a:hover{color:var(--orange);border-color:var(--orange-line)}
+.how-desc strong{color:var(--ink);font-weight:600}
+.how-cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;justify-content:center}
+
+/* ============ STICKY MOBILE BAR ============ */
+.mobile-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:998;
+  display:none;align-items:stretch;
+  background:var(--surface);border-top:1px solid var(--bd);
+  box-shadow:0 -10px 30px rgba(15,18,23,.10);
+  padding:10px 12px;gap:8px;
+}
+.mobile-bar a{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:8px 6px;border-radius:12px;font-family:inherit;font-size:11px;font-weight:600;
+  text-decoration:none;color:var(--ink-2);transition:var(--tr-fast);
+}
+.mobile-bar a:hover,.mobile-bar a:active{background:var(--bg-2)}
+.mobile-bar a svg{width:20px;height:20px}
+.mobile-bar .mb-wa{color:#fff;background:#25D366}
+.mobile-bar .mb-wa:hover{background:#1FB956;color:#fff}
+.mobile-bar .mb-cart{color:#fff;background:var(--ink)}
+.mobile-bar .mb-cart:hover{background:#000;color:#fff}
+.mobile-bar .mb-book{color:#fff;background:var(--orange)}
+.mobile-bar .mb-book:hover{background:#E55818;color:#fff}
+
+/* ============ FOOTER TRUST STRIP ============ */
+.trust-strip{
+  background:var(--surface);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  padding:18px 0;
+}
+.trust-strip-inner{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:24px 36px;
+  font-size:12.5px;color:var(--ink-3);font-weight:500;
+}
+.trust-strip-item{display:inline-flex;align-items:center;gap:8px}
+.trust-strip-item svg{width:16px;height:16px;color:var(--green-deep);flex-shrink:0}
+.trust-strip-item strong{color:var(--ink);font-weight:600}
+
 /* ============ Responsive ============ */
 @media(max-width:1024px){
-  .hero{padding:140px 0 64px;min-height:auto}
+  .hero{padding:130px 0 56px;min-height:auto}
   .cats-grid{grid-template-columns:repeat(3,1fr)}
   .prod-grid{grid-template-columns:repeat(2,1fr)}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
@@ -303,12 +411,25 @@
   .seg-grid{grid-template-columns:1fr}
   .bk-inner{flex-direction:column;align-items:flex-start;text-align:left}
   .bk-acts{align-items:stretch;width:100%}
+  .brands-grid{grid-template-columns:repeat(4,1fr)}
+  .how-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .mobile-bar{display:flex}
+  body{padding-bottom:78px}
+  #sc7-cart-fab{bottom:88px !important}
 }
 @media(max-width:640px){
-  .hero{padding:120px 0 56px}
-  .hero-h1{font-size:48px}
+  .hero{padding:118px 0 52px}
+  .hero-h1{font-size:42px}
+  .hero-trust-pill{font-size:11.5px;padding:6px 11px}
   .cats-grid{grid-template-columns:repeat(2,1fr)}
   .prod-grid{grid-template-columns:1fr}
+  .brands-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .brand-card{height:60px;font-size:14px}
+  .how-grid{grid-template-columns:1fr;gap:14px}
+  .how-step{padding:22px 20px}
+  .trust-strip-inner{gap:14px 22px;font-size:12px}
   .stats-grid{grid-template-columns:1fr 1fr}
   .yt-grid{grid-template-columns:1fr}
   .hero-meta{gap:24px}
@@ -347,16 +468,30 @@
   <div class="hero-cnt">
     <div class="hero-pill">
       <span class="hero-pill-dot"></span>
-      <span>Platform Gear Profesional · Bandung</span>
+      <span>Buka 09.00–20.00 · Cisaranten · Sriwijaya · Bandung</span>
     </div>
     <h1 class="hero-h1">
-      Gear sinematik.<br>
-      <em>Siap produksi.</em>
+      Sewa kamera Bandung —<br>
+      <em>mulai Rp 75rb/hari.</em>
     </h1>
-    <p class="hero-sub">767+ unit gear profesional — kamera cinema, lensa premium, lighting studio, dan drone. Untuk filmmaker, fotografer, dan content creator Bandung.</p>
+    <p class="hero-sub">Sony · Canon · DJI · Godox — 767+ unit gear pro siap booking online. Untuk filmmaker, fotografer, dan content creator. <strong style="color:#fff;font-weight:600">Promo 3 hari bayar 2 — hemat 33%.</strong></p>
+    <div class="hero-trust-row">
+      <a href="https://maps.google.com/?q=7SUMMITS+CAMERA+Bandung" target="_blank" rel="noopener" class="hero-trust-pill">
+        <span class="hero-trust-stars">★★★★★</span>
+        <span><strong>5.0</strong> · 100+ Google review</span>
+      </a>
+      <span class="hero-trust-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>
+        500+ creator percaya
+      </span>
+      <span class="hero-trust-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>
+        Cukup KTP · Tanpa deposit besar
+      </span>
+    </div>
     <div class="hero-ctas">
-      <a href="https://booking.sewakamerabandung.id"><button class="btn-hero btn-hero-p">Mulai Booking <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></a>
-      <a href="#produk"><button class="btn-hero btn-hero-s">Jelajahi Gear <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button></a>
+      <a href="https://booking.sewakamerabandung.id"><button class="btn-hero btn-hero-p">Cek Tanggal & Booking <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></a>
+      <a href="/katalog.html"><button class="btn-hero btn-hero-s">Lihat 767+ Gear <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button></a>
     </div>
     <div class="hero-meta">
       <div><div class="hmeta-num">767<span class="acc">+</span></div><div class="hmeta-lbl">Unit Gear</div></div>
@@ -403,17 +538,40 @@
   </div>
 </div>
 
+<section class="sec-brands">
+  <div class="cont">
+    <div class="brands-hdr">
+      <div class="sec-lbl">Brand Tersedia</div>
+      <p>Gear dari produsen profesional kelas dunia — semua kondisi prima, ter-quality control.</p>
+    </div>
+    <div class="brands-grid">
+      <a href="/katalog.html?brand=Sony" class="brand-card" data-brand="sony">SONY</a>
+      <a href="/katalog.html?brand=Canon" class="brand-card" data-brand="canon">Canon</a>
+      <a href="/katalog.html?brand=DJI" class="brand-card" data-brand="dji">DJI</a>
+      <a href="/katalog.html?brand=Fujifilm" class="brand-card" data-brand="fuji">FUJIFILM</a>
+      <a href="/katalog.html?brand=Nikon" class="brand-card" data-brand="nikon">Nikon</a>
+      <a href="/katalog.html?brand=Godox" class="brand-card" data-brand="godox">Godox</a>
+      <a href="/katalog.html?brand=Aputure" class="brand-card" data-brand="aputure">aputure</a>
+      <a href="/katalog.html?brand=Zhiyun" class="brand-card" data-brand="zhiyun">ZHIYUN</a>
+      <a href="/katalog.html?brand=Hollyland" class="brand-card" data-brand="hollyland">Hollyland</a>
+      <a href="/katalog.html?brand=Saramonic" class="brand-card" data-brand="saramonic">Saramonic</a>
+      <a href="/katalog.html?brand=Manfrotto" class="brand-card" data-brand="manfrotto">Manfrotto</a>
+      <a href="/katalog.html?brand=Insta360" class="brand-card" data-brand="insta">INSTA360</a>
+    </div>
+  </div>
+</section>
+
 <section class="sec" id="produk">
   <div class="cont">
     <div class="sec-lbl">Kategori Gear</div>
     <h2 class="sec-h2">Temukan gear yang tepat<br>untuk <em>proyekmu</em></h2>
     <div class="cats-grid">
-      <div class="cat-card active" onclick="filterByCategory('', this)"><div class="cat-ico">⚡</div><div class="cat-name">Semua</div><div class="cat-cnt">767 unit</div></div>
-      <div class="cat-card" onclick="filterByCategory('KAMERA', this)"><div class="cat-ico">📷</div><div class="cat-name">Kamera</div><div class="cat-cnt">108 unit</div></div>
-      <div class="cat-card" onclick="filterByCategory('LENSA', this)"><div class="cat-ico">🔭</div><div class="cat-name">Lensa</div><div class="cat-cnt">149 unit</div></div>
-      <div class="cat-card" onclick="filterByCategory('LIGHTING', this)"><div class="cat-ico">💡</div><div class="cat-name">Lighting</div><div class="cat-cnt">99 unit</div></div>
-      <div class="cat-card" onclick="filterByCategory('VIDEO SUPPORT', this)"><div class="cat-ico">🎥</div><div class="cat-name">Video Support</div><div class="cat-cnt">282 unit</div></div>
-      <div class="cat-card" onclick="filterByCategory('AUDIO SUPPORT', this)"><div class="cat-ico">🎙</div><div class="cat-name">Audio</div><div class="cat-cnt">14 unit</div></div>
+      <a href="/katalog.html" class="cat-card active" onclick="event.preventDefault();filterByCategory('', this)" aria-label="Tampilkan semua kategori"><div class="cat-ico">⚡</div><div class="cat-name">Semua</div><div class="cat-cnt">767 unit</div></a>
+      <a href="/katalog.html?cat=KAMERA" class="cat-card" onclick="event.preventDefault();filterByCategory('KAMERA', this)" aria-label="Sewa kamera Bandung"><div class="cat-ico">📷</div><div class="cat-name">Kamera</div><div class="cat-cnt">108 unit</div></a>
+      <a href="/katalog.html?cat=LENSA" class="cat-card" onclick="event.preventDefault();filterByCategory('LENSA', this)" aria-label="Sewa lensa Bandung"><div class="cat-ico">🔭</div><div class="cat-name">Lensa</div><div class="cat-cnt">149 unit</div></a>
+      <a href="/katalog.html?cat=LIGHTING" class="cat-card" onclick="event.preventDefault();filterByCategory('LIGHTING', this)" aria-label="Sewa lighting Bandung"><div class="cat-ico">💡</div><div class="cat-name">Lighting</div><div class="cat-cnt">99 unit</div></a>
+      <a href="/katalog.html?cat=VIDEO%20SUPPORT" class="cat-card" onclick="event.preventDefault();filterByCategory('VIDEO SUPPORT', this)" aria-label="Sewa video support Bandung"><div class="cat-ico">🎥</div><div class="cat-name">Video Support</div><div class="cat-cnt">282 unit</div></a>
+      <a href="/katalog.html?cat=AUDIO%20SUPPORT" class="cat-card" onclick="event.preventDefault();filterByCategory('AUDIO SUPPORT', this)" aria-label="Sewa audio Bandung"><div class="cat-ico">🎙</div><div class="cat-name">Audio</div><div class="cat-cnt">14 unit</div></a>
     </div>
   </div>
 </section>
@@ -449,6 +607,43 @@
       <div class="seg-card"><div class="seg-ico">🎬</div><div class="seg-ttl">Creative & Production House</div><div class="seg-desc">Filmmaker profesional, videografer komersial, dan production house yang butuh gear berkualitas tinggi untuk project klien.</div><div class="seg-tags"><span class="seg-tag">Cinema Camera</span><span class="seg-tag">Lensa Cinema</span><span class="seg-tag">Full Rig</span></div></div>
       <div class="seg-card"><div class="seg-ico">🎓</div><div class="seg-ttl">Mahasiswa & Akademisi</div><div class="seg-desc">Tugas akhir film, dokumenter kampus, UKM fotografi, dan semua project akademik tanpa harus membeli gear sendiri.</div><div class="seg-tags"><span class="seg-tag">Harga Terjangkau</span><span class="seg-tag">Syarat Mudah</span><span class="seg-tag">Paket Wisuda</span></div></div>
       <div class="seg-card"><div class="seg-ico">📱</div><div class="seg-ttl">Content Creator</div><div class="seg-desc">YouTuber, Instagrammer, TikToker yang ingin upgrade kualitas konten dengan gear profesional tanpa investasi besar.</div><div class="seg-tags"><span class="seg-tag">Mirrorless</span><span class="seg-tag">Gimbal</span><span class="seg-tag">Lighting Setup</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="cara-sewa">
+  <div class="cont">
+    <div class="sec-lbl">Cara Sewa</div>
+    <h2 class="sec-h2">Sewa kamera Bandung —<br><em>4 langkah, &lt; 5 menit</em></h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <div class="how-ico">🔍</div>
+        <h3 class="how-ttl">Pilih Gear</h3>
+        <p class="how-desc">Browse 767+ unit di <a href="/katalog.html">katalog</a>. Filter by kategori, brand, atau range harga. Bandingkan spec di halaman produk.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <div class="how-ico">📅</div>
+        <h3 class="how-ttl">Cek Tanggal & Booking</h3>
+        <p class="how-desc">Buka <a href="https://booking.sewakamerabandung.id">sistem booking</a> — pilih tanggal mulai & selesai. Cek ketersediaan real-time. Konfirmasi tanpa rekening.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <div class="how-ico">📦</div>
+        <h3 class="how-ttl">Ambil atau Antar</h3>
+        <p class="how-desc">Pickup mandiri di <strong>Cisaranten</strong> / <strong>Sriwijaya</strong>, atau request antar via ojek online ke lokasi kamu. Bawa KTP + jaminan.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">04</div>
+        <div class="how-ico">🎬</div>
+        <h3 class="how-ttl">Shoot, Lalu Return</h3>
+        <p class="how-desc">Pakai gear sesuai project. Return di hari berakhir sewa. Kalau perlu perpanjang — tinggal chat WhatsApp, fleksibel.</p>
+      </div>
+    </div>
+    <div class="how-cta">
+      <a href="https://booking.sewakamerabandung.id" class="btn btn-orange btn-lg">Mulai dari Step 1 →</a>
+      <a href="https://wa.me/6281121114410" class="btn btn-soft">Tanya dulu via WhatsApp</a>
     </div>
   </div>
 </section>
@@ -525,6 +720,18 @@
         <a href="https://booking.sewakamerabandung.id"><button class="btn btn-primary btn-lg">Buka Platform Booking →</button></a>
         <a href="https://wa.me/6281121114410"><button class="btn btn-soft">Tanya via WhatsApp dulu</button></a>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="trust-strip">
+  <div class="cont">
+    <div class="trust-strip-inner">
+      <div class="trust-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg><strong>Sejak 2020</strong> · 5+ tahun pengalaman</div>
+      <div class="trust-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><strong>5.0★ Google</strong> · 100+ review</div>
+      <div class="trust-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg><strong>Cukup KTP</strong> · tanpa deposit besar</div>
+      <div class="trust-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg><strong>QC 12-poin</strong> setiap unit</div>
+      <div class="trust-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><strong>Buka 09–20</strong> · 7 hari/minggu</div>
     </div>
   </div>
 </div>
@@ -784,5 +991,21 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="/branding-loader.js" defer></script>
+
+<!-- Sticky mobile action bar -->
+<nav class="mobile-bar" aria-label="Aksi cepat">
+  <a href="https://wa.me/6281121114410?text=Hallo+admin+7summits+Camera%2C+saya+mau+tanya+sewa+kamera" class="mb-wa" aria-label="WhatsApp 7summits">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.464 3.488"/></svg>
+    <span>WhatsApp</span>
+  </a>
+  <a href="javascript:void(0)" class="mb-cart" onclick="window.sc7Cart&&sc7Cart.open()" aria-label="Buka inquiry cart">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg>
+    <span>Inquiry</span>
+  </a>
+  <a href="https://booking.sewakamerabandung.id" class="mb-book" aria-label="Buka sistem booking">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Booking</span>
+  </a>
+</nav>
 </body>
 </html>
