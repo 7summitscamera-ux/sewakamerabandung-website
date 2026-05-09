@@ -680,6 +680,12 @@ async function loadFeaturedProducts(catFilter) {
       grid.innerHTML = '<div class="prod-empty">Tidak ada gear untuk kategori ini.</div>';
       return;
     }
+    const missing = produk.filter(p => !enrichMap[p.id]).map(p => p.id);
+    if (missing.length) {
+      const { data: extra } = await sb.from('product_enrichments')
+        .select('*').in('booking_product_id', missing);
+      if (extra) extra.forEach(e => { enrichMap[e.booking_product_id] = e; });
+    }
     renderProducts(produk, enrichMap);
   } catch(e) {
     grid.innerHTML = '<div class="prod-empty">Gagal memuat. Silakan refresh.</div>';
