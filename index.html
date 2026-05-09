@@ -550,6 +550,7 @@ footer{background:var(--bg1);border-top:1px solid var(--bd);padding:68px 0 28px}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/cart.js" defer></script>
 <script>
 const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
@@ -692,6 +693,8 @@ async function loadFeaturedProducts(catFilter) {
   }
 }
 
+function slugify(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');}
+
 function renderProducts(produk, enrichMap) {
   const grid = document.getElementById('prod-grid');
   grid.innerHTML = produk.map(function(p, i) {
@@ -715,7 +718,8 @@ function renderProducts(produk, enrichMap) {
     const catDisplay = kat.charAt(0) + kat.slice(1).toLowerCase();
     const specsHtml = specArr.length ? '<div class="prod-specs">' + specArr.map(function(s){return '<span class="prod-spec">'+s+'</span>';}).join('') + '</div>' : '';
     const kelHtml = kelShort ? '<div class="prod-includes">' + kelShort + '</div>' : '';
-    return '<div class="prod-card">'
+    const slug = slugify(nama);
+    return '<a href="/product/' + slug + '" class="prod-card" style="text-decoration:none;color:inherit">'
       + '<div class="prod-img-wrap">'
       + imgHtml
       + '<div class="prod-badge-wrap">' + hotBadge + '<span class="prod-badge prod-badge-cat">' + catDisplay + '</span></div>'
@@ -728,8 +732,8 @@ function renderProducts(produk, enrichMap) {
       + specsHtml + kelHtml
       + '<div class="prod-footer">'
       + '<div class="prod-price">Rp ' + Number(harga).toLocaleString('id-ID') + ' <small>/ hari</small></div>'
-      + '<a href="https://booking.sewakamerabandung.id"><button class="btn-rent">Booking →</button></a>'
-      + '</div></div></div>';
+      + '<button class="btn-rent" onclick="event.stopPropagation();event.preventDefault();window.open(\'https://booking.sewakamerabandung.id\',\'_blank\')">Booking →</button>'
+      + '</div></div></a>';
   }).join('');
 }
 
