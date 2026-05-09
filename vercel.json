@@ -2,8 +2,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/product/:slug+", "destination": "/pdp.html?slug=:slug" },
-    { "source": "/product/(.*)", "destination": "/pdp.html" }
+    { "source": "/product", "destination": "/" },
+    { "source": "/product/:slug", "destination": "/pdp?slug=:slug" }
   ],
   "headers": [
     {
