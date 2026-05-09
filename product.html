@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detail Produk — 7summits Camera</title>
+<meta name="description" content="Detail produk gear sewa di 7summits Camera Bandung. Spesifikasi, kelengkapan, harga, dan ketersediaan.">
+<meta name="theme-color" content="#060608">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="7summits Camera">
+<link rel="icon" type="image/png" href="/logo-7summits.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F06824;--orange-d:#d95a1c;--orange-l:#ff7a3a;
+  --green-d:#4F7B39;--green-m:#5A8A42;--green-l:#7BC143;
+  --bg0:#060608;--bg1:#0c0d10;--bg2:#111318;--bg3:#161820;--bg4:#1c1f28;
+  --glass:rgba(255,255,255,0.04);--glass-h:rgba(255,255,255,0.08);
+  --w:#fff;--w80:rgba(255,255,255,0.8);--w60:rgba(255,255,255,0.6);--w40:rgba(255,255,255,0.4);--w20:rgba(255,255,255,0.2);--w08:rgba(255,255,255,0.08);--w04:rgba(255,255,255,0.04);
+  --bd:rgba(255,255,255,0.07);--bd-h:rgba(255,255,255,0.14);
+  --r:8px;--r2:12px;--r3:16px;--r4:24px;
+  --tr:all 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Noto Sans',sans-serif;background:var(--bg0);color:#fff;overflow-x:hidden;line-height:1.6;min-height:100vh}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg1)}::-webkit-scrollbar-thumb{background:var(--w20);border-radius:2px}
+
+/* ANN BAR + NAV (match index.html) */
+.ann-bar{background:rgba(79,123,57,0.15);border-bottom:1px solid rgba(79,123,57,0.2);text-align:center;padding:9px 20px;font-size:11px;font-weight:600;color:var(--green-l);letter-spacing:0.02em}
+.ann-bar a{color:#fff;text-decoration:underline;margin-left:8px;opacity:.8}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:62px;display:flex;align-items:center;padding:0 48px;background:rgba(6,6,8,0.6);backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid var(--bd);transition:var(--tr)}
+nav.scrolled{background:rgba(6,6,8,0.92)}
+.nav-inner{width:100%;max-width:1400px;margin:0 auto;display:flex;align-items:center}
+.nav-logo img{height:24px}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none;margin:0 auto 0 40px}
+.nav-links a{font-size:13px;font-weight:400;color:var(--w60);padding:5px 13px;border-radius:var(--r);transition:var(--tr)}
+.nav-links a:hover{color:#fff;background:var(--w04)}
+.nav-acts{display:flex;align-items:center;gap:8px}
+.btn-g{font-family:inherit;font-size:12px;font-weight:600;color:var(--w60);padding:7px 16px;border:1px solid var(--bd);border-radius:var(--r);background:transparent;cursor:pointer;transition:var(--tr)}
+.btn-g:hover{color:#fff;border-color:var(--bd-h)}
+.btn-p{font-family:inherit;font-size:12px;font-weight:700;color:#fff;padding:8px 20px;background:var(--orange);border:none;border-radius:var(--r);cursor:pointer;transition:var(--tr);letter-spacing:.02em;white-space:nowrap}
+.btn-p:hover{background:var(--orange-d);transform:translateY(-1px)}
+
+/* PAGE WRAP */
+.page{padding-top:62px;padding-bottom:120px}
+.cont{max-width:1280px;margin:0 auto;padding:0 32px}
+
+/* BREADCRUMB */
+.bcrumb{padding:24px 0 12px;font-size:12px;color:var(--w40);font-weight:500;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bcrumb a:hover{color:#fff}
+.bcrumb .sep{opacity:.4}
+
+/* HERO */
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;padding:24px 0 56px;align-items:start}
+.hero-gallery{position:sticky;top:90px}
+.hero-img-main{width:100%;aspect-ratio:4/3;background:#fff;border:1px solid var(--bd);border-radius:var(--r3);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
+.hero-img-main img{width:100%;height:100%;object-fit:contain;padding:24px}
+.hero-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.hero-thumb{aspect-ratio:1;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
+.hero-thumb:hover,.hero-thumb.active{border-color:var(--orange);background:var(--bg3)}
+.hero-thumb img{width:100%;height:100%;object-fit:contain;padding:6px}
+.hero-thumb-empty{font-size:14px;color:var(--w20)}
+
+.hero-info-cat{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--green-l);letter-spacing:.14em;text-transform:uppercase;background:rgba(79,123,57,.1);border:1px solid rgba(79,123,57,.2);border-radius:20px;padding:5px 12px;margin-bottom:18px}
+.hero-info-name{font-size:clamp(28px,3.4vw,42px);font-weight:900;line-height:1.08;letter-spacing:-.02em;margin-bottom:14px}
+.hero-info-tagline{font-size:14px;color:var(--w60);font-weight:500;margin-bottom:24px;max-width:520px;line-height:1.6}
+.hero-stats{display:flex;gap:24px;padding:18px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:24px}
+.hero-stat{flex:1}
+.hero-stat-lbl{font-size:10px;font-weight:700;color:var(--w40);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.hero-stat-val{font-size:14px;font-weight:700;color:#fff}
+.hero-stat-val.green{color:var(--green-l)}
+.hero-stat-val.orange{color:var(--orange)}
+
+.hero-price-block{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:22px;margin-bottom:18px}
+.hero-price-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
+.hero-price{font-size:32px;font-weight:900;color:var(--orange);letter-spacing:-.02em;line-height:1}
+.hero-price small{font-size:13px;font-weight:500;color:var(--w40);letter-spacing:0}
+.hero-price-disc{font-size:11px;color:var(--green-l);font-weight:600}
+.hero-promo{font-size:12px;color:var(--w60);font-weight:500;margin-top:8px;padding-top:12px;border-top:1px dashed var(--bd)}
+.hero-promo strong{color:var(--green-l)}
+
+.hero-cta-row{display:flex;gap:10px;margin-bottom:14px}
+.hero-cta-add{flex:1;font-family:inherit;font-size:14px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--orange),var(--orange-d));border:none;border-radius:var(--r);padding:14px 20px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:var(--tr);letter-spacing:.02em;box-shadow:0 8px 24px rgba(240,104,36,.25)}
+.hero-cta-add:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(240,104,36,.4)}
+.hero-cta-add.added{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 8px 24px rgba(34,197,94,.25)}
+.hero-cta-book{font-family:inherit;font-size:13px;font-weight:700;color:var(--w80);background:var(--glass);border:1px solid var(--bd-h);border-radius:var(--r);padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:var(--tr);text-decoration:none}
+.hero-cta-book:hover{color:#fff;background:var(--glass-h);border-color:var(--w20)}
+
+.hero-trust{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.hero-trust-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--w60);font-weight:500}
+.hero-trust-ico{width:18px;height:18px;border-radius:50%;background:rgba(79,123,57,.15);color:var(--green-l);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+
+/* SECTION */
+.sec{padding:48px 0;border-top:1px solid var(--bd)}
+.sec-hdr{margin-bottom:28px}
+.sec-lbl{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:8px;display:block}
+.sec-h2{font-size:clamp(22px,2.6vw,30px);font-weight:900;letter-spacing:-.02em;line-height:1.15}
+.sec-sub{font-size:14px;color:var(--w60);margin-top:8px;font-weight:500;max-width:600px}
+
+/* SPECS */
+.specs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.spec-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:18px;transition:var(--tr);position:relative;overflow:hidden}
+.spec-card:hover{border-color:var(--bd-h);background:var(--bg3)}
+.spec-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--orange) 0%,transparent 100%);opacity:.3;transition:opacity .2s}
+.spec-card:hover::before{opacity:.7}
+.spec-ico{font-size:18px;margin-bottom:10px;opacity:.7;display:block}
+.spec-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--w40);margin-bottom:6px}
+.spec-val{font-size:14px;font-weight:700;color:#fff;line-height:1.3}
+.spec-note{font-size:10px;color:var(--w40);margin-top:18px;font-style:italic;display:flex;align-items:center;gap:6px}
+
+/* KELENGKAPAN */
+.kel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+.kel-item{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);transition:var(--tr)}
+.kel-item:hover{background:var(--bg3);border-color:var(--bd-h)}
+.kel-check{width:22px;height:22px;border-radius:50%;background:rgba(79,123,57,.15);color:var(--green-l);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+.kel-name{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+
+/* RELATED */
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.rel-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column;transition:var(--tr);text-decoration:none;color:#fff}
+.rel-card:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.rel-img{aspect-ratio:1;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.rel-img img{width:100%;height:100%;object-fit:contain;background:#fff;padding:14px}
+.rel-img .prod-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;text-align:center;background:linear-gradient(135deg,#15181f 0%,#0d0f13 100%)}
+.rel-body{padding:14px}
+.rel-cat{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green-l);margin-bottom:5px}
+.rel-name{font-size:12.5px;font-weight:700;line-height:1.3;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:32px}
+.rel-price{font-size:14px;font-weight:900;color:var(--orange)}
+.rel-price small{font-size:9px;font-weight:500;color:var(--w40)}
+
+/* RECOMMENDATION */
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.rec-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:18px 14px;text-align:center;transition:var(--tr)}
+.rec-card:hover{border-color:rgba(240,104,36,.4);background:var(--bg3);transform:translateY(-2px)}
+.rec-ico{font-size:24px;margin-bottom:10px;opacity:.7}
+.rec-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:4px}
+.rec-desc{font-size:10px;color:var(--w40);font-weight:500}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:8px}
+.faq-item{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:18px 22px;cursor:pointer;transition:var(--tr)}
+.faq-item:hover{background:var(--bg3);border-color:var(--bd-h)}
+.faq-q{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.faq-q::after{content:'+';font-size:22px;font-weight:300;color:var(--orange);transition:transform .2s;line-height:1}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{font-size:13px;color:var(--w60);line-height:1.7;margin-top:0;max-height:0;overflow:hidden;transition:max-height .3s ease,margin-top .3s ease}
+.faq-item.open .faq-a{max-height:240px;margin-top:12px}
+
+/* MOBILE STICKY CTA */
+.mobile-cta{position:fixed;bottom:0;left:0;right:0;background:rgba(12,13,16,0.96);backdrop-filter:blur(20px);border-top:1px solid var(--bd);padding:12px 16px;display:none;align-items:center;gap:10px;z-index:999}
+.mobile-cta-price{font-size:16px;font-weight:900;color:var(--orange);flex-shrink:0;line-height:1}
+.mobile-cta-price small{font-size:10px;color:var(--w40);font-weight:400}
+.mobile-cta-add{flex:1;font-family:inherit;font-size:12px;font-weight:800;color:#fff;background:var(--orange);border:none;border-radius:var(--r);padding:11px;cursor:pointer}
+
+/* PLACEHOLDER (when no image_url) */
+.prod-ph-brand{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;line-height:1;color:#fff}
+.prod-ph-model{font-size:11px;color:rgba(255,255,255,.45);font-weight:500;line-height:1.3;max-width:90%;overflow:hidden}
+.prod-ph-ico{font-size:32px;opacity:.5}
+.prod-ph::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,var(--ph-glow,rgba(240,104,36,0.14)) 0%,transparent 60%)}
+.prod-ph::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ph-bar,linear-gradient(90deg,transparent,rgba(240,104,36,.6),transparent))}
+
+/* LOADING + ERROR */
+.loading-state{padding:120px 0;text-align:center;color:var(--w40)}
+.spinner{width:24px;height:24px;border:2px solid var(--bd);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err-state{padding:80px 32px;text-align:center;max-width:520px;margin:0 auto}
+.err-state h1{font-size:26px;font-weight:900;margin-bottom:12px}
+.err-state p{font-size:14px;color:var(--w60);margin-bottom:24px;line-height:1.6}
+.err-state .btn-p{display:inline-block;text-decoration:none}
+
+/* FOOTER (lifted from index/components) */
+footer{background:var(--bg1);border-top:1px solid var(--bd);padding:60px 0 24px;margin-top:60px}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 1fr;gap:40px;max-width:1400px;margin:0 auto;padding:0 32px}
+.footer-logo{height:22px;display:block;margin-bottom:14px}
+.footer-desc{font-size:12px;color:var(--w40);line-height:1.7;max-width:240px;font-weight:300}
+.fcol h4{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--w40);margin-bottom:14px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.fcol ul li a{font-size:12px;color:var(--w60);transition:var(--tr);font-weight:300}
+.fcol ul li a:hover{color:#fff}
+.footer-btm{max-width:1400px;margin:36px auto 0;padding:20px 32px 0;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--w20)}
+
+@media (max-width:960px){
+  nav{padding:0 18px}
+  .nav-links{display:none}
+  .cont{padding:0 20px}
+  .hero-grid{grid-template-columns:1fr;gap:32px}
+  .hero-gallery{position:static}
+  .hero-info-name{font-size:28px}
+  .hero-cta-row{flex-direction:column}
+  .hero-cta-book{justify-content:center}
+  .mobile-cta{display:flex}
+  .page{padding-bottom:80px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .sec{padding:36px 0}
+}
+@media (max-width:520px){
+  .footer-grid{grid-template-columns:1fr}
+  .hero-stats{flex-wrap:wrap;gap:16px}
+  .hero-stat{flex:1 1 calc(50% - 8px)}
+}
+</style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<main class="page">
+  <div class="cont">
+    <div id="bcrumb" class="bcrumb">
+      <a href="/">Home</a><span class="sep">›</span>
+      <a href="/#produk">Gear</a><span class="sep">›</span>
+      <span id="bcrumb-name">Memuat...</span>
+    </div>
+  </div>
+  <div id="product-content" class="cont">
+    <div class="loading-state"><span class="spinner"></span>Memuat detail produk...</div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/components.js"></script>
+<script src="/cart.js"></script>
+<script>
+const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
+const BOOKING_URL = 'https://yxcssruutgpzkgcsqrit.supabase.co';
+const BOOKING_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4Y3NzcnV1dGdwemtnY3Nxcml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTAzMTYsImV4cCI6MjA5MTU2NjMxNn0.NMZqMuEUR2c-V3CnbW-bJNn1bjlS6vHLPUQSD7nArM0';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+const sbB = supabase.createClient(BOOKING_URL, BOOKING_KEY);
+const BOOKING_HREF = 'https://booking.sewakamerabandung.id';
+
+const CAT_ICON = {'KAMERA':'📷','LENSA':'🔭','LIGHTING':'💡','VIDEO SUPPORT':'🎥','AUDIO SUPPORT':'🎙','LAINNYA':'🔧'};
+function getIcon(c){ return CAT_ICON[(c||'').toUpperCase()] || '📦'; }
+function escHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtRp(n){ return 'Rp ' + Number(n||0).toLocaleString('id-ID'); }
+
+function slugify(s){
+  return String(s||'').toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9\s-]/g,'').trim()
+    .replace(/\s+/g,'-').replace(/-+/g,'-');
+}
+
+const BRANDS = {
+  'sony':{rgb:'255,99,71',label:'Sony'},'canon':{rgb:'204,0,0',label:'Canon'},
+  'fujifilm':{rgb:'0,133,62',label:'Fujifilm'},'fujinon':{rgb:'0,133,62',label:'Fujinon'},
+  'nikon':{rgb:'255,225,0',label:'Nikon'},'dji':{rgb:'140,140,140',label:'DJI'},
+  'godox':{rgb:'243,112,33',label:'Godox'},'aputure':{rgb:'199,170,108',label:'Aputure'},
+  'yongnuo':{rgb:'201,38,58',label:'Yongnuo'},'yongnou':{rgb:'201,38,58',label:'Yongnuo'},
+  'sigma':{rgb:'170,170,170',label:'Sigma'},'tamron':{rgb:'40,98,170',label:'Tamron'},
+  'hollyland':{rgb:'255,99,40',label:'Hollyland'},'saramonic':{rgb:'201,38,58',label:'Saramonic'},
+  'tilta':{rgb:'255,193,7',label:'Tilta'},'zhiyun':{rgb:'255,107,0',label:'Zhiyun'},
+  'gopro':{rgb:'0,163,224',label:'GoPro'},'insta360':{rgb:'200,200,200',label:'Insta360'},
+  'insta 360':{rgb:'200,200,200',label:'Insta360'},'viltrox':{rgb:'255,150,40',label:'Viltrox'},
+  'blackmagic':{rgb:'255,40,40',label:'Blackmagic'},'feelworld':{rgb:'80,160,255',label:'Feelworld'},
+  'feiyu':{rgb:'255,140,0',label:'Feiyu'},'rode':{rgb:'255,40,40',label:'Rode'},
+  'boya':{rgb:'255,140,0',label:'Boya'},'7artisan':{rgb:'200,200,200',label:'7Artisan'},
+  'ttartisan':{rgb:'200,200,200',label:'TTArtisan'},'beike':{rgb:'170,170,170',label:'Beike'},
+  'takara':{rgb:'170,170,170',label:'Takara'},'fotopro':{rgb:'170,170,170',label:'Fotopro'},
+  'excell':{rgb:'170,170,170',label:'Excell'},'manfrotto':{rgb:'255,200,40',label:'Manfrotto'},
+  'nanlite':{rgb:'255,180,40',label:'Nanlite'},'ulanzi':{rgb:'255,180,40',label:'Ulanzi'},
+  'colbor':{rgb:'180,180,180',label:'Colbor'},'sandisk':{rgb:'200,40,40',label:'Sandisk'},
+  'smallrig':{rgb:'255,140,0',label:'SmallRig'},'zgcine':{rgb:'200,200,200',label:'ZGCine'},
+  'kingma':{rgb:'255,140,0',label:'Kingma'},'hisense':{rgb:'200,40,40',label:'Hisense'},
+  'mavic':{rgb:'140,140,140',label:'DJI'},'phantom':{rgb:'140,140,140',label:'DJI'},
+  'osmo':{rgb:'140,140,140',label:'DJI'},'ronin':{rgb:'140,140,140',label:'DJI'},
+  'lark':{rgb:'255,99,40',label:'Hollyland'},'pyro':{rgb:'255,99,40',label:'Hollyland'},
+  'solidcom':{rgb:'255,99,40',label:'Hollyland'},'mars 300':{rgb:'255,99,40',label:'Hollyland'},
+  'mars 400':{rgb:'255,99,40',label:'Hollyland'},'weebill':{rgb:'255,107,0',label:'Zhiyun'},
+  'crane':{rgb:'255,107,0',label:'Zhiyun'},'amaran':{rgb:'199,170,108',label:'Aputure'},
+  'nova p':{rgb:'199,170,108',label:'Aputure'},'camcorder':{rgb:'255,99,71',label:'Sony'},
+  'camcoder':{rgb:'255,99,71',label:'Sony'},'handycam':{rgb:'255,99,71',label:'Sony'}
+};
+function detectBrand(name){
+  const n=(name||'').toLowerCase(); let best=null;
+  for (const k in BRANDS){ if (n.includes(k) && (!best || k.length>best.length)) best=k; }
+  return best?BRANDS[best]:null;
+}
+function cleanModel(name){
+  return String(name||'')
+    .replace(/\s*\(\s*tidak\s+dipakai\s*\)\s*/gi,' ')
+    .replace(/\s*\([^)]*\)\s*/g,' ')
+    .replace(/\s*[-|]\s*(CSR|SRW|HQ|AL|ZN)\s*\d*\s*$/gi,'')
+    .replace(/\s+(I|\|)\s+(CSR|SRW)[\w-]*\s*$/gi,'')
+    .replace(/\s+-\s+\d{5,}\s*$/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+const CAT_RGB={'KAMERA':'255,99,71','LENSA':'80,160,255','LIGHTING':'255,180,40','VIDEO SUPPORT':'140,140,200','AUDIO SUPPORT':'201,38,58','LAINNYA':'170,170,170'};
+function buildPlaceholder(name, kat){
+  const b=detectBrand(name); const k=(kat||'').toUpperCase();
+  const rgb=b?b.rgb:(CAT_RGB[k]||'240,104,36');
+  const label=b?b.label:(k?k.charAt(0)+k.slice(1).toLowerCase():'Gear');
+  const model=cleanModel(name);
+  return `<div class="prod-ph" style="--ph-glow:rgba(${rgb},0.18);--ph-bar:linear-gradient(90deg,transparent,rgba(${rgb},0.7),transparent)">
+    <div class="prod-ph-ico">${getIcon(kat)}</div>
+    <div class="prod-ph-brand" style="color:rgb(${rgb})">${escHtml(label)}</div>
+    <div class="prod-ph-model">${escHtml(model)}</div></div>`;
+}
+
+// =========================================================================
+// SPECS DATABASE — curated for top models, auto-derive for the rest
+// =========================================================================
+const SPECS_DB = {
+  'sony fx3 cinema line': {sensor:'Full-Frame Exmor R BSI CMOS',mp:'12.1 MP',video:'4K 120p · FHD 240p',iso:'80–102,400 (exp 80–409,600)',mount:'Sony E-mount',ibis:'5-axis IBIS, 5.5-stop',codec:'XAVC HS / S-I 10-bit 4:2:2',battery:'NP-FZ100',weight:'715 g',storage:'Dual SD UHS-II / CFexpress A',audio:'XLR via handle (4-ch)',extra:'S-Cinetone, Cooling fan, 9-stop ND'},
+  'sony a7iv': {sensor:'Full-Frame Exmor R BSI CMOS',mp:'33 MP',video:'4K 60p 4:2:2 10-bit',iso:'100–51,200 (exp 50–204,800)',mount:'Sony E-mount',ibis:'5-axis IBIS, 5.5-stop',codec:'XAVC HS / S-I',battery:'NP-FZ100',weight:'658 g',storage:'Dual: CFexpress A + SD',audio:'Mic in, Headphone, MI Shoe digital'},
+  'sony a7cii': {sensor:'Full-Frame Exmor R BSI CMOS',mp:'33 MP',video:'4K 60p 10-bit',iso:'100–51,200',mount:'Sony E-mount',ibis:'5-axis IBIS, 7-stop',codec:'XAVC HS / S-I',battery:'NP-FZ100',weight:'514 g',storage:'Single SD UHS-II',audio:'Mic in, Headphone'},
+  'sony a7iii': {sensor:'Full-Frame Exmor R BSI CMOS',mp:'24.2 MP',video:'4K 30p 8-bit',iso:'100–51,200 (exp 50–204,800)',mount:'Sony E-mount',ibis:'5-axis IBIS, 5-stop',codec:'XAVC S',battery:'NP-FZ100',weight:'650 g',storage:'Dual SD',audio:'Mic in, Headphone'},
+  'sony a7ii': {sensor:'Full-Frame Exmor CMOS',mp:'24.3 MP',video:'FHD 60p',iso:'100–25,600',mount:'Sony E-mount',ibis:'5-axis IBIS',codec:'XAVC S',battery:'NP-FW50',weight:'599 g',storage:'Single SD',audio:'Mic in'},
+  'sony a6400': {sensor:'APS-C Exmor CMOS',mp:'24.2 MP',video:'4K 30p · FHD 120p',iso:'100–32,000',mount:'Sony E-mount',ibis:'(lens-based OSS)',codec:'XAVC S',battery:'NP-FW50',weight:'403 g',storage:'Single SD',audio:'Mic in, MI Shoe'},
+  'sony a6000': {sensor:'APS-C Exmor CMOS',mp:'24.3 MP',video:'FHD 60p',iso:'100–25,600',mount:'Sony E-mount',ibis:'(lens-based OSS)',codec:'AVCHD / MP4',battery:'NP-FW50',weight:'344 g',storage:'Single SD',audio:'Built-in stereo'},
+  'sony a6500': {sensor:'APS-C Exmor CMOS',mp:'24.2 MP',video:'4K 30p · FHD 120p',iso:'100–25,600',mount:'Sony E-mount',ibis:'5-axis IBIS',codec:'XAVC S',battery:'NP-FW50',weight:'453 g',storage:'Single SD',audio:'Mic in, Headphone'},
+  'fujifilm x-t4': {sensor:'APS-C X-Trans CMOS 4',mp:'26.1 MP',video:'4K 60p 10-bit',iso:'160–12,800 (exp 80–51,200)',mount:'Fujifilm X-mount',ibis:'5-axis IBIS, 6.5-stop',codec:'F-Log, HLG',battery:'NP-W235',weight:'607 g',storage:'Dual SD UHS-II',audio:'Mic in, Headphone via USB-C'},
+  'fujifilm x-s10': {sensor:'APS-C X-Trans CMOS 4',mp:'26.1 MP',video:'4K 30p 8-bit',iso:'160–12,800',mount:'Fujifilm X-mount',ibis:'5-axis IBIS, 6-stop',codec:'F-Log',battery:'NP-W126S',weight:'465 g',storage:'Single SD UHS-II',audio:'Mic in'},
+  'fujifilm x-t20': {sensor:'APS-C X-Trans CMOS III',mp:'24.3 MP',video:'4K 30p',iso:'200–12,800',mount:'Fujifilm X-mount',ibis:'(lens OIS)',codec:'F-Log via HDMI',battery:'NP-W126S',weight:'383 g',storage:'Single SD',audio:'Mic in'},
+  'canon eos 6d': {sensor:'Full-Frame CMOS',mp:'20.2 MP',video:'FHD 30p',iso:'100–25,600',mount:'Canon EF',ibis:'(lens IS)',codec:'H.264 MOV',battery:'LP-E6',weight:'770 g',storage:'Single SD',audio:'Mic in (3.5mm)'},
+  'canon eos 750d': {sensor:'APS-C CMOS',mp:'24.2 MP',video:'FHD 30p',iso:'100–12,800',mount:'Canon EF / EF-S',ibis:'(lens IS)',codec:'H.264 MOV',battery:'LP-E17',weight:'555 g',storage:'Single SD',audio:'Mic in'},
+  'canon eos 600d': {sensor:'APS-C CMOS',mp:'18 MP',video:'FHD 30p',iso:'100–6,400',mount:'Canon EF / EF-S',ibis:'(lens IS)',codec:'H.264 MOV',battery:'LP-E8',weight:'570 g',storage:'Single SD',audio:'Mic in'},
+  'canon eos m10': {sensor:'APS-C CMOS',mp:'18 MP',video:'FHD 30p',iso:'100–12,800',mount:'Canon EF-M',ibis:'(lens IS)',codec:'H.264 MP4',battery:'LP-E12',weight:'301 g',storage:'Single SD',audio:'Built-in stereo'},
+  'canon eos m50': {sensor:'APS-C CMOS',mp:'24.1 MP',video:'4K 24p (cropped)',iso:'100–25,600',mount:'Canon EF-M',ibis:'5-axis Movie Digital IS',codec:'H.264 MP4',battery:'LP-E12',weight:'390 g',storage:'Single SD',audio:'Mic in'},
+  'canon eos m3': {sensor:'APS-C CMOS',mp:'24.2 MP',video:'FHD 30p',iso:'100–12,800',mount:'Canon EF-M',ibis:'(lens IS)',codec:'H.264 MP4',battery:'LP-E17',weight:'366 g',storage:'Single SD',audio:'Mic in'},
+  'sony a6500 ': {sensor:'APS-C',mp:'24.2 MP',video:'4K 30p',iso:'100–25,600',mount:'E-mount',ibis:'5-axis IBIS',codec:'XAVC S',battery:'NP-FW50',weight:'453 g',storage:'SD'},
+  'dji mini 3 pro': {camera:'1/1.3" CMOS, 48MP, F1.7',video:'4K 60p · 100Mbps',weight:'< 249 g (no registration)',flightTime:'34 min · 47 min (Plus Battery)',range:'12 km (FCC) / 8 km (CE)',obstacle:'Tri-directional sensors',gimbal:'3-axis · vertical shoot',windResistance:'10.7 m/s',extra:'ActiveTrack 4.0, MasterShots, Hyperlapse'},
+  'dji mini 4 pro': {camera:'1/1.3" CMOS, 48MP, F1.7, dual native ISO',video:'4K 100p · 10-bit D-Log M',weight:'< 249 g',flightTime:'34 min · 45 min (Plus Battery)',range:'20 km (FCC) / 10 km (CE)',obstacle:'Omnidirectional binocular vision',gimbal:'3-axis · vertical shoot',windResistance:'10.7 m/s',extra:'ActiveTrack 360°, Waypoint, Cruise Control'},
+  'dji mavic pro': {camera:'1/2.3" CMOS, 12MP, F2.2',video:'4K 30p',weight:'734 g',flightTime:'27 min',range:'7 km',obstacle:'Forward + downward',gimbal:'3-axis',windResistance:'10 m/s',extra:'Foldable design, ActiveTrack'},
+  'dji phantom 3 pro': {camera:'1/2.3" CMOS, 12MP, F2.8',video:'4K 30p',weight:'1280 g',flightTime:'23 min',range:'5 km',obstacle:'Downward only',gimbal:'3-axis',windResistance:'10 m/s',extra:'Pro-grade flagship era 2015'},
+  'dji rs 4 pro': {payload:'4.5 kg',battery:'Built-in, 12 hrs',axisLock:'Auto axis lock',torque:'20% higher torque vs RS3',motion:'Bluetooth shutter, OLED touch',accessory:'LiDAR Focus, Image Transmission',weight:'1.46 kg (gimbal only)'},
+  'dji ronin rs 3 mini': {payload:'2 kg',battery:'Built-in, 10 hrs',axisLock:'Auto axis lock',motion:'1.4" OLED touchscreen',accessory:'Vertical mode native',weight:'795 g'},
+  'dji osmo pocket 3': {sensor:'1" CMOS',video:'4K 120p · 10-bit D-Log M',display:'2" rotatable OLED',gimbal:'3-axis',audio:'Stereo + 2-mic noise cancel',battery:'1300 mAh, 116 min 4K30',weight:'179 g',extra:'ActiveTrack 6.0, Slow Motion'},
+  'gopro hero7': {sensor:'1/2.3" CMOS, 12MP',video:'4K 60p · FHD 240p',stabilization:'HyperSmooth',mount:'Standard GoPro mount',waterproof:'10m without housing',battery:'1220 mAh',weight:'116 g',display:'2" touchscreen + front status'},
+  'insta360 one x3': {sensor:'1/2" 72MP dual-lens',video:'5.7K 30p 360°',battery:'1800 mAh, 81 min',display:'2.29" touchscreen',waterproof:'10m',extra:'FlowState stabilization, Active HDR',weight:'180 g'},
+  'insta360 x4': {sensor:'1/2" dual-lens 72MP',video:'8K 30p 360° / 4K 100p single-lens',battery:'2290 mAh, 135 min',display:'2.5" 720x405 touchscreen',waterproof:'10m',extra:'AI editing, Removable lens guards',weight:'203 g'},
+  'insta360 go 3s': {sensor:'1/2.3" CMOS',video:'4K 30p',weight:'39.1 g (camera only)',battery:'170 min combo · 38 min standalone',magnetic:'Magnetic snap mount, hands-free',waterproof:'10m',extra:'FlowState, Pre-recording, Voice control'},
+  'godox sl60w': {power:'60W LED',colorTemp:'5600K daylight (fixed)',cri:'CRI 95+',output:'4500 lux @ 1m',mount:'Bowens',cooling:'Active fan',control:'2.4G remote, on-body knob',weight:'2 kg'},
+  'godox sl100d': {power:'100W LED',colorTemp:'5600K daylight (fixed)',cri:'CRI 96+ TLCI 97',output:'10800 lux @ 1m',mount:'Bowens',cooling:'Active fan, low-noise',control:'App, 2.4G, DMX',weight:'1.6 kg'},
+  'godox sk400ii': {power:'400Ws strobe',colorTemp:'5600K ±200K',recycle:'0.3–1.7s',gn:'GN 65',mount:'Bowens',sync:'1/2000s with X System',battery:'AC powered',weight:'2.5 kg'},
+  'godox tt600 universal': {gn:'GN 60',powerLevels:'1/1 to 1/128 (1/3 increments)',sync:'1/250s · multi-flash',compatibility:'Universal hot shoe (built-in 2.4G)',recycle:'0.1–2.6s',battery:'4x AA, ~230 full pops',weight:'410 g'},
+  'godox ad600 bm': {power:'600Ws',colorTemp:'5600K ±200K',recycle:'0.01–2.5s',gn:'GN 87',mount:'Godox / Bowens',sync:'1/8000s HSS',battery:'Lithium 11.1V 8700 mAh, ~500 full pops',weight:'2.8 kg'},
+  'godox tl-60': {power:'60W RGB tube',colorTemp:'2700K–6500K',cri:'CRI 96+',length:'63 cm',effects:'13 built-in FX',battery:'Built-in or DC',control:'App, on-body, DMX',weight:'860 g per tube'},
+  'godox fl150r': {power:'150W flexible LED',colorTemp:'3300K–5600K bicolor',output:'7200 lux @ 1m',shape:'Flexible mat 30x45 cm',control:'App, 2.4G',weight:'500 g'},
+  'godox p120c': {power:'120W LED panel',colorTemp:'3300K–5600K bicolor',cri:'CRI 96+',output:'13800 lux @ 1m',mount:'Bowens',weight:'2.6 kg',control:'App, 2.4G, DMX'},
+  'aputure ls1200d': {power:'1200W LED',colorTemp:'5500K daylight',cri:'CRI 96+ TLCI 96+',output:'63500 lux @ 3m',mount:'Bowens',cooling:'Whisper-quiet fan',control:'Sidus Link App, DMX, on-board',battery:'48V via 2x V-mount or AC',weight:'7.6 kg head'},
+  'aputure ls600x pro': {power:'600W LED',colorTemp:'2700K–6500K bicolor',cri:'CRI 95+ TLCI 96+',output:'27000 lux @ 3m',mount:'Bowens',control:'Sidus Link, DMX, CRMX',weight:'5.3 kg head'},
+  'aputure nova p300c': {power:'300W RGBWW panel',colorTemp:'2000K–10000K',cri:'CRI 96+ TLCI 99',gamut:'95% Rec.2020 / 99% DCI-P3',effects:'19 built-in FX',panel:'30x30 cm soft panel',weight:'6.6 kg'},
+  'aputure amaran 300c': {power:'300W RGB COB',colorTemp:'2500K–7500K',cri:'CRI 95+',output:'24000 lux @ 1m',mount:'Bowens',control:'Sidus Link, on-body',weight:'2.6 kg'},
+  'aputure light dome se': {type:'Soft Box (parabolic)',mount:'Bowens',diameter:'85 cm',depth:'48 cm',includes:'Inner + outer diffuser, grid, carry bag',compatible:'Aputure 120/300/600 series'},
+  'hollyland lark m1': {type:'Wireless Lavalier Mic',channels:'1 RX + 2 TX',range:'200 m LOS',battery:'TX 8 hr / RX 7.5 hr',audio:'48kHz 24-bit',connectivity:'3.5mm out, USB-C, Lightning',weight:'TX 9.6g · RX 23g'},
+  'hollyland lark m2 combo': {type:'Wireless Lavalier (next-gen)',channels:'1 RX + 2 TX',range:'300 m LOS',battery:'10 hr · 30 hr w/ charging case',audio:'48kHz 24-bit, Noise cancel',connectivity:'3.5mm, USB-C, Lightning',weight:'TX 9g · RX 22g'},
+  'hollyland mars 400s pro': {type:'Wireless Video TX',range:'150 m LOS',latency:'< 70 ms',resolution:'1080p 60fps',battery:'NP-F970 plate',connectivity:'HDMI + 3G-SDI in/out',extra:'4-RX support, App control'},
+  'hollyland pyro 7': {type:'7-inch Monitor + Wireless TX/RX',range:'400 ft LOS',latency:'< 60 ms',brightness:'1000 nits',resolution:'1920x1200',battery:'NP-F sled',connectivity:'HDMI + SDI + 3.5mm'},
+  'saramonic blink 500 b2': {type:'Wireless Lavalier',channels:'1 RX + 2 TX',range:'50 m LOS',battery:'5 hr',audio:'48kHz 16-bit',connectivity:'3.5mm TRS out',weight:'TX 30g · RX 30g'},
+  'rode mic shotgun': {type:'Shotgun condenser',polar:'Supercardioid',mount:'3/8" + cold shoe',powering:'9V battery / phantom (varies)',freqResp:'40Hz–20kHz',extra:'Camera-mountable, foam windshield'},
+  'rode ntg4+': {type:'Shotgun broadcast',polar:'Supercardioid',mount:'3/8" / 5/8" adapter',powering:'48V phantom + built-in Li-ion',freqResp:'20Hz–20kHz',extra:'Internal lithium battery, 150 hr'},
+  'zhiyun crane 2': {payload:'3.2 kg',battery:'18 hrs',motion:'Follow focus motor included',connectivity:'1.4" OLED · joystick · App',weight:'1.25 kg'},
+  'zhiyun weebill lab': {payload:'3 kg',battery:'10 hrs',motion:'Underslung mode · Sling mode',connectivity:'OLED · ZY Play app · ViaTouch',weight:'1.1 kg'},
+  'zhiyun weebill s': {payload:'3 kg',battery:'14 hrs',motion:'Sync motor 1 included compatible',connectivity:'OLED · ViaTouch 2.0',weight:'926 g'},
+  'feiyu ak2000c': {payload:'2.2 kg',battery:'7 hrs',motion:'Magic ring · OLED touch',connectivity:'App, multi-mode',weight:'1.05 kg'},
+  'tilta nucleus-m': {type:'Wireless Lens Control',motors:'3-motor (focus/iris/zoom)',range:'500 m line-of-sight',torque:'Up to 1.5 Nm',batteries:'F970 / D-Tap',extra:'15mm + 19mm rod compatible'}
+};
+
+// Auto-derive specs from name patterns when no DB entry exists
+function deriveSpecsFromName(nama, kat){
+  const n = (nama||'').toLowerCase();
+  const specs = {};
+  if ((kat||'').toUpperCase()==='LENSA') {
+    const focal = n.match(/(\d+)(?:-(\d+))?\s*mm/);
+    if (focal) specs.focalLength = focal[2] ? `${focal[1]}–${focal[2]}mm zoom` : `${focal[1]}mm prime`;
+    const ap = n.match(/f\s*\/?\s*(\d+(?:\.\d+)?)/i);
+    if (ap) specs.maxAperture = `F${ap[1]}`;
+    if (/for\s*sony|fe\s/.test(n)) specs.mount = 'Sony E-mount';
+    else if (/for\s*canon|ef-?m/.test(n)) specs.mount = /ef-?m/.test(n)?'Canon EF-M':'Canon EF / EF-S';
+    else if (/for\s*nikon/.test(n)) specs.mount = 'Nikon F';
+    else if (/for\s*fuji|fujinon|xf\s/.test(n)) specs.mount = 'Fujifilm X';
+    if (/gm|art|pro/.test(n)) specs.tier = 'Pro / G-Master';
+    if (/oss|os\s|stm|usm/.test(n)) specs.stabilization = 'Optical stabilization';
+    if (/macro/.test(n)) specs.special = 'Macro 1:1';
+    return specs;
+  }
+  if ((kat||'').toUpperCase()==='LIGHTING') {
+    const w = n.match(/(\d+)\s*w(?!h)/);
+    if (w) specs.power = `${w[1]}W`;
+    if (/rgb|rgbww|rgbaw/.test(n)) specs.colorMode = 'RGB Full-Color';
+    else if (/bicolor|bi-color/.test(n)) specs.colorMode = 'Bicolor (3200K–5600K)';
+    else if (/daylight|5600/.test(n)) specs.colorMode = 'Daylight 5600K';
+    if (/led/.test(n)) specs.type = 'LED Continuous';
+    else if (/flash|strobe|tt|ad\d/.test(n)) specs.type = 'Strobe / Flash';
+    if (/bowens/.test(n)) specs.mount = 'Bowens';
+    return specs;
+  }
+  if ((kat||'').toUpperCase()==='AUDIO SUPPORT' || /mic|lavalier|shotgun|wireless|saramonic|rode|hollyland|boya/.test(n)) {
+    if (/lark|blink|wireless|w-?\d/.test(n)) specs.type = 'Wireless Lavalier';
+    else if (/shotgun|ntg/.test(n)) specs.type = 'Shotgun Condenser';
+    else if (/clip\s*on|lavalier|by-m1/.test(n)) specs.type = 'Lavalier (Clip-on)';
+    else specs.type = 'Audio Capture';
+    return specs;
+  }
+  if ((kat||'').toUpperCase()==='KAMERA') {
+    if (/drone|mini|mavic|phantom|air/.test(n)) specs.type = 'Drone (Aerial Camera)';
+    else if (/insta360|gopro|hero|pocket/.test(n)) specs.type = 'Action / 360° Camera';
+    else if (/cinema|fx\d|red |alexa/.test(n)) specs.type = 'Cinema Camera';
+    else specs.type = 'Mirrorless / DSLR';
+    if (/full\s*frame|a7|a9|fx3|fx9|6d|5d|r5|r6/.test(n)) specs.sensor = 'Full-Frame';
+    else if (/aps-?c|a6\d|x-?[ts]\d|m\d|650d|750d|800d/.test(n)) specs.sensor = 'APS-C';
+    if (/4k/.test(n)) specs.video = '4K Video';
+    return specs;
+  }
+  if ((kat||'').toUpperCase()==='VIDEO SUPPORT') {
+    if (/tripod/.test(n)) specs.type = 'Tripod';
+    else if (/gimbal|crane|weebill|ronin|zhiyun|feiyu|smooth/.test(n)) specs.type = 'Gimbal Stabilizer';
+    else if (/slider/.test(n)) specs.type = 'Camera Slider';
+    else if (/monitor|feelworld|atem/.test(n)) specs.type = 'Monitor / Recorder';
+    else if (/cable|hdmi/.test(n)) specs.type = 'Cable / Connector';
+    else if (/battery|np-/.test(n)) specs.type = 'Battery';
+    else if (/charger/.test(n)) specs.type = 'Charger';
+    else if (/sd\s*card|sdcard|memory|cf/.test(n)) specs.type = 'Memory Card';
+    else specs.type = 'Video Accessory';
+    return specs;
+  }
+  return {};
+}
+
+const SPEC_ICONS = {
+  sensor:'📐',mp:'🔢',video:'🎬',iso:'🌗',mount:'🔄',ibis:'🛡',codec:'🎞',battery:'🔋',
+  weight:'⚖️',storage:'💾',audio:'🎙',extra:'✨',camera:'📷',flightTime:'⏱',range:'📡',
+  obstacle:'🧠',gimbal:'🌀',windResistance:'💨',display:'📺',waterproof:'💧',
+  stabilization:'🛡',magnetic:'🧲',power:'⚡',colorTemp:'🌡',cri:'🎨',output:'💡',cooling:'🌬',
+  control:'🎛',gn:'⚡',recycle:'🔄',sync:'📡',powerLevels:'🎚',compatibility:'🔌',
+  payload:'🏋',motion:'🎯',accessory:'🧰',torque:'🔧',axisLock:'🔒',
+  type:'🔖',channels:'📻',connectivity:'🔌',polar:'📍',powering:'🔌',freqResp:'🎵',
+  effects:'🎆',panel:'⬛',shape:'⬛',length:'📏',gamut:'🎨',brightness:'☀️',resolution:'🖥',
+  latency:'⚡',includes:'📦',compatible:'🔗',colorMode:'🎨',focalLength:'🔭',
+  maxAperture:'⚙️',tier:'🏆',special:'⭐',depth:'📦',diameter:'⭕'
+};
+const SPEC_LABELS = {
+  sensor:'Sensor',mp:'Resolution',video:'Video Capability',iso:'ISO Range',mount:'Mount',
+  ibis:'Stabilization',codec:'Codec',battery:'Battery',weight:'Weight',storage:'Storage',
+  audio:'Audio I/O',extra:'Highlights',camera:'Camera',flightTime:'Flight Time',
+  range:'Transmission Range',obstacle:'Obstacle Sensing',gimbal:'Gimbal',
+  windResistance:'Wind Resistance',display:'Display',waterproof:'Waterproof',
+  stabilization:'Stabilization',magnetic:'Mounting',power:'Power Output',
+  colorTemp:'Color Temperature',cri:'Color Accuracy',output:'Light Output',
+  cooling:'Cooling',control:'Control',gn:'Guide Number',recycle:'Recycle Time',
+  sync:'Sync',powerLevels:'Power Levels',compatibility:'Compatibility',
+  payload:'Max Payload',motion:'Motion Control',accessory:'Accessories',
+  torque:'Motor Torque',axisLock:'Axis Lock',type:'Type',channels:'Channels',
+  connectivity:'Connectivity',polar:'Polar Pattern',powering:'Powering',
+  freqResp:'Frequency Response',effects:'Built-in Effects',panel:'Panel Size',
+  shape:'Form Factor',length:'Length',gamut:'Color Gamut',brightness:'Brightness',
+  resolution:'Resolution',latency:'Latency',includes:'Includes',compatible:'Compatible With',
+  colorMode:'Color Mode',focalLength:'Focal Length',maxAperture:'Max Aperture',
+  tier:'Tier',special:'Special',depth:'Depth',diameter:'Diameter'
+};
+
+function getSpecs(nama, kat){
+  const slug = slugify(cleanModel(nama));
+  if (SPECS_DB[slug]) return {specs:SPECS_DB[slug], source:'curated'};
+  // Try partial match (e.g., "Sony FE 50mm F1.2 GM" → maybe matches a key)
+  const lower = (nama||'').toLowerCase();
+  for (const k in SPECS_DB) {
+    if (lower.includes(k)) return {specs:SPECS_DB[k], source:'curated'};
+  }
+  return {specs:deriveSpecsFromName(nama, kat), source:'derived'};
+}
+
+// =========================================================================
+// RECOMMENDATION RULES — what gear pairs well with what
+// =========================================================================
+const REC_RULES = {
+  KAMERA: [
+    {ico:'🔭',name:'Lensa premium',desc:'GM / Art / Pro lens'},
+    {ico:'🌀',name:'Gimbal stabilizer',desc:'Smooth motion shots'},
+    {ico:'💡',name:'LED lighting',desc:'Cinematic exposure'},
+    {ico:'🎙',name:'Wireless mic',desc:'Audio sync ready'},
+    {ico:'💾',name:'SD/CFexpress card',desc:'High-speed storage'},
+    {ico:'🔋',name:'Spare battery',desc:'Full-day shoot ready'}
+  ],
+  LENSA: [
+    {ico:'📷',name:'Compatible body',desc:'Full-frame mirrorless'},
+    {ico:'🔍',name:'ND filter',desc:'For wide aperture daytime'},
+    {ico:'🌀',name:'Gimbal stabilizer',desc:'Optimal weight balance'},
+    {ico:'🧰',name:'Lens hood + cap',desc:'Protection set'}
+  ],
+  LIGHTING: [
+    {ico:'☂️',name:'Softbox / Lantern',desc:'Soft diffused light'},
+    {ico:'🔋',name:'V-Mount battery',desc:'Mobile power'},
+    {ico:'🎚',name:'Light stand C-stand',desc:'Stable mounting'},
+    {ico:'🌫',name:'Diffusion / Grid',desc:'Light shaping kit'}
+  ],
+  'VIDEO SUPPORT': [
+    {ico:'📷',name:'Camera body',desc:'Pair with system'},
+    {ico:'🔋',name:'V-Mount battery',desc:'All-day power'},
+    {ico:'📺',name:'External monitor',desc:'Pro framing'},
+    {ico:'🎙',name:'Audio recorder',desc:'Synced sound'}
+  ],
+  'AUDIO SUPPORT': [
+    {ico:'📷',name:'Camera w/ mic in',desc:'Direct line audio'},
+    {ico:'🎚',name:'Field recorder',desc:'Multi-channel sync'},
+    {ico:'🎧',name:'Monitoring headphone',desc:'Real-time check'}
+  ],
+  LAINNYA: [
+    {ico:'📷',name:'Kamera utama',desc:'Pair dengan body'},
+    {ico:'🔋',name:'Battery / Power',desc:'Backup energy'}
+  ]
+};
+
+// =========================================================================
+// FAQ BANK
+// =========================================================================
+const FAQ_GENERIC = [
+  {q:'Bagaimana cara booking gear ini?',a:'Klik tombol "Booking Sekarang" untuk masuk ke sistem booking, atau tambahkan ke daftar inquiry untuk konsultasi via WhatsApp dulu. Tim kami akan respon kurang dari 30 menit di jam operasional (09:00–20:00 WIB).'},
+  {q:'Apa saja syarat sewa?',a:'KTP + KTP Penjamin (kerabat dekat), foto selfie dengan KTP, dan deposit (cash atau transfer). Untuk gear premium di atas Rp 500rb/hari, deposit menyesuaikan harga unit.'},
+  {q:'Berapa lama minimum sewa?',a:'Minimum sewa 1 hari (24 jam). Tersedia paket 3 hari bayar 2 hari untuk semua gear. Untuk project mingguan/bulanan, ada special rate — chat WhatsApp untuk negosiasi.'},
+  {q:'Apakah bisa antar-jemput?',a:'Tersedia antar-jemput di area Bandung Kota dengan ongkos sesuai jarak. Untuk pickup mandiri di lokasi Cisaranten / Sriwijaya, gratis. Detail antar-jemput hubungi WhatsApp.'},
+  {q:'Bagaimana jika gear rusak atau hilang saat penyewaan?',a:'Customer bertanggung jawab atas kerusakan / kehilangan unit. Kami sediakan opsi insurance untuk gear high-value (Sony FX3, DJI Mini 4 Pro, dll). Setiap gear di-cek sebelum & sesudah sewa.'},
+  {q:'Apakah ada training atau tutorial untuk gear ini?',a:'Untuk gear teknis (cinema camera, gimbal pro, lighting RGB), tim kami beri quick-onboarding 5–10 menit gratis sebelum unit diserahkan. Tersedia juga video tutorial di YouTube channel @7summitscamera.'}
+];
+
+// =========================================================================
+// MAIN: load product by slug
+// =========================================================================
+const slug = (location.pathname.match(/\/product\/([^\/?#]+)/) || [])[1] || new URLSearchParams(location.search).get('slug') || '';
+
+async function loadProduct(){
+  const root = document.getElementById('product-content');
+  if (!slug) { renderError('URL tidak valid', 'Slug produk tidak ditemukan di URL.'); return; }
+
+  try {
+    // Fetch all active products (light columns)
+    const { data: produkAll, error: e1 } = await sbB.from('produk')
+      .select('id,nama_produk,kategori_produk,harga_sewa_per_hari,kelengkapan,stok_total,stok_dalam_perbaikan,cabang_id')
+      .eq('is_deleted', false).eq('status', 'active');
+    if (e1 || !produkAll) { renderError('Gagal memuat data', e1?.message || 'No data'); return; }
+
+    // Find product by slug match
+    const target = produkAll.find(p => slugify(p.nama_produk) === slug);
+    if (!target) { renderError('Produk tidak ditemukan', `Slug "${slug}" tidak cocok dengan produk apapun di katalog.`); return; }
+
+    // Fetch enrichment for this product
+    const { data: enrich } = await sb.from('product_enrichments')
+      .select('*').eq('booking_product_id', target.id).maybeSingle();
+
+    // Fetch enrichments for the rest (for related products' images)
+    const otherIds = produkAll.filter(p => p.id !== target.id).slice(0, 50).map(p => p.id);
+    let otherEnrich = {};
+    if (otherIds.length) {
+      const { data: extra } = await sb.from('product_enrichments').select('*').in('booking_product_id', otherIds);
+      if (extra) extra.forEach(e => otherEnrich[e.booking_product_id] = e);
+    }
+
+    renderProduct(target, enrich || {}, produkAll, otherEnrich);
+  } catch(e) {
+    console.error(e);
+    renderError('Error tidak terduga', e.message || String(e));
+  }
+}
+
+function renderError(title, body){
+  document.getElementById('product-content').innerHTML = `
+    <div class="err-state">
+      <h1>${escHtml(title)}</h1>
+      <p>${escHtml(body)}</p>
+      <a href="/" class="btn-p">← Kembali ke Home</a>
+    </div>`;
+  document.getElementById('bcrumb-name').textContent = title;
+}
+
+function renderProduct(p, en, all, otherEnrich){
+  const nama = p.nama_produk;
+  const kat = p.kategori_produk || '';
+  const harga = p.harga_sewa_per_hari || 0;
+  const stok = (p.stok_total||0) - (p.stok_dalam_perbaikan||0);
+  const avail = stok > 0;
+  const kelArr = (en.includes || p.kelengkapan || '').split(/[,;·]+/).map(s => s.trim()).filter(Boolean);
+  const imgUrl = en.image_url || '';
+  const img2 = en.image_url_2 || '';
+  const desc = en.description || `Sewa ${cleanModel(nama)} di Bandung. Unit terjaga, ready untuk produksi profesional. Harga sewa Rp ${Number(harga).toLocaleString('id-ID')}/hari, tersedia di lokasi ${p.cabang_id||'-'}.`;
+  const cabang = p.cabang_id || '-';
+
+  // Update meta + breadcrumb
+  document.title = `${cleanModel(nama)} — Sewa di 7summits Camera Bandung`;
+  document.querySelector('meta[name="description"]').setAttribute('content', desc.substring(0, 160));
+  let og = document.querySelector('meta[property="og:image"]');
+  if (imgUrl) {
+    if (!og) { og = document.createElement('meta'); og.setAttribute('property','og:image'); document.head.appendChild(og); }
+    og.setAttribute('content', imgUrl);
+  }
+  document.getElementById('bcrumb-name').textContent = cleanModel(nama);
+
+  // JSON-LD product schema for SEO
+  const ld = document.createElement('script');
+  ld.type = 'application/ld+json';
+  ld.textContent = JSON.stringify({
+    '@context':'https://schema.org','@type':'Product',
+    name: cleanModel(nama), description: desc.substring(0,300),
+    image: imgUrl || undefined, category: kat,
+    brand: detectBrand(nama)?.label || undefined,
+    offers: {
+      '@type':'Offer',
+      priceCurrency:'IDR', price: harga,
+      availability: avail?'https://schema.org/InStock':'https://schema.org/OutOfStock',
+      url: location.href
+    }
+  });
+  document.head.appendChild(ld);
+
+  _currentProduct = {id:p.id, slug:slugify(nama), name:nama, kategori:kat, harga, image:imgUrl};
+
+  // Specs
+  const {specs, source: specSource} = getSpecs(nama, kat);
+  const specsHtml = Object.keys(specs).length
+    ? Object.entries(specs).map(([k,v]) => `
+      <div class="spec-card">
+        <span class="spec-ico">${SPEC_ICONS[k] || '•'}</span>
+        <div class="spec-lbl">${SPEC_LABELS[k] || k}</div>
+        <div class="spec-val">${escHtml(v)}</div>
+      </div>`).join('') + `
+      <div class="spec-note" style="grid-column:1/-1">${specSource==='curated'?'✓ Spesifikasi dari katalog produk resmi':'⚙ Spesifikasi auto-derived dari nama model — kontak kami untuk konfirmasi detail teknis'}</div>`
+    : '<div style="grid-column:1/-1;text-align:center;color:var(--w40);padding:40px">Spesifikasi belum tersedia. Hubungi kami untuk detail.</div>';
+
+  // Kelengkapan
+  const kelHtml = kelArr.length
+    ? kelArr.map(k => `<div class="kel-item"><div class="kel-check">✓</div><div class="kel-name">${escHtml(k)}</div></div>`).join('')
+    : '<div style="grid-column:1/-1;text-align:center;color:var(--w40);padding:40px;font-size:13px">Kelengkapan standar — hubungi tim untuk daftar lengkap.</div>';
+
+  // Related products (same kategori, exclude self, limit 8)
+  const related = all.filter(x => x.id !== p.id && x.kategori_produk === kat).slice(0, 8);
+  const relatedHtml = related.length
+    ? related.map(r => {
+        const rEn = otherEnrich[r.id] || {};
+        const rImg = rEn.image_url || '';
+        const rSlug = slugify(r.nama_produk);
+        return `<a href="/product/${rSlug}" class="rel-card">
+          <div class="rel-img">${rImg ? `<img src="${escHtml(rImg)}" alt="${escHtml(r.nama_produk)}" loading="lazy" onerror="this.outerHTML=this.dataset.fb" data-fb='${escHtml(buildPlaceholder(r.nama_produk, r.kategori_produk))}'>` : buildPlaceholder(r.nama_produk, r.kategori_produk)}</div>
+          <div class="rel-body">
+            <div class="rel-cat">${escHtml(r.kategori_produk||'')}</div>
+            <div class="rel-name">${escHtml(cleanModel(r.nama_produk))}</div>
+            <div class="rel-price">${fmtRp(r.harga_sewa_per_hari)} <small>/ hari</small></div>
+          </div>
+        </a>`;
+      }).join('')
+    : '<div style="grid-column:1/-1;color:var(--w40);text-align:center;padding:30px">Tidak ada produk serupa.</div>';
+
+  // Recommendations
+  const recs = REC_RULES[kat.toUpperCase()] || REC_RULES.LAINNYA;
+  const recsHtml = recs.map(r => `
+    <a href="/#produk" class="rec-card">
+      <div class="rec-ico">${r.ico}</div>
+      <div class="rec-name">${escHtml(r.name)}</div>
+      <div class="rec-desc">${escHtml(r.desc)}</div>
+    </a>`).join('');
+
+  // FAQs
+  const faqHtml = FAQ_GENERIC.map((f,i) => `
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">${escHtml(f.q)}</div>
+      <div class="faq-a">${escHtml(f.a)}</div>
+    </div>`).join('');
+
+  // Hero image area
+  const heroImgHtml = imgUrl
+    ? `<img src="${escHtml(imgUrl)}" alt="${escHtml(nama)}" onerror="this.outerHTML=this.dataset.fb" data-fb='${escHtml(buildPlaceholder(nama, kat))}'>`
+    : buildPlaceholder(nama, kat);
+
+  const inCart = (window.sc7Cart?.read?.() || []).some(x => x.id === p.id);
+
+  document.getElementById('product-content').innerHTML = `
+  <section class="hero-grid">
+    <div class="hero-gallery">
+      <div class="hero-img-main">${heroImgHtml}</div>
+      <div class="hero-thumbs">
+        <div class="hero-thumb active">${imgUrl ? `<img src="${escHtml(imgUrl)}" alt="thumb">` : '<div class="hero-thumb-empty">—</div>'}</div>
+        <div class="hero-thumb">${img2 ? `<img src="${escHtml(img2)}" alt="thumb 2">` : '<div class="hero-thumb-empty">+</div>'}</div>
+        <div class="hero-thumb"><div class="hero-thumb-empty">+</div></div>
+        <div class="hero-thumb"><div class="hero-thumb-empty">+</div></div>
+      </div>
+    </div>
+
+    <div class="hero-info">
+      <div class="hero-info-cat">${getIcon(kat)} ${escHtml(kat)}</div>
+      <h1 class="hero-info-name">${escHtml(cleanModel(nama))}</h1>
+      <p class="hero-info-tagline">${escHtml(desc)}</p>
+
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-lbl">Status</div><div class="hero-stat-val ${avail?'green':'orange'}">${avail?'● Tersedia':'● Stok Habis'}</div></div>
+        <div class="hero-stat"><div class="hero-stat-lbl">Stok Tersedia</div><div class="hero-stat-val">${Math.max(0,stok)} unit</div></div>
+        <div class="hero-stat"><div class="hero-stat-lbl">Lokasi</div><div class="hero-stat-val" style="text-transform:capitalize">${escHtml(cabang)}</div></div>
+      </div>
+
+      <div class="hero-price-block">
+        <div class="hero-price-row">
+          <div class="hero-price">${fmtRp(harga)} <small>/ hari</small></div>
+          <div class="hero-price-disc">3 hari = bayar 2 hari</div>
+        </div>
+        <div class="hero-promo">💡 <strong>Hemat 33%</strong> untuk sewa 3+ hari berturut. Berlaku semua produk tanpa minimum order.</div>
+      </div>
+
+      <div class="hero-cta-row">
+        <button id="cta-add" class="hero-cta-add ${inCart?'added':''}" onclick="addThisToCart()">
+          ${inCart ? '✓ Sudah di Daftar Inquiry' : '＋ Tambah ke Daftar Inquiry'}
+        </button>
+        <a class="hero-cta-book" href="${BOOKING_HREF}" target="_blank">
+          📅 Booking Langsung
+        </a>
+      </div>
+
+      <div class="hero-trust">
+        <div class="hero-trust-item"><div class="hero-trust-ico">✓</div>Unit ter-quality control</div>
+        <div class="hero-trust-item"><div class="hero-trust-ico">✓</div>Antar-jemput area Bandung</div>
+        <div class="hero-trust-item"><div class="hero-trust-ico">✓</div>Quick onboarding gear</div>
+        <div class="hero-trust-item"><div class="hero-trust-ico">✓</div>Promo 3 bayar 2 aktif</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="spec">
+    <div class="sec-hdr">
+      <span class="sec-lbl">Spesifikasi</span>
+      <h2 class="sec-h2">Spec Teknis ${escHtml(detectBrand(nama)?.label || '')}</h2>
+      <p class="sec-sub">Detail teknis lengkap untuk pertimbangan produksi profesional. Layar grid modern siap di-skim cepat.</p>
+    </div>
+    <div class="specs-grid">${specsHtml}</div>
+  </section>
+
+  <section class="sec" id="kelengkapan">
+    <div class="sec-hdr">
+      <span class="sec-lbl">Kelengkapan</span>
+      <h2 class="sec-h2">Yang Termasuk dalam Sewa</h2>
+      <p class="sec-sub">Semua item di bawah ini sudah termasuk dalam harga sewa harian. Tidak ada biaya tersembunyi.</p>
+    </div>
+    <div class="kel-grid">${kelHtml}</div>
+  </section>
+
+  <section class="sec" id="related">
+    <div class="sec-hdr">
+      <span class="sec-lbl">Lihat Juga</span>
+      <h2 class="sec-h2">Produk Serupa di Kategori ${escHtml(kat)}</h2>
+    </div>
+    <div class="rel-grid">${relatedHtml}</div>
+  </section>
+
+  <section class="sec" id="recommend">
+    <div class="sec-hdr">
+      <span class="sec-lbl">Recommendation</span>
+      <h2 class="sec-h2">Gear Pendukung yang Sering Disewa Bareng</h2>
+      <p class="sec-sub">Setup profesional jarang berdiri sendiri. Gear-gear berikut paling sering disewa bersama produk kategori ini.</p>
+    </div>
+    <div class="rec-grid">${recsHtml}</div>
+  </section>
+
+  <section class="sec" id="faq">
+    <div class="sec-hdr">
+      <span class="sec-lbl">FAQ</span>
+      <h2 class="sec-h2">Pertanyaan yang Sering Ditanya</h2>
+    </div>
+    <div class="faq-list">${faqHtml}</div>
+  </section>
+  `;
+
+  // Mobile sticky CTA
+  if (!document.querySelector('.mobile-cta')) {
+    const m = document.createElement('div');
+    m.className = 'mobile-cta';
+    m.innerHTML = `
+      <div class="mobile-cta-price">${fmtRp(harga)} <small>/hari</small></div>
+      <button class="mobile-cta-add" onclick="document.getElementById('cta-add').click()">＋ Inquiry</button>
+      <a class="btn-p" href="${BOOKING_HREF}" target="_blank" style="text-decoration:none">Booking →</a>`;
+    document.body.appendChild(m);
+  }
+}
+
+let _currentProduct = null;
+window.addThisToCart = function() {
+  if (!_currentProduct) return;
+  if (!window.sc7Cart) { setTimeout(addThisToCart, 100); return; }
+  sc7Cart.add(_currentProduct);
+  const btn = document.getElementById('cta-add');
+  if (btn) { btn.classList.add('added'); btn.innerHTML = '✓ Sudah di Daftar Inquiry'; }
+  setTimeout(() => sc7Cart.open(), 250);
+};
+
+window.addEventListener('scroll', () => {
+  document.querySelector('nav')?.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+loadProduct();
+</script>
+</body>
+</html>
