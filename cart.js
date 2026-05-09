@@ -58,7 +58,7 @@
     if (!wrap) return;
     const items = read();
     if (!items.length) {
-      wrap.innerHTML = '<div class="sc7-cart-empty"><div style="font-size:36px;opacity:.3;margin-bottom:12px">📋</div><div style="font-weight:700;margin-bottom:6px">Daftar inquiry kosong</div><div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.5">Tambah produk yang mau dicek availability-nya. Submit untuk dapat respon dari tim kami.</div></div>';
+      wrap.innerHTML = '<div class="sc7-cart-empty"><div style="font-size:40px;opacity:.4;margin-bottom:14px">📋</div><div style="font-weight:600;margin-bottom:6px;color:#0E1217">Daftar inquiry kosong</div><div style="font-size:13px;color:#6B7280;line-height:1.55;font-weight:400">Tambah produk yang mau dicek availability-nya. Submit untuk dapat respon dari tim kami.</div></div>';
     } else {
       wrap.innerHTML = items.map(x => `
         <div class="sc7-cart-item">
@@ -121,53 +121,53 @@
     if (document.getElementById('sc7-cart-fab')) return;
     const html = `
 <style>
-.sc7-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F06824,#d95a1c);border:none;cursor:pointer;box-shadow:0 12px 32px rgba(240,104,36,.4),0 4px 12px rgba(0,0,0,.3);z-index:9998;display:flex;align-items:center;justify-content:center;transition:transform .2s ease,box-shadow .2s ease}
-.sc7-fab:hover{transform:scale(1.08) translateY(-2px);box-shadow:0 16px 40px rgba(240,104,36,.55),0 6px 16px rgba(0,0,0,.4)}
+.sc7-fab{position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:#0E1217;border:none;cursor:pointer;box-shadow:0 14px 36px rgba(14,18,23,.28),0 4px 12px rgba(14,18,23,.14);z-index:9998;display:flex;align-items:center;justify-content:center;transition:transform .2s ease,box-shadow .2s ease}
+.sc7-fab:hover{transform:scale(1.06) translateY(-2px);background:#000;box-shadow:0 18px 44px rgba(14,18,23,.38),0 6px 16px rgba(14,18,23,.2)}
 .sc7-fab.sc7-flash{animation:sc7-flash .6s ease}
-@keyframes sc7-flash{0%,100%{transform:scale(1)}50%{transform:scale(1.2);box-shadow:0 0 0 16px rgba(240,104,36,.3)}}
+@keyframes sc7-flash{0%,100%{transform:scale(1)}50%{transform:scale(1.18);box-shadow:0 0 0 16px rgba(142,198,78,.30)}}
 .sc7-fab svg{width:24px;height:24px;color:#fff}
-.sc7-fab-badge{position:absolute;top:-4px;right:-4px;background:#fff;color:#F06824;font-size:11px;font-weight:900;min-width:22px;height:22px;border-radius:11px;display:none;align-items:center;justify-content:center;padding:0 6px;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'Noto Sans',sans-serif}
-.sc7-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.sc7-fab-badge{position:absolute;top:-4px;right:-4px;background:#F06824;color:#fff;font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:11px;display:none;align-items:center;justify-content:center;padding:0 6px;box-shadow:0 2px 8px rgba(240,104,36,.40);font-family:'Inter','SF Pro Display',sans-serif;border:2px solid #fff}
+.sc7-overlay{position:fixed;inset:0;background:rgba(14,18,23,.42);backdrop-filter:blur(6px);z-index:9998;opacity:0;pointer-events:none;transition:opacity .25s ease}
 .sc7-overlay.open{opacity:1;pointer-events:auto}
-.sc7-drawer{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:92vw;background:#0c0d10;border-left:1px solid rgba(255,255,255,.08);z-index:9999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.4,0,0.2,1);font-family:'Noto Sans',sans-serif;color:#fff}
-.sc7-drawer.open{transform:translateX(0);box-shadow:-20px 0 60px rgba(0,0,0,.5)}
-.sc7-drawer-hdr{padding:20px 22px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.sc7-drawer-ttl{font-size:15px;font-weight:800;letter-spacing:-.01em}
-.sc7-drawer-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px;font-weight:500}
-.sc7-drawer-close{background:transparent;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:22px;line-height:1;padding:4px 8px;border-radius:6px;transition:all .15s}
-.sc7-drawer-close:hover{color:#fff;background:rgba(255,255,255,.06)}
-.sc7-drawer-body{flex:1;overflow-y:auto;padding:0 22px}
-.sc7-cart-empty{padding:60px 24px;text-align:center;color:rgba(255,255,255,.7)}
-.sc7-cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.sc7-drawer{position:fixed;top:0;right:0;bottom:0;width:440px;max-width:92vw;background:#FAFAF7;border-left:1px solid #EAEBE6;z-index:9999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(0.4,0,0.2,1);font-family:'Inter','SF Pro Display',-apple-system,sans-serif;color:#0E1217}
+.sc7-drawer.open{transform:translateX(0);box-shadow:-20px 0 60px rgba(15,18,23,.14)}
+.sc7-drawer-hdr{padding:22px 24px;border-bottom:1px solid #EAEBE6;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#fff}
+.sc7-drawer-ttl{font-size:16px;font-weight:700;letter-spacing:-.02em;color:#0E1217}
+.sc7-drawer-sub{font-size:12px;color:#6B7280;margin-top:3px;font-weight:500}
+.sc7-drawer-close{background:#F2F4EF;border:1px solid #EAEBE6;color:#5B6470;cursor:pointer;font-size:18px;line-height:1;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.sc7-drawer-close:hover{color:#0E1217;background:#EDEEE8;border-color:#D6D8D2}
+.sc7-drawer-body{flex:1;overflow-y:auto;padding:0 24px}
+.sc7-cart-empty{padding:64px 24px;text-align:center;color:#5B6470}
+.sc7-cart-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid #EAEBE6}
 .sc7-cart-item:last-child{border-bottom:none}
-.sc7-cart-img{width:64px;height:64px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;font-size:22px}
+.sc7-cart-img{width:68px;height:68px;border-radius:10px;background:#fff;border:1px solid #EAEBE6;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;font-size:24px}
 .sc7-cart-img img{width:100%;height:100%;object-fit:cover}
 .sc7-cart-info{flex:1;min-width:0}
-.sc7-cart-name{font-size:13px;font-weight:700;line-height:1.3;display:block;color:#fff;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.sc7-cart-name:hover{color:#F06824}
-.sc7-cart-meta{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;font-weight:500}
-.sc7-cart-qty{display:flex;align-items:center;gap:8px;margin-top:8px}
-.sc7-qty-btn{width:24px;height:24px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.8);cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.sc7-qty-btn:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2)}
-.sc7-qty-val{font-size:12px;font-weight:700;min-width:20px;text-align:center}
-.sc7-cart-rm{margin-left:auto;background:transparent;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px;line-height:1;padding:0 6px;border-radius:4px;transition:all .15s}
-.sc7-cart-rm:hover{color:#ef4444;background:rgba(239,68,68,.1)}
-.sc7-cart-form{padding:16px 0;border-top:1px solid rgba(255,255,255,.07);margin-top:8px}
-.sc7-cart-form label{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}
-.sc7-cart-form input,.sc7-cart-form textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;color:#fff;font-family:inherit;font-size:13px;padding:9px 12px;outline:none;transition:border-color .15s;font-weight:500}
-.sc7-cart-form input:focus,.sc7-cart-form textarea:focus{border-color:rgba(240,104,36,.5)}
-.sc7-cart-form textarea{resize:vertical;min-height:64px}
-.sc7-cart-dates{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.sc7-drawer-ftr{padding:16px 22px 20px;border-top:1px solid rgba(255,255,255,.07);background:linear-gradient(0deg,rgba(0,0,0,.4),transparent);flex-shrink:0}
+.sc7-cart-name{font-size:13.5px;font-weight:600;line-height:1.35;display:block;color:#0E1217;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;letter-spacing:-.005em}
+.sc7-cart-name:hover{color:#4F7B39}
+.sc7-cart-meta{font-size:11.5px;color:#6B7280;margin-top:4px;font-weight:500}
+.sc7-cart-qty{display:flex;align-items:center;gap:8px;margin-top:10px}
+.sc7-qty-btn{width:26px;height:26px;border-radius:7px;border:1px solid #EAEBE6;background:#fff;color:#5B6470;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.sc7-qty-btn:hover{background:#F2F4EF;color:#0E1217;border-color:#D6D8D2}
+.sc7-qty-val{font-size:12.5px;font-weight:600;min-width:20px;text-align:center;color:#0E1217}
+.sc7-cart-rm{margin-left:auto;background:transparent;border:none;color:#9CA3AF;cursor:pointer;font-size:18px;line-height:1;padding:0 8px;border-radius:4px;transition:all .15s}
+.sc7-cart-rm:hover{color:#dc2626;background:rgba(220,38,38,.08)}
+.sc7-cart-form{padding:18px 0;border-top:1px solid #EAEBE6;margin-top:8px}
+.sc7-cart-form label{display:block;font-size:10.5px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:#6B7280;margin-bottom:7px}
+.sc7-cart-form input,.sc7-cart-form textarea{width:100%;background:#fff;border:1px solid #D6D8D2;border-radius:8px;color:#0E1217;font-family:inherit;font-size:13.5px;padding:10px 13px;outline:none;transition:border-color .15s,box-shadow .15s;font-weight:500}
+.sc7-cart-form input:focus,.sc7-cart-form textarea:focus{border-color:#8EC64E;box-shadow:0 0 0 3px rgba(142,198,78,.18)}
+.sc7-cart-form textarea{resize:vertical;min-height:68px}
+.sc7-cart-dates{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.sc7-drawer-ftr{padding:18px 24px 22px;border-top:1px solid #EAEBE6;background:#fff;flex-shrink:0}
 .sc7-cart-totals{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
-.sc7-cart-totlbl{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-.sc7-cart-total{font-size:18px;font-weight:900;color:#F06824}
-.sc7-cart-cntline{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;text-align:right;font-weight:500}
-.sc7-cart-submit{width:100%;background:linear-gradient(135deg,#F06824,#d95a1c);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:800;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;letter-spacing:.01em}
-.sc7-cart-submit:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(240,104,36,.4)}
+.sc7-cart-totlbl{font-size:11px;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:.10em}
+.sc7-cart-total{font-size:22px;font-weight:700;color:#0E1217;letter-spacing:-.02em}
+.sc7-cart-cntline{font-size:11.5px;color:#6B7280;margin-top:2px;text-align:right;font-weight:500}
+.sc7-cart-submit{width:100%;background:#0E1217;color:#fff;border:none;border-radius:999px;font-family:inherit;font-size:14px;font-weight:600;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;letter-spacing:-.005em}
+.sc7-cart-submit:hover{background:#000;transform:translateY(-1px);box-shadow:0 12px 32px rgba(14,18,23,.20)}
 .sc7-cart-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
-.sc7-cart-clear{background:transparent;border:none;color:rgba(255,255,255,.4);font-family:inherit;font-size:11px;cursor:pointer;padding:6px 0;margin-top:8px;text-align:center;width:100%;font-weight:500}
-.sc7-cart-clear:hover{color:#ef4444}
+.sc7-cart-clear{background:transparent;border:none;color:#9CA3AF;font-family:inherit;font-size:11.5px;cursor:pointer;padding:8px 0;margin-top:8px;text-align:center;width:100%;font-weight:500}
+.sc7-cart-clear:hover{color:#dc2626}
 @media (max-width:600px){.sc7-fab{bottom:16px;right:16px}.sc7-drawer{width:100vw;max-width:100vw}}
 </style>
 <button id="sc7-cart-fab" class="sc7-fab" onclick="sc7Cart.open()" aria-label="Daftar inquiry">
