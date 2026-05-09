@@ -2,15 +2,20 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/product/:slug", "destination": "/pdp.html" },
-    { "source": "/product", "destination": "/" }
+    { "source": "/product/:slug+", "destination": "/pdp.html?slug=:slug" },
+    { "source": "/product/(.*)", "destination": "/pdp.html" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    },
+    {
+      "source": "/((?!product/).*)",
+      "headers": [
         { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
       ]
     },
