@@ -219,6 +219,11 @@ const filters = {
 
 // ============ LOAD ============
 async function load(){
+  const grid = document.getElementById('kat-grid');
+  const isPrerendered = grid && grid.querySelector('.kcard');
+  // If pre-rendered (build-time) AND no URL filter, defer fetching to background
+  // and let users see the pre-rendered HTML immediately. Background fetch
+  // populates state arrays so filtering/sorting work after first interaction.
   try {
     const { data: rows } = await sbB.from('produk')
       .select('id,nama_produk,kategori_produk,harga_sewa_per_hari,stok_total,stok_dalam_perbaikan')
@@ -228,9 +233,27 @@ async function load(){
     _enrichMap = {};
     (en||[]).forEach(e => _enrichMap[e.booking_product_id] = e);
     buildFilterUI();
-    renderKatalog();
+    // Skip the initial render if pre-rendered + no filters active (prevents flicker)
+    const hasFilter = filters.categories.size || filters.brands.size;
+    if (!isPrerendered || hasFilter || _page > 1) renderKatalog();
+    else {
+      // Just sync the count + pagination control without touching the grid HTML
+      document.getElementById('kat-count').textContent = _all.length.toLocaleString('id-ID');
+      // Rebuild pagination ctrl so user can navigate beyond page 1
+      const total = Math.max(1, Math.ceil(_all.length / PAGE_SIZE));
+      const pag = document.getElementById('kat-pag');
+      if (total > 1) {
+        let h = `<button class="pag-btn" disabled>‹ Prev</button>`;
+        for (let i = 1; i <= Math.min(total, 7); i++) h += `<button class="pag-btn ${i===1?'active':''}" onclick="goPage(${i})">${i}</button>`;
+        if (total > 7) h += '<span style="padding:0 8px;align-self:center;color:var(--ink-4)">…</span>';
+        h += `<button class="pag-btn" onclick="goPage(2)">Next ›</button>`;
+        pag.innerHTML = h;
+      }
+    }
   } catch(e) {
-    document.getElementById('kat-grid').innerHTML = '<div class="kat-empty"><div class="kat-empty-ico">⚠</div><h3>Gagal memuat katalog</h3><p>'+escHtml(e.message)+'</p></div>';
+    if (!isPrerendered) {
+      document.getElementById('kat-grid').innerHTML = '<div class="kat-empty"><div class="kat-empty-ico">⚠</div><h3>Gagal memuat katalog</h3><p>'+escHtml(e.message)+'</p></div>';
+    }
   }
 }
 
