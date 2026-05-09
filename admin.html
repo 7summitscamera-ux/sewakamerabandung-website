@@ -78,6 +78,33 @@ select option{background:var(--blk2)}
 .btn-helper:hover{background:rgba(240,104,36,.12);border-color:rgba(240,104,36,.5);color:#fff}
 .btn-helper-paste{border-color:rgba(79,123,57,.4);color:rgba(140,200,100,.85)}
 .btn-helper-paste:hover{background:rgba(79,123,57,.15);border-color:rgba(79,123,57,.7)}
+.search-input-wrap{display:flex;align-items:center}
+.search-input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:16px;pointer-events:none;line-height:1}
+.admin-search-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:14px;font-weight:500;padding:11px 14px 11px 38px;outline:none;transition:border-color .15s,background .15s}
+.admin-search-input::placeholder{color:rgba(255,255,255,.35);font-weight:400}
+.admin-search-input:focus{border-color:rgba(240,104,36,.5);background:rgba(255,255,255,.08)}
+.btn-refresh{background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--mu);font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:500;padding:0 18px;cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn-refresh:hover{background:rgba(255,255,255,.1);color:var(--wh);border-color:rgba(255,255,255,.2)}
+.search-select{position:relative}
+.search-select-trigger{position:relative;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:14px;font-weight:500;padding:11px 36px 11px 14px;cursor:pointer;width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:border-color .15s,background .15s}
+.search-select-trigger:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.08)}
+.search-select.open .search-select-trigger{border-color:rgba(240,104,36,.5);background:rgba(255,255,255,.08)}
+.search-select-trigger::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:10px;pointer-events:none;transition:transform .15s}
+.search-select.open .search-select-trigger::after{transform:translateY(-50%) rotate(180deg)}
+.search-select .ssel-val{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.search-select .ssel-clear{display:none;background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:18px;padding:0 6px;line-height:1;border-radius:3px}
+.search-select .ssel-clear:hover{color:var(--wh);background:rgba(255,255,255,.1)}
+.search-select.has-value .ssel-clear{display:inline-flex;align-items:center}
+.search-select-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#1a1d24;border:1px solid var(--bd);border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:1000;max-height:340px;display:none;flex-direction:column;overflow:hidden}
+.search-select.open .search-select-panel{display:flex}
+.search-select-search{padding:10px;border-bottom:1px solid var(--bd)}
+.search-select-search input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:5px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;box-sizing:border-box}
+.search-select-search input:focus{border-color:rgba(240,104,36,.5)}
+.search-select-options{overflow-y:auto;flex:1;padding:5px;max-height:260px}
+.search-select-opt{padding:9px 12px;font-size:13px;color:rgba(255,255,255,.85);cursor:pointer;border-radius:5px;transition:background .1s,color .1s}
+.search-select-opt:hover{background:rgba(255,255,255,.06);color:#fff}
+.search-select-opt.selected{background:rgba(240,104,36,.15);color:#fdb27a}
+.search-select-empty{padding:14px;text-align:center;color:var(--mu);font-size:12px}
 /* QUICK SETTINGS */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .setting-item{background:var(--blk3);border:1px solid var(--bd);border-radius:10px;padding:16px}
@@ -235,21 +262,31 @@ select option{background:var(--blk2)}
           <div class="card-title">Produk dari Booking System</div>
           <span id="produk-counter" style="font-size:11px;color:var(--mu)">Memuat...</span>
         </div>
-        <div style="display:flex;gap:10px;padding:12px 18px;border-bottom:1px solid var(--bd)">
-          <input
-            id="search-produk"
-            placeholder="Cari nama produk..."
-            oninput="filterProduk()"
-            style="flex:1;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:12px;padding:7px 12px"
-          >
-          <select
-            id="filter-kategori"
-            onchange="filterProduk()"
-            style="background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:12px;padding:7px 12px;min-width:160px"
-          >
-            <option value="">Semua Kategori</option>
-          </select>
-          <button onclick="loadProductsAdmin()" style="background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--mu);font-family:'Noto Sans',sans-serif;font-size:12px;padding:7px 14px;cursor:pointer;white-space:nowrap">↺ Refresh</button>
+        <div style="display:flex;gap:10px;padding:14px 18px;border-bottom:1px solid var(--bd);align-items:stretch">
+          <div class="search-input-wrap" style="flex:1;position:relative">
+            <span class="search-input-icon">⌕</span>
+            <input
+              id="search-produk"
+              placeholder="Cari nama produk..."
+              oninput="filterProduk()"
+              autocomplete="off"
+              class="admin-search-input"
+            >
+          </div>
+          <div class="search-select" id="kategori-select" data-target="filter-kategori" style="min-width:220px">
+            <button type="button" class="search-select-trigger" onclick="toggleSearchSelect('kategori-select',event)">
+              <span class="ssel-val">Semua Kategori</span>
+              <span class="ssel-clear" onclick="clearSearchSelect('kategori-select',event)" title="Reset">×</span>
+            </button>
+            <div class="search-select-panel">
+              <div class="search-select-search">
+                <input type="text" placeholder="Cari kategori..." oninput="filterSearchSelect('kategori-select',this.value)" autocomplete="off">
+              </div>
+              <div class="search-select-options" id="kategori-select-opts"></div>
+            </div>
+          </div>
+          <input type="hidden" id="filter-kategori">
+          <button onclick="loadProductsAdmin()" class="btn-refresh">↺ Refresh</button>
         </div>
         <div style="overflow-x:auto">
           <table class="data-table" style="min-width:800px">
@@ -412,10 +449,11 @@ async function loadProductsAdmin() {
 
     // Populate category dropdown
     const cats = [...new Set(allProduk.map(p => p.kategori_produk).filter(Boolean))].sort();
-    const catSelect = document.getElementById('filter-kategori');
-    if (catSelect) {
-      catSelect.innerHTML = '<option value="">Semua Kategori</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    }
+    const catCount = {};
+    allProduk.forEach(p => { if (p.kategori_produk) catCount[p.kategori_produk] = (catCount[p.kategori_produk]||0)+1; });
+    const catOpts = [{value:'', label:'Semua Kategori', meta:String(allProduk.length)}]
+      .concat(cats.map(c => ({value:c, label:c, meta:String(catCount[c]||0)})));
+    buildSearchSelectOptions('kategori-select', catOpts);
 
     renderProdukTable(allProduk, enrichMap);
   } catch(e) {
@@ -483,6 +521,97 @@ function filterProduk() {
   });
   renderProdukTable(filtered, window._enrichMap);
 }
+
+function _attrEsc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function buildSearchSelectOptions(id, options) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const optsWrap = el.querySelector('.search-select-options');
+  optsWrap.innerHTML = options.map(o =>
+    '<div class="search-select-opt'+(o.value===''?' selected':'')+'" data-value="'+_attrEsc(o.value)+'" data-label="'+_attrEsc(o.label)+'" onclick="selectSearchOption(\''+id+'\',this.dataset.value,this.dataset.label)">'+
+    '<span>'+_attrEsc(o.label)+'</span>'+
+    (o.meta?'<span style="float:right;color:rgba(255,255,255,.35);font-size:11px;font-weight:500">'+_attrEsc(o.meta)+'</span>':'')+
+    '</div>'
+  ).join('');
+}
+
+function toggleSearchSelect(id, ev) {
+  if (ev) ev.stopPropagation();
+  document.querySelectorAll('.search-select.open').forEach(el => { if (el.id !== id) el.classList.remove('open'); });
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) {
+    const search = el.querySelector('.search-select-search input');
+    search.value = '';
+    filterSearchSelect(id, '');
+    setTimeout(() => search.focus(), 30);
+  }
+}
+
+function selectSearchOption(id, value, label) {
+  const el = document.getElementById(id);
+  el.querySelector('.ssel-val').textContent = label;
+  el.classList.toggle('has-value', !!value);
+  el.classList.remove('open');
+  el.querySelectorAll('.search-select-opt').forEach(o => {
+    o.classList.toggle('selected', (o.dataset.value||'') === (value||''));
+  });
+  const targetId = el.dataset.target;
+  if (targetId) {
+    const hidden = document.getElementById(targetId);
+    if (hidden) {
+      hidden.value = value || '';
+      hidden.dispatchEvent(new Event('change'));
+    }
+  }
+  if (el.dataset.onchange) {
+    try { (new Function(el.dataset.onchange))(); } catch(e) {}
+  } else if (id === 'kategori-select') {
+    filterProduk();
+  }
+}
+
+function filterSearchSelect(id, q) {
+  q = (q||'').toLowerCase().trim();
+  const el = document.getElementById(id);
+  const optsWrap = el.querySelector('.search-select-options');
+  const opts = optsWrap.querySelectorAll('.search-select-opt');
+  let visible = 0;
+  opts.forEach(o => {
+    const match = !q || (o.dataset.label||'').toLowerCase().includes(q);
+    o.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  let empty = optsWrap.querySelector('.search-select-empty');
+  if (!visible) {
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.className = 'search-select-empty';
+      empty.textContent = 'Tidak ada hasil';
+      optsWrap.appendChild(empty);
+    }
+    empty.style.display = '';
+  } else if (empty) {
+    empty.style.display = 'none';
+  }
+}
+
+function clearSearchSelect(id, ev) {
+  if (ev) ev.stopPropagation();
+  selectSearchOption(id, '', 'Semua Kategori');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-select')) {
+    document.querySelectorAll('.search-select.open').forEach(el => el.classList.remove('open'));
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.search-select.open').forEach(el => el.classList.remove('open'));
+  }
+});
 
 
 window._currentEnrichName = '';
