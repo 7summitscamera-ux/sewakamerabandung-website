@@ -244,8 +244,16 @@
 .why-h3{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--ink);letter-spacing:-.005em}
 .why-p{font-size:13.5px;color:var(--ink-3);line-height:1.65;font-weight:400}
 .revs{display:flex;flex-direction:column;gap:14px}
-.rev-card{background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-3);padding:22px;transition:var(--tr-fast)}
-.rev-card:hover{border-color:var(--bd-2);box-shadow:var(--sh-2)}
+.rev-card{background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-3);overflow:hidden;transition:var(--tr-fast)}
+.rev-card:hover{border-color:var(--bd-2);box-shadow:var(--sh-2);transform:translateY(-2px)}
+.rev-thumb{aspect-ratio:5/2;background:#1a1d2e;position:relative;overflow:hidden}
+.rev-thumb::before{content:'';position:absolute;inset:0;background-image:radial-gradient(ellipse 60% 50% at 30% 40%,rgba(240,104,36,.18) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 80% 70%,rgba(142,198,78,.15) 0%,transparent 60%);pointer-events:none}
+.rev-thumb-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;color:#fff;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.55) 100%)}
+.rev-thumb-tag{font-size:11px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);backdrop-filter:blur(8px);padding:4px 10px;border-radius:999px;align-self:flex-start;border:1px solid rgba(255,255,255,.18);margin-bottom:8px}
+.rev-thumb-gear{font-size:11.5px;font-weight:500;color:rgba(255,255,255,.78);letter-spacing:.02em}
+.rev-body{padding:20px}
+.rev-more{display:flex;align-items:center;justify-content:center;padding:14px;background:var(--bg-2);border:1px dashed var(--bd-strong);border-radius:var(--r-3);color:var(--ink-3);text-decoration:none;font-size:13px;font-weight:600;transition:var(--tr-fast)}
+.rev-more:hover{background:var(--bg-3);color:var(--green-deep);border-color:var(--green-line)}
 .rev-stars{color:#F5A623;font-size:13px;letter-spacing:2px;margin-bottom:10px}
 .rev-txt{font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-bottom:14px;font-weight:400}
 .rev-author{display:flex;align-items:center;gap:10px}
@@ -284,6 +292,52 @@
 .bk-p{font-size:15px;color:var(--ink-3);max-width:480px;line-height:1.65;font-weight:400}
 .bk-acts{display:flex;flex-direction:column;gap:10px;flex-shrink:0}
 
+/* ============ BUNDLES ============ */
+.bundle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+.bundle-card{
+  background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-4);
+  padding:26px 22px;display:flex;flex-direction:column;gap:10px;
+  text-decoration:none;color:inherit;transition:var(--tr);position:relative;
+}
+.bundle-card:hover{transform:translateY(-4px);box-shadow:var(--sh-3);border-color:var(--bd-strong)}
+.bundle-featured{border-color:var(--green);background:linear-gradient(180deg,#fff,var(--green-soft));box-shadow:var(--sh-2)}
+.bundle-pop{position:absolute;top:-12px;right:18px;background:var(--green-deep);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px;box-shadow:0 6px 18px rgba(79,123,57,.32)}
+.bundle-tag{font-size:11px;font-weight:600;color:var(--green-deep);letter-spacing:.04em}
+.bundle-name{font-family:var(--font-display);font-size:19px;font-weight:700;letter-spacing:-.015em;color:var(--ink);line-height:1.2}
+.bundle-desc{font-size:12.5px;color:var(--ink-3);line-height:1.55;font-weight:400;margin-bottom:6px}
+.bundle-items{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;flex:1;font-size:12.5px;color:var(--ink-2)}
+.bundle-items li{padding-left:18px;position:relative;line-height:1.5}
+.bundle-items li::before{content:'';position:absolute;left:0;top:7px;width:10px;height:10px;border-radius:50%;background:var(--green-soft);border:1.5px solid var(--green)}
+.bundle-items li::after{content:'';position:absolute;left:3px;top:9.5px;width:4px;height:2.5px;border-left:1.5px solid var(--green-deep);border-bottom:1.5px solid var(--green-deep);transform:rotate(-45deg)}
+.bundle-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);gap:10px;flex-wrap:wrap}
+.bundle-price-wrap{flex:1;min-width:0}
+.bundle-price{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.025em;line-height:1}
+.bundle-price small{font-size:11px;font-weight:500;color:var(--ink-4);margin-left:2px}
+.bundle-price-3d{font-size:11px;color:var(--green-deep);font-weight:500;margin-top:5px}
+.bundle-cta{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--ink-2);transition:var(--tr-fast);white-space:nowrap}
+.bundle-card:hover .bundle-cta{color:var(--orange)}
+
+/* ============ INSURANCE CARD ============ */
+.ins-card{
+  display:grid;grid-template-columns:80px 1fr 280px;gap:32px;align-items:center;
+  background:linear-gradient(135deg,#FFF6F0 0%,#FFF 50%);
+  border:1px solid var(--orange-line);border-radius:var(--r-4);
+  padding:36px 36px;box-shadow:var(--sh-2);position:relative;overflow:hidden;
+}
+.ins-card::before{content:'';position:absolute;top:-100px;right:-100px;width:300px;height:300px;background:radial-gradient(circle,rgba(240,104,36,.08) 0%,transparent 70%);pointer-events:none}
+.ins-ico{font-size:54px;line-height:1;opacity:.95}
+.ins-tag{font-size:11px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+.ins-ttl{font-family:var(--font-display);font-size:24px;font-weight:700;letter-spacing:-.025em;color:var(--ink);margin-bottom:10px}
+.ins-desc{font-size:14px;color:var(--ink-3);line-height:1.65;margin-bottom:14px}
+.ins-desc strong{color:var(--ink);font-weight:600}
+.ins-list{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:8px 18px;margin-top:6px}
+.ins-list li{font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:7px;line-height:1.4}
+.ins-list svg{color:var(--green-deep);flex-shrink:0}
+.ins-cta{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.ins-price{font-family:var(--font-display);font-size:32px;font-weight:700;letter-spacing:-.03em;color:var(--orange);line-height:1}
+.ins-price small{font-size:13px;font-weight:500;color:var(--ink-4);margin-left:2px}
+.ins-note{font-size:11.5px;color:var(--ink-4);font-weight:500;line-height:1.4}
+
 /* ============ HERO animations ============ */
 .hero > *{opacity:0;animation:fadeUp .8s ease forwards}
 .hero-pill{animation-delay:.05s}
@@ -303,6 +357,11 @@
   .seg-grid{grid-template-columns:1fr}
   .bk-inner{flex-direction:column;align-items:flex-start;text-align:left}
   .bk-acts{align-items:stretch;width:100%}
+  .bundle-grid{grid-template-columns:repeat(2,1fr)}
+  .ins-card{grid-template-columns:1fr;gap:20px;text-align:center;padding:28px 24px}
+  .ins-cta{align-items:center}
+  .ins-list{grid-template-columns:1fr 1fr;justify-items:start}
+  .ins-list li{justify-self:start}
 }
 @media(max-width:640px){
   .hero{padding:120px 0 56px}
@@ -313,6 +372,11 @@
   .yt-grid{grid-template-columns:1fr}
   .hero-meta{gap:24px}
   .hmeta-num{font-size:24px}
+  .bundle-grid{grid-template-columns:1fr}
+  .ins-list{grid-template-columns:1fr}
+  .ins-ttl{font-size:20px}
+  .ins-price{font-size:28px}
+  .rev-thumb{aspect-ratio:16/7}
 }
 </style>
 </head>
@@ -468,9 +532,57 @@
         </div>
       </div>
       <div class="revs" id="reviews-container">
-        <div class="rev-card"><div class="rev-stars">★★★★★</div><p class="rev-txt">"Tempat sewa equipment camera yang cukup lengkap, pelayan terbaik dan harga terjangkau, plus dapat diskon sewa 3 hari bayar 2 hari."</p><div class="rev-author"><div class="rev-ava">AV</div><div><div class="rev-name">Arap Visuals</div><div class="rev-src">Google Review · Jul 2025</div></div></div></div>
-        <div class="rev-card"><div class="rev-stars">★★★★★</div><p class="rev-txt">"Pelayanan ramah, harga sewa terjangkau & syarat ga ribet. Bahkan menawarkan kerjasama sponsor asal memberikan proposal."</p><div class="rev-author"><div class="rev-ava">RP</div><div><div class="rev-name">Rizky Pratama</div><div class="rev-src">Google Review · Jul 2025</div></div></div></div>
-        <div class="rev-card"><div class="rev-stars">★★★★★</div><p class="rev-txt">"Alat yang disewakan kondisinya oke. Pelayanan ramah. Sangat rekomen untuk yang butuh gear produksi di Bandung."</p><div class="rev-author"><div class="rev-ava">GP</div><div><div class="rev-name">Galih E.P.</div><div class="rev-src">Google Review · Jun 2025</div></div></div></div>
+        <article class="rev-card">
+          <div class="rev-thumb" style="background:linear-gradient(135deg,#1a1d2e 0%,#2d1b3d 50%,#1a1d2e 100%)">
+            <div class="rev-thumb-overlay">
+              <div class="rev-thumb-tag">🎬 Wedding film</div>
+              <div class="rev-thumb-gear">Sony FX3 · 24-70 GM · DJI RS3</div>
+            </div>
+          </div>
+          <div class="rev-body">
+            <div class="rev-stars">★★★★★</div>
+            <p class="rev-txt">"Tempat sewa equipment camera yang cukup lengkap, pelayan terbaik dan harga terjangkau, plus dapat diskon sewa 3 hari bayar 2 hari."</p>
+            <div class="rev-author">
+              <div class="rev-ava" style="background:linear-gradient(135deg,#F06824,#D55A1A)">AV</div>
+              <div><div class="rev-name">Arap Visuals</div><div class="rev-src">Wedding videographer · Jul 2025</div></div>
+            </div>
+          </div>
+        </article>
+        <article class="rev-card">
+          <div class="rev-thumb" style="background:linear-gradient(135deg,#142318 0%,#1f4029 50%,#142318 100%)">
+            <div class="rev-thumb-overlay">
+              <div class="rev-thumb-tag">📱 Content Creator</div>
+              <div class="rev-thumb-gear">Sony A7CII · 16-35mm · Lark M2</div>
+            </div>
+          </div>
+          <div class="rev-body">
+            <div class="rev-stars">★★★★★</div>
+            <p class="rev-txt">"Pelayanan ramah, harga sewa terjangkau & syarat ga ribet. Bahkan menawarkan kerjasama sponsor asal memberikan proposal."</p>
+            <div class="rev-author">
+              <div class="rev-ava" style="background:linear-gradient(135deg,#8EC64E,#4F7B39)">RP</div>
+              <div><div class="rev-name">Rizky Pratama</div><div class="rev-src">YouTube creator · Jul 2025</div></div>
+            </div>
+          </div>
+        </article>
+        <article class="rev-card">
+          <div class="rev-thumb" style="background:linear-gradient(135deg,#1a1410 0%,#3d2814 50%,#1a1410 100%)">
+            <div class="rev-thumb-overlay">
+              <div class="rev-thumb-tag">🎓 TA Film Pendek</div>
+              <div class="rev-thumb-gear">Sony FX30 · Aputure 300X · Tilta Nucleus</div>
+            </div>
+          </div>
+          <div class="rev-body">
+            <div class="rev-stars">★★★★★</div>
+            <p class="rev-txt">"Alat yang disewakan kondisinya oke. Pelayanan ramah. Sangat rekomen untuk yang butuh gear produksi di Bandung."</p>
+            <div class="rev-author">
+              <div class="rev-ava" style="background:linear-gradient(135deg,#4F7B39,#2d4a23)">GP</div>
+              <div><div class="rev-name">Galih E.P.</div><div class="rev-src">Mahasiswa Sineas · Jun 2025</div></div>
+            </div>
+          </div>
+        </article>
+        <a href="https://maps.google.com/?q=7SUMMITS+CAMERA+Bandung" target="_blank" rel="noopener" class="rev-more">
+          <span>Lihat 100+ review di Google Maps →</span>
+        </a>
       </div>
     </div>
   </div>
@@ -486,6 +598,96 @@
       <div class="yt-wrap"><iframe src="https://www.youtube.com/embed?listType=user_uploads&list=7summitscamera&index=1" allowfullscreen title="Video 7summits Camera"></iframe></div>
       <div class="yt-wrap"><iframe src="https://www.youtube.com/embed?listType=user_uploads&list=7summitscamera&index=2" allowfullscreen title="Video 7summits Camera 2"></iframe></div>
       <div class="yt-wrap"><iframe src="https://www.youtube.com/embed?listType=user_uploads&list=7summitscamera&index=3" allowfullscreen title="Video 7summits Camera 3"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="bundles">
+  <div class="cont">
+    <div class="sec-lbl">Paket Bundling</div>
+    <h2 class="sec-h2">Sudah dikurasi —<br><em>tinggal booking, langsung shoot</em></h2>
+    <p class="sec-sub" style="margin-top:14px;margin-bottom:36px">Set up gear lengkap untuk situasi paling sering. Lebih hemat dari sewa satuan, gak perlu mikir kombinasi yang pas.</p>
+    <div class="bundle-grid">
+      <a href="/paket.html#wedding" class="bundle-card">
+        <div class="bundle-tag">💍 Wedding · Pre-Wedding</div>
+        <div class="bundle-name">Wedding Pro Setup</div>
+        <div class="bundle-desc">Untuk wedding photographer/videographer yang butuh gear all-in untuk full-day cover.</div>
+        <ul class="bundle-items">
+          <li>Sony A7IV body × 2</li>
+          <li>Lensa 24-70mm f/2.8 GM</li>
+          <li>Lensa 70-200mm f/2.8</li>
+          <li>Godox V1 Flash + softbox</li>
+          <li>SD card 128GB × 2 + baterai cadangan</li>
+        </ul>
+        <div class="bundle-foot">
+          <div class="bundle-price-wrap">
+            <div class="bundle-price">Rp 1.500.000<small>/hari</small></div>
+            <div class="bundle-price-3d">Rp 3.000.000 / 3 hari (hemat Rp 1.5jt)</div>
+          </div>
+          <div class="bundle-cta">Lihat detail <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </a>
+      <a href="/paket.html#vlogger" class="bundle-card bundle-featured">
+        <div class="bundle-pop">⭐ Paling Populer</div>
+        <div class="bundle-tag">📱 Content Creator</div>
+        <div class="bundle-name">Vlogger Setup</div>
+        <div class="bundle-desc">Compact + cinematic untuk YouTube/TikTok creator. Mobile-friendly, audio jernih, gerakan smooth.</div>
+        <ul class="bundle-items">
+          <li>Sony A7CII / FX30</li>
+          <li>Lensa 16-35mm f/2.8</li>
+          <li>DJI RS3 Mini gimbal</li>
+          <li>Hollyland Lark M2 wireless mic</li>
+          <li>SD card 128GB + 2 baterai</li>
+        </ul>
+        <div class="bundle-foot">
+          <div class="bundle-price-wrap">
+            <div class="bundle-price">Rp 850.000<small>/hari</small></div>
+            <div class="bundle-price-3d">Rp 1.700.000 / 3 hari (hemat Rp 850rb)</div>
+          </div>
+          <div class="bundle-cta">Lihat detail <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </a>
+      <a href="/paket.html#sineas" class="bundle-card">
+        <div class="bundle-tag">🎬 Filmmaker · Cinema</div>
+        <div class="bundle-name">Sineas Indie</div>
+        <div class="bundle-desc">Cinema-grade gear untuk indie filmmaker, TA film, atau short film. 4K log workflow ready.</div>
+        <ul class="bundle-items">
+          <li>Sony FX3 Cinema Line</li>
+          <li>Lensa cinema 24mm + 50mm</li>
+          <li>Aputure 300X LED + softbox</li>
+          <li>DJI RS4 Pro gimbal + handle</li>
+          <li>Saramonic wireless XLR + audio recorder</li>
+        </ul>
+        <div class="bundle-foot">
+          <div class="bundle-price-wrap">
+            <div class="bundle-price">Rp 2.200.000<small>/hari</small></div>
+            <div class="bundle-price-3d">Rp 4.400.000 / 3 hari (hemat Rp 2.2jt)</div>
+          </div>
+          <div class="bundle-cta">Lihat detail <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </a>
+      <a href="/paket.html#wisuda" class="bundle-card">
+        <div class="bundle-tag">🎓 Mahasiswa · Wisuda</div>
+        <div class="bundle-name">Paket Wisuda</div>
+        <div class="bundle-desc">Setup ringkas + harga ramah mahasiswa. Cukup untuk dokumentasi wisuda ber-tone fotografi pro.</div>
+        <ul class="bundle-items">
+          <li>Sony A6400 / Canon EOS M50</li>
+          <li>Lensa kit 18-55mm + 50mm f/1.8</li>
+          <li>Tripod + memory card</li>
+          <li>Reflector / fill light</li>
+          <li>Gratis konsultasi setting via WA</li>
+        </ul>
+        <div class="bundle-foot">
+          <div class="bundle-price-wrap">
+            <div class="bundle-price">Rp 350.000<small>/hari</small></div>
+            <div class="bundle-price-3d">Rp 700.000 / 3 hari (hemat Rp 350rb)</div>
+          </div>
+          <div class="bundle-cta">Lihat detail <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:32px;font-size:13px;color:var(--ink-3)">
+      Mau setup custom? <a href="https://wa.me/6281121114410?text=Halo+admin%2C+saya+mau+konsultasi+custom+package+sewa+kamera" style="color:var(--green-deep);font-weight:600;border-bottom:1px solid var(--green-line)">Chat admin via WhatsApp</a> untuk diskusi gear sesuai kebutuhan project.
     </div>
   </div>
 </section>
@@ -517,12 +719,36 @@
   </div>
 </section>
 
+<section class="sec" id="insurance">
+  <div class="cont">
+    <div class="ins-card">
+      <div class="ins-ico">🛡️</div>
+      <div class="ins-body">
+        <div class="ins-tag">Optional · Add-on saat booking</div>
+        <h3 class="ins-ttl">Damage Waiver Protection</h3>
+        <p class="ins-desc">Untuk gear premium (Sony FX3, DJI Mini 4 Pro, Aputure 600, dll), tambah <strong>Damage Waiver</strong> Rp 50rb/transaksi — cover kerusakan ringan & accidental damage hingga <strong>Rp 5.000.000</strong> tanpa repot klaim asuransi terpisah.</p>
+        <ul class="ins-list">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg> Goresan / lecet ringan saat shoot</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg> Tetesan air ringan (bukan submersion)</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg> Jatuh dari ketinggian &lt; 1m</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg> Tanpa proses klaim ribet — fix di tempat</li>
+        </ul>
+      </div>
+      <div class="ins-cta">
+        <div class="ins-price">Rp 50rb<small>/transaksi</small></div>
+        <a href="https://wa.me/6281121114410?text=Halo+admin%2C+saya+mau+tau+lebih+detail+tentang+Damage+Waiver+Protection" class="btn btn-orange btn-lg">Pelajari Lebih Lanjut</a>
+        <span class="ins-note">Dipilih saat konfirmasi booking — tidak otomatis</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="booking-band">
   <div class="cont">
     <div class="bk-inner">
-      <div><div class="bk-h2">Siap mulai<br>project kamu?</div><p class="bk-p">Cek ketersediaan gear, pilih tanggal, dan booking dalam hitungan detik. Tanpa deposit besar, tanpa syarat ribet.</p></div>
+      <div><div class="bk-h2">Siap mulai<br>project kamu?</div><p class="bk-p">Cek ketersediaan gear, pilih tanggal, dan booking dalam hitungan detik. Tanpa deposit besar, tanpa syarat ribet. Promo 3 hari bayar 2 — masih aktif.</p></div>
       <div class="bk-acts">
-        <a href="https://booking.sewakamerabandung.id"><button class="btn btn-primary btn-lg">Buka Platform Booking →</button></a>
+        <a href="https://booking.sewakamerabandung.id"><button class="btn btn-orange btn-lg">Cek Tanggal & Booking →</button></a>
         <a href="https://wa.me/6281121114410"><button class="btn btn-soft">Tanya via WhatsApp dulu</button></a>
       </div>
     </div>
