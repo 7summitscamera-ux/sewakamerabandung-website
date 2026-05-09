@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard – 7summits Camera</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#F06824;--green:#4F7B39;--gl:#7BC143;--blk:#111;--blk2:#1a1a1a;--blk3:#222;--wh:#fff;--mu:rgba(255,255,255,.5);--bd:rgba(255,255,255,.08);--success:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans',sans-serif;background:#0f0f0f;color:var(--wh);display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--blk2);border-right:1px solid var(--bd);padding:0;display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{padding:20px 20px 16px;border-bottom:1px solid var(--bd)}
+.sb-logo img{height:24px;filter:invert(1) brightness(2);display:block}
+.sb-nav{flex:1;padding:12px 0}
+.sb-section{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:12px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.sb-item:hover{color:var(--wh);background:rgba(255,255,255,.04)}
+.sb-item.active{color:var(--wh);background:rgba(240,104,36,.08);border-left-color:var(--orange)}
+.sb-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sb-footer{padding:16px 20px;border-top:1px solid var(--bd)}
+.sb-user{font-size:11px;color:var(--mu)}
+.sb-user strong{display:block;color:var(--wh);font-size:13px;margin-bottom:2px}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;background:var(--blk2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 28px;gap:16px}
+.topbar h1{font-size:15px;font-weight:700;flex:1}
+.btn-save{background:var(--orange);color:var(--wh);font-family:'Noto Sans',sans-serif;font-weight:700;font-size:12px;padding:7px 18px;border:none;border-radius:5px;cursor:pointer;transition:background .2s}
+.btn-save:hover{background:#d95a1c}
+.btn-preview{background:transparent;color:rgba(255,255,255,.6);font-family:'Noto Sans',sans-serif;font-weight:700;font-size:12px;padding:7px 14px;border:1px solid rgba(255,255,255,.15);border-radius:5px;cursor:pointer;transition:all .2s}
+.btn-preview:hover{color:var(--wh);border-color:rgba(255,255,255,.3)}
+.content{flex:1;padding:28px;overflow-y:auto}
+/* PANELS */
+.panel{display:none}
+.panel.active{display:block}
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.stat-card{background:var(--blk3);border:1px solid var(--bd);border-radius:10px;padding:16px}
+.stat-label{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.stat-val{font-size:24px;font-weight:900;line-height:1}
+.stat-sub{font-size:11px;color:var(--mu);margin-top:4px}
+.stat-val.orange{color:var(--orange)}
+.stat-val.green{color:var(--gl)}
+/* CARDS */
+.card{background:var(--blk3);border:1px solid var(--bd);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.card-hdr{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13px;font-weight:700}
+.card-body{padding:18px}
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.full{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+label{font-size:11px;color:var(--mu);font-weight:700;letter-spacing:.04em}
+input,select,textarea{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:13px;padding:9px 12px;width:100%;transition:border-color .2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(240,104,36,.5)}
+textarea{resize:vertical;min-height:80px}
+select option{background:var(--blk2)}
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bd)}
+.data-table td{font-size:12px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.badge.aktif{background:rgba(34,197,94,.15);color:var(--success)}
+.badge.draft{background:rgba(245,158,11,.15);color:var(--warn)}
+.badge.nonaktif{background:rgba(239,68,68,.15);color:var(--danger)}
+.tbl-actions{display:flex;gap:6px}
+.btn-edit{font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;font-family:'Noto Sans',sans-serif;transition:all .2s}
+.btn-edit:hover{color:var(--wh);border-color:rgba(255,255,255,.3)}
+.btn-del{font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid rgba(239,68,68,.2);background:transparent;color:rgba(239,68,68,.7);cursor:pointer;font-family:'Noto Sans',sans-serif;transition:all .2s}
+.btn-del:hover{background:rgba(239,68,68,.1);color:var(--danger)}
+.btn-add{background:var(--green);color:var(--wh);font-family:'Noto Sans',sans-serif;font-weight:700;font-size:12px;padding:7px 14px;border:none;border-radius:5px;cursor:pointer;transition:background .2s}
+.btn-add:hover{background:#3d6230}
+/* QUICK SETTINGS */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.setting-item{background:var(--blk3);border:1px solid var(--bd);border-radius:10px;padding:16px}
+.setting-label{font-size:11px;color:var(--mu);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.toggle-row{display:flex;align-items:center;justify-content:space-between}
+.toggle-row span{font-size:13px}
+.toggle{width:38px;height:22px;background:rgba(255,255,255,.1);border-radius:11px;position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--wh);border-radius:50%;transition:transform .2s}
+.toggle.on::after{transform:translateX(16px)}
+/* UPLOAD ZONE */
+.upload-zone{border:1.5px dashed rgba(255,255,255,.15);border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:all .2s}
+.upload-zone:hover{border-color:rgba(240,104,36,.4);background:rgba(240,104,36,.03)}
+.upload-zone p{font-size:12px;color:var(--mu);margin-top:6px}
+/* ALERT */
+.alert{padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:16px;display:none}
+.alert.show{display:block}
+.alert.success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--success)}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <img src="logo-7summits.png" alt="7summits Camera">
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Utama</div>
+    <div class="sb-item active" onclick="showPanel('dashboard',this)"><span class="sb-icon">📊</span>Dashboard</div>
+    <div class="sb-section">Konten</div>
+    <div class="sb-item" onclick="showPanel('banner',this)"><span class="sb-icon">🖼</span>Hero & Banner</div>
+    <div class="sb-item" onclick="showPanel('produk',this)"><span class="sb-icon">📷</span>Produk & Katalog</div>
+    <div class="sb-item" onclick="showPanel('paket',this)"><span class="sb-icon">📦</span>Paket Sewa</div>
+    <div class="sb-item" onclick="showPanel('artikel',this)"><span class="sb-icon">📝</span>Artikel & Panduan</div>
+    <div class="sb-item" onclick="showPanel('promo',this)"><span class="sb-icon">🏷</span>Promo</div>
+    <div class="sb-item" onclick="showPanel('faq',this)"><span class="sb-icon">❓</span>FAQ</div>
+    <div class="sb-section">Pengaturan</div>
+    <div class="sb-item" onclick="showPanel('lokasi',this)"><span class="sb-icon">📍</span>Lokasi & Cabang</div>
+    <div class="sb-item" onclick="showPanel('header',this)"><span class="sb-icon">⚙️</span>Header & Footer</div>
+    <div class="sb-item" onclick="showPanel('seo',this)"><span class="sb-icon">🔍</span>SEO & Meta</div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <strong>Admin 7summits</strong>
+      sewakamerabandung.id
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="topbar-title">Dashboard</h1>
+    <button class="btn-preview" onclick="window.open('index.html','_blank')">Lihat Website →</button>
+    <button class="btn-save" onclick="saveAlert()">Simpan Perubahan</button>
+  </div>
+
+  <div class="content">
+    <div id="alert-box" class="alert success">✓ Perubahan berhasil disimpan!</div>
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Total Produk</div><div class="stat-val orange">24</div><div class="stat-sub">5 kategori aktif</div></div>
+        <div class="stat-card"><div class="stat-label">Paket Aktif</div><div class="stat-val green">9</div><div class="stat-sub">Event, Wisuda, Sineas</div></div>
+        <div class="stat-card"><div class="stat-label">Artikel</div><div class="stat-val">6</div><div class="stat-sub">3 draft, 3 terbit</div></div>
+        <div class="stat-card"><div class="stat-label">Lokasi</div><div class="stat-val">2</div><div class="stat-sub">Cisaranten & Sriwijaya</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Aksi Cepat</div></div>
+        <div class="card-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <div onclick="showPanel('produk',document.querySelector('[onclick*=produk]'))" style="background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+            <div style="font-size:24px;margin-bottom:8px">📷</div>
+            <div style="font-size:12px;font-weight:700">Tambah Produk</div>
+          </div>
+          <div onclick="showPanel('artikel',document.querySelector('[onclick*=artikel]'))" style="background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+            <div style="font-size:24px;margin-bottom:8px">✍️</div>
+            <div style="font-size:12px;font-weight:700">Tulis Artikel</div>
+          </div>
+          <div onclick="showPanel('promo',document.querySelector('[onclick*=promo]'))" style="background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+            <div style="font-size:24px;margin-bottom:8px">🏷</div>
+            <div style="font-size:12px;font-weight:700">Buat Promo</div>
+          </div>
+          <div onclick="showPanel('banner',document.querySelector('[onclick*=banner]'))" style="background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background='rgba(255,255,255,.04)'">
+            <div style="font-size:24px;margin-bottom:8px">🖼</div>
+            <div style="font-size:12px;font-weight:700">Ganti Banner</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Integrasi Aktif</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:rgba(255,255,255,.03);border-radius:6px">
+            <div style="display:flex;align-items:center;gap:10px"><span>🔗</span><div><div style="font-size:12px;font-weight:700">Booking System</div><div style="font-size:11px;color:var(--mu)">booking.sewakamerabandung.id</div></div></div>
+            <span class="badge aktif">Terhubung</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:rgba(255,255,255,.03);border-radius:6px">
+            <div style="display:flex;align-items:center;gap:10px"><span>⭐</span><div><div style="font-size:12px;font-weight:700">Google Reviews</div><div style="font-size:11px;color:var(--mu)">Perlu Google Places API Key</div></div></div>
+            <span class="badge draft">Setup diperlukan</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:rgba(255,255,255,.03);border-radius:6px">
+            <div style="display:flex;align-items:center;gap:10px"><span>▶</span><div><div style="font-size:12px;font-weight:700">YouTube Feed</div><div style="font-size:11px;color:var(--mu)">@7summitscamera</div></div></div>
+            <span class="badge aktif">Aktif</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:rgba(255,255,255,.03);border-radius:6px">
+            <div style="display:flex;align-items:center;gap:10px"><span>🗄</span><div><div style="font-size:12px;font-weight:700">Supabase Database</div><div style="font-size:11px;color:var(--mu)">Perlu setup — lihat panduan</div></div></div>
+            <span class="badge draft">Belum setup</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANNER -->
+    <div class="panel" id="panel-banner">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Pengaturan Hero Banner</div></div>
+        <div class="card-body">
+          <div class="form-row full"><div class="form-group"><label>Headline Utama</label><input value="Gear Profesional untuk Kreator Bandung"></div></div>
+          <div class="form-row full"><div class="form-group"><label>Sub-headline</label><textarea>Kamera mirrorless, lensa, lighting, dan rig sinematik — semua tersedia untuk creative, mahasiswa, dan content creator.</textarea></div></div>
+          <div class="form-row">
+            <div class="form-group"><label>Teks Tombol Utama</label><input value="Booking Sekarang →"></div>
+            <div class="form-group"><label>URL Tombol Utama</label><input value="https://booking.sewakamerabandung.id"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Teks Tombol Kedua</label><input value="Lihat Paket"></div>
+            <div class="form-group"><label>URL Tombol Kedua</label><input value="#paket"></div>
+          </div>
+          <div class="form-row full" style="margin-top:8px"><div class="form-group"><label>Teks Announcement Bar</label><input value="🎉 Promo spesial: sewa 3 hari bayar 2 hari — berlaku untuk semua produk!"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Statistik Hero</div></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group"><label>Stat 1 – Angka</label><input value="500+"></div>
+            <div class="form-group"><label>Stat 1 – Label</label><input value="Transaksi sewa"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Stat 2 – Angka</label><input value="5 ★"></div>
+            <div class="form-group"><label>Stat 2 – Label</label><input value="Rating Google"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Stat 3 – Angka</label><input value="2"></div>
+            <div class="form-group"><label>Stat 3 – Label</label><input value="Lokasi Bandung"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUK -->
+    <div class="panel" id="panel-produk">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Produk dari Booking System</div>
+          <span id="produk-counter" style="font-size:11px;color:var(--mu)">Memuat...</span>
+        </div>
+        <div style="display:flex;gap:10px;padding:12px 18px;border-bottom:1px solid var(--bd)">
+          <input
+            id="search-produk"
+            placeholder="Cari nama produk..."
+            oninput="filterProduk()"
+            style="flex:1;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:12px;padding:7px 12px"
+          >
+          <select
+            id="filter-kategori"
+            onchange="filterProduk()"
+            style="background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--wh);font-family:'Noto Sans',sans-serif;font-size:12px;padding:7px 12px;min-width:160px"
+          >
+            <option value="">Semua Kategori</option>
+          </select>
+          <button onclick="loadProductsAdmin()" style="background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;color:var(--mu);font-family:'Noto Sans',sans-serif;font-size:12px;padding:7px 14px;cursor:pointer;white-space:nowrap">↺ Refresh</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table" style="min-width:800px">
+            <thead><tr>
+              <th>Nama Produk</th>
+              <th>Kategori</th>
+              <th>Harga/Hari</th>
+              <th>Kelengkapan</th>
+              <th>Stok</th>
+              <th>Foto</th>
+              <th>Aksi</th>
+            </tr></thead>
+            <tbody id="produk-tbody"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--mu)">Memuat dari booking system...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" id="enrich-form-card" style="display:none">
+        <div class="card-hdr">
+          <div class="card-title" id="enrich-form-title">Tambah foto &amp; deskripsi produk</div>
+          <button onclick="document.getElementById('enrich-form-card').style.display='none'" style="background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:20px;line-height:1">&times;</button>
+        </div>
+        <div class="card-body">
+          <input type="hidden" id="enrich-product-id">
+          <div style="background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:16px">
+            <div style="font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Data dari booking system (tidak bisa diubah di sini)</div>
+            <div id="enrich-product-name" style="font-size:14px;font-weight:700"></div>
+            <div id="enrich-product-price" style="font-size:12px;color:var(--mu);margin-top:2px"></div>
+          </div>
+          <div class="form-row full"><div class="form-group"><label>URL Foto Utama</label><input id="enrich-img" placeholder="https://... (upload ke Supabase Storage lalu paste URL-nya)"></div></div>
+          <div class="form-row full"><div class="form-group"><label>URL Foto Kedua (opsional)</label><input id="enrich-img2" placeholder="https://..."></div></div>
+          <div class="form-row full"><div class="form-group"><label>Deskripsi Marketing</label><textarea id="enrich-desc" placeholder="Deskripsi menarik untuk pengunjung website..."></textarea></div></div>
+          <div class="form-row full"><div class="form-group"><label>Spesifikasi Teknis</label><input id="enrich-specs" placeholder="33MP Full-Frame &middot; 4K30p &middot; IBIS 7-stop"></div></div>
+          <div class="form-row full"><div class="form-group"><label>Yang Termasuk dalam Sewa</label><input id="enrich-includes" placeholder="Tas, Baterai, Strap, Memory 64GB"></div></div>
+          <div class="form-row">
+            <div class="form-group"><label>Tampil di Homepage</label><select id="enrich-featured"><option value="false">Tidak</option><option value="true">Ya — sebagai produk unggulan</option></select></div>
+            <div class="form-group"><label>Urutan Tampil (1 = paling atas)</label><input id="enrich-order" type="number" placeholder="1" value="99"></div>
+          </div>
+          <div style="margin-top:12px"><button onclick="saveEnrichment()" class="btn-save" style="width:100%;padding:12px;font-size:13px">Simpan ke Database →</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" id="panel-paket">
+      <div class="card"><div class="card-hdr"><div class="card-title">Paket Sewa</div><button class="btn-add">+ Tambah Paket</button></div><div class="card-body" style="padding:0"><table class="data-table"><thead><tr><th>Nama Paket</th><th>Tipe</th><th>Harga</th><th>Populer</th><th>Aksi</th></tr></thead><tbody><tr><td>Paket Event A</td><td>Event</td><td>Rp 350.000</td><td>—</td><td><div class="tbl-actions"><button class="btn-edit">Edit</button><button class="btn-del">Hapus</button></div></td></tr><tr><td>Paket Event B</td><td>Event</td><td>Rp 600.000</td><td><span class="badge aktif">Ya</span></td><td><div class="tbl-actions"><button class="btn-edit">Edit</button><button class="btn-del">Hapus</button></div></td></tr><tr><td>Paket Wisuda B</td><td>Wisuda</td><td>Rp 550.000</td><td><span class="badge aktif">Ya</span></td><td><div class="tbl-actions"><button class="btn-edit">Edit</button><button class="btn-del">Hapus</button></div></td></tr></tbody></table></div></div>
+    </div>
+    <div class="panel" id="panel-promo">
+      <div class="card"><div class="card-hdr"><div class="card-title">Promo Aktif</div><button class="btn-add">+ Buat Promo</button></div><div class="card-body"><div class="form-row full"><div class="form-group"><label>Judul Promo</label><input placeholder="Promo Lebaran 2025"></div></div><div class="form-row"><div class="form-group"><label>Berlaku Mulai</label><input type="date"></div><div class="form-group"><label>Berlaku Sampai</label><input type="date"></div></div><div class="form-row full"><div class="form-group"><label>Deskripsi Promo</label><textarea placeholder="Detail promo..."></textarea></div></div></div></div>
+    </div>
+    <div class="panel" id="panel-faq">
+      <div class="card"><div class="card-hdr"><div class="card-title">Daftar FAQ</div><button class="btn-add">+ Tambah Pertanyaan</button></div><div class="card-body" style="padding:0"><table class="data-table"><thead><tr><th>Pertanyaan</th><th>Status</th><th>Aksi</th></tr></thead><tbody><tr><td>Berapa harga sewa kamera di 7summits Camera?</td><td><span class="badge aktif">Aktif</span></td><td><div class="tbl-actions"><button class="btn-edit">Edit</button><button class="btn-del">Hapus</button></div></td></tr><tr><td>Di mana lokasi 7summits Camera di Bandung?</td><td><span class="badge aktif">Aktif</span></td><td><div class="tbl-actions"><button class="btn-edit">Edit</button><button class="btn-del">Hapus</button></div></td></tr><tr><td>Apa syarat sewa kamera di sini?</td><td><span class="badge aktif">Aktif</span></td><td><div class="tbl-actions"><button class="btn-edit">Edit</button><button class="btn-del">Hapus</button></div></td></tr></tbody></table></div></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+const TITLES = {dashboard:'Dashboard',banner:'Hero & Banner',produk:'Produk & Katalog',paket:'Paket Sewa',artikel:'Artikel & Panduan',promo:'Promo',faq:'FAQ',lokasi:'Lokasi & Cabang',header:'Header & Footer',seo:'SEO & Meta'};
+
+function showPanel(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent = TITLES[id] || id;
+  if (id === 'produk') loadProductsAdmin();
+  if (id === 'faq') loadFAQAdmin();
+  if (id === 'lokasi') loadLocationsAdmin();
+  if (id === 'banner') loadBannerAdmin();
+  if (id === 'dashboard') loadDashboard();
+}
+
+function showAlert(msg, type='success') {
+  const a = document.getElementById('alert-box');
+  a.textContent = (type==='success'?'✓ ':'✗ ') + msg;
+  a.className = 'alert show ' + type;
+  setTimeout(() => a.classList.remove('show'), 3500);
+}
+
+async function saveAlert() {
+  const panel = document.querySelector('.panel.active');
+  if (!panel) return;
+  const id = panel.id.replace('panel-','');
+  if (id === 'banner') await saveBanner();
+  else if (id === 'lokasi') await saveLocations();
+  else if (id === 'seo') showAlert('Pengaturan SEO disimpan (perlu deploy ulang)');
+  else showAlert('Perubahan disimpan!');
+}
+
+async function loadDashboard() {
+  try {
+    const [p, pkg, art, loc] = await Promise.all([
+      sb.from('products').select('id', {count:'exact', head:true}),
+      sb.from('packages').select('id', {count:'exact', head:true}).eq('is_active',true),
+      sb.from('articles').select('id', {count:'exact', head:true}),
+      sb.from('locations').select('id', {count:'exact', head:true})
+    ]);
+    const stats = document.querySelectorAll('.stat-val');
+    if (stats[0]) stats[0].textContent = p.count || '—';
+    if (stats[1]) stats[1].textContent = pkg.count || '—';
+    if (stats[2]) stats[2].textContent = art.count || '—';
+    if (stats[3]) stats[3].textContent = loc.count || '—';
+  } catch(e) {}
+}
+
+// Booking Supabase credentials (Lovable)
+const BOOKING_URL = 'https://yxcssruutgpzkgcsqrit.supabase.co';
+const BOOKING_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4Y3NzcnV1dGdwemtnY3Nxcml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTAzMTYsImV4cCI6MjA5MTU2NjMxNn0.NMZqMuEUR2c-V3CnbW-bJNn1bjlS6vHLPUQSD7nArM0';
+
+async function loadProductsAdmin() {
+  const tbody = document.getElementById('produk-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--mu)">Memuat semua produk...</td></tr>';
+  try {
+    const bookingSb = supabase.createClient(BOOKING_URL, BOOKING_KEY);
+
+    // Fetch semua produk dengan pagination (max 1000 per request Supabase)
+    let allProduk = [];
+    let page = 0;
+    const pageSize = 1000;
+    while (true) {
+      const { data, error } = await bookingSb
+        .from('produk')
+        .select('id,nama_produk,kategori_produk,harga_sewa_per_hari,kelengkapan,stok_total,stok_dalam_perbaikan,status,serial_number_7summits,cabang_id')
+        .eq('is_deleted', false)
+        .eq('status', 'active')
+        .order('nama_produk')
+        .range(page * pageSize, (page + 1) * pageSize - 1);
+      if (error) { throw error; }
+      if (!data || data.length === 0) break;
+      allProduk = allProduk.concat(data);
+      if (data.length < pageSize) break;
+      page++;
+    }
+
+    // Fetch enrichments dari Website Supabase
+    const { data: enrichments } = await sb.from('product_enrichments').select('*');
+    const enrichMap = {};
+    if (enrichments) enrichments.forEach(e => { enrichMap[e.booking_product_id] = e; });
+
+    // Simpan ke global untuk search/filter
+    window._allProduk = allProduk;
+    window._enrichMap = enrichMap;
+
+    // Populate category dropdown
+    const cats = [...new Set(allProduk.map(p => p.kategori_produk).filter(Boolean))].sort();
+    const catSelect = document.getElementById('filter-kategori');
+    if (catSelect) {
+      catSelect.innerHTML = '<option value="">Semua Kategori</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    renderProdukTable(allProduk, enrichMap);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:16px">Gagal load: ${e.message}</td></tr>`;
+  }
+}
+
+function renderProdukTable(produk, enrichMap) {
+  const tbody = document.getElementById('produk-tbody');
+  const counter = document.getElementById('produk-counter');
+  if (!tbody) return;
+
+  if (!produk.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--mu)">Tidak ada produk ditemukan</td></tr>';
+    if (counter) counter.textContent = '0 produk';
+    return;
+  }
+
+  if (counter) counter.textContent = produk.length + ' produk';
+
+  tbody.innerHTML = produk.map(p => {
+    const enrich = (enrichMap || {})[p.id] || {};
+    const harga = p.harga_sewa_per_hari || 0;
+    const nama = p.nama_produk || '-';
+    const kat = p.kategori_produk || '-';
+    const serial = p.serial_number_7summits || '';
+    const kelengkapan = p.kelengkapan || '-';
+    const stok = (p.stok_total || 0) - (p.stok_dalam_perbaikan || 0);
+    const cabang = p.cabang_id || '-';
+    const hasPhoto = !!enrich.image_url;
+    const isFeatured = enrich.is_featured || false;
+    const namaSafe = nama.replace(/'/g, "\'").replace(/"/g, '&quot;');
+    const kelShort = kelengkapan.length > 60 ? kelengkapan.substring(0, 60) + '...' : kelengkapan;
+    return `<tr>
+      <td style="min-width:180px">
+        <div style="font-weight:500;font-size:12px">${nama}</div>
+        <div style="font-size:10px;color:var(--mu);margin-top:2px">${serial}</div>
+        <div style="font-size:10px;color:var(--mu)">${cabang}</div>
+      </td>
+      <td><span class="badge aktif" style="font-size:10px">${kat}</span></td>
+      <td style="white-space:nowrap">Rp ${Number(harga).toLocaleString('id-ID')}</td>
+      <td style="font-size:11px;color:var(--mu);max-width:200px;min-width:140px">
+        <div title="${kelengkapan}" style="cursor:help">${kelShort}</div>
+      </td>
+      <td style="text-align:center">${stok}</td>
+      <td>${hasPhoto ? '<span class="badge aktif">Ada</span>' : '<span class="badge draft">Belum</span>'}${isFeatured ? ' <span class="badge aktif" style="font-size:9px">★</span>' : ''}</td>
+      <td><div class="tbl-actions">
+        <button class="btn-edit" onclick="openEnrichForm('${p.id}','${namaSafe}',${harga},'${kat}')">
+          ${hasPhoto ? 'Edit' : '+ Foto'}
+        </button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterProduk() {
+  if (!window._allProduk) return;
+  const search = (document.getElementById('search-produk')?.value || '').toLowerCase();
+  const kat = document.getElementById('filter-kategori')?.value || '';
+  const filtered = window._allProduk.filter(p => {
+    const nama = (p.nama_produk || '').toLowerCase();
+    const matchSearch = !search || nama.includes(search);
+    const matchKat = !kat || p.kategori_produk === kat;
+    return matchSearch && matchKat;
+  });
+  renderProdukTable(filtered, window._enrichMap);
+}
+
+
+function openEnrichForm(productId, nama, harga, kategori) {
+  document.getElementById('enrich-product-id').value = productId;
+  document.getElementById('enrich-product-name').textContent = nama + ' — ' + kategori;
+  document.getElementById('enrich-product-price').textContent = 'Rp ' + Number(harga).toLocaleString('id-ID') + ' / hari';
+  document.getElementById('enrich-form-title').textContent = 'Foto & deskripsi: ' + nama;
+  // Load existing enrichment if any
+  sb.from('product_enrichments').select('*').eq('booking_product_id', productId).single()
+    .then(({ data }) => {
+      if (data) {
+        document.getElementById('enrich-img').value = data.image_url || '';
+        document.getElementById('enrich-img2').value = data.image_url_2 || '';
+        document.getElementById('enrich-desc').value = data.description || '';
+        document.getElementById('enrich-specs').value = data.specs || '';
+        document.getElementById('enrich-includes').value = data.includes || '';
+        document.getElementById('enrich-featured').value = data.is_featured ? 'true' : 'false';
+        document.getElementById('enrich-order').value = data.sort_order || 99;
+      } else {
+        document.getElementById('enrich-img').value = '';
+        document.getElementById('enrich-img2').value = '';
+        document.getElementById('enrich-desc').value = '';
+        document.getElementById('enrich-specs').value = '';
+        document.getElementById('enrich-includes').value = '';
+        document.getElementById('enrich-featured').value = 'false';
+        document.getElementById('enrich-order').value = 99;
+      }
+    });
+  document.getElementById('enrich-form-card').style.display = 'block';
+  document.getElementById('enrich-form-card').scrollIntoView({behavior:'smooth'});
+}
+
+async function saveEnrichment() {
+  const productId = document.getElementById('enrich-product-id').value;
+  if (!productId) return;
+  const payload = {
+    booking_product_id: productId,
+    image_url: document.getElementById('enrich-img').value || null,
+    image_url_2: document.getElementById('enrich-img2').value || null,
+    description: document.getElementById('enrich-desc').value || null,
+    specs: document.getElementById('enrich-specs').value || null,
+    includes: document.getElementById('enrich-includes').value || null,
+    is_featured: document.getElementById('enrich-featured').value === 'true',
+    sort_order: parseInt(document.getElementById('enrich-order').value) || 99,
+  };
+  const { error } = await sb.from('product_enrichments').upsert(payload, { onConflict: 'booking_product_id' });
+  if (error) showAlert('Gagal simpan: ' + error.message, 'danger');
+  else {
+    showAlert('Foto & deskripsi berhasil disimpan!');
+    document.getElementById('enrich-form-card').style.display = 'none';
+    loadProductsAdmin();
+  }
+}
+
+async function loadFAQAdmin() {
+  try {
+    const { data } = await sb.from('faqs').select('*').order('sort_order');
+    if (!data) return;
+    const tbody = document.querySelector('#panel-faq .data-table tbody');
+    if (!tbody) return;
+    tbody.innerHTML = data.map(f => `
+      <tr>
+        <td>${f.question}</td>
+        <td><span class="badge ${f.is_active?'aktif':'nonaktif'}">${f.is_active?'Aktif':'Nonaktif'}</span></td>
+        <td><div class="tbl-actions">
+          <button class="btn-del" onclick="deleteFAQ(${f.id},'${f.question.substring(0,30)}...')">Hapus</button>
+        </div></td>
+      </tr>`).join('');
+  } catch(e) {}
+}
+
+async function deleteFAQ(id, label) {
+  if (!confirm(`Hapus FAQ "${label}"?`)) return;
+  const { error } = await sb.from('faqs').delete().eq('id', id);
+  if (error) showAlert('Gagal: ' + error.message, 'danger');
+  else { showAlert('FAQ dihapus'); loadFAQAdmin(); }
+}
+
+async function loadLocationsAdmin() {
+  try {
+    const { data } = await sb.from('locations').select('*').order('id');
+    if (!data) return;
+    data.forEach((loc, i) => {
+      const n = i + 1;
+      const set = (lbl, val) => {
+        const inputs = document.querySelectorAll(`#panel-lokasi input, #panel-lokasi textarea`);
+        inputs.forEach(inp => { if (inp.previousElementSibling && inp.previousElementSibling.textContent.includes(lbl) && inp.closest('.card') === document.querySelectorAll('#panel-lokasi .card')[i]) inp.value = val || ''; });
+      };
+      const cards = document.querySelectorAll('#panel-lokasi .card');
+      if (cards[i]) {
+        const inputs = cards[i].querySelectorAll('input, textarea');
+        if (inputs[0]) inputs[0].value = loc.branch_name || '';
+        if (inputs[1]) inputs[1].value = loc.phone || '';
+        if (inputs[2]) inputs[2].value = loc.address || '';
+        if (inputs[3]) inputs[3].value = loc.open_time || '';
+        if (inputs[4]) inputs[4].value = loc.close_time || '';
+        if (inputs[5]) inputs[5].value = loc.maps_url || '';
+        cards[i].dataset.locId = loc.id;
+      }
+    });
+  } catch(e) {}
+}
+
+async function saveLocations() {
+  const cards = document.querySelectorAll('#panel-lokasi .card');
+  let saved = 0;
+  for (const card of cards) {
+    const id = card.dataset.locId;
+    if (!id) continue;
+    const inputs = card.querySelectorAll('input, textarea');
+    const payload = {
+      branch_name: inputs[0]?.value,
+      phone: inputs[1]?.value,
+      address: inputs[2]?.value,
+      open_time: inputs[3]?.value,
+      close_time: inputs[4]?.value,
+      maps_url: inputs[5]?.value,
+    };
+    const wa_base = 'https://wa.me/' + (payload.phone||'').replace(/[^0-9]/g,'') + '?text=Hallo+kak+Admin+7summits+Camera+saya+mau+tanya+tentang+sewa+kamera';
+    payload.whatsapp_url = wa_base;
+    const { error } = await sb.from('locations').update(payload).eq('id', id);
+    if (!error) saved++;
+  }
+  if (saved > 0) showAlert(`${saved} lokasi berhasil disimpan ke database`);
+  else showAlert('Tidak ada perubahan yang disimpan', 'danger');
+}
+
+async function loadBannerAdmin() {
+  try {
+    const { data } = await sb.from('hero_banners').select('*').eq('is_active', true).single();
+    if (!data) return;
+    const panel = document.getElementById('panel-banner');
+    const inputs = panel.querySelectorAll('input, textarea');
+    if (inputs[0]) inputs[0].value = data.headline || '';
+    if (inputs[1]) inputs[1].value = data.subheadline || '';
+    if (inputs[2]) inputs[2].value = data.cta_primary_text || '';
+    if (inputs[3]) inputs[3].value = data.cta_primary_url || '';
+    if (inputs[4]) inputs[4].value = data.cta_secondary_text || '';
+    if (inputs[5]) inputs[5].value = data.cta_secondary_url || '';
+    if (inputs[6]) inputs[6].value = data.announcement_text || '';
+    document.getElementById('panel-banner').dataset.bannerId = data.id;
+  } catch(e) {}
+}
+
+async function saveBanner() {
+  const panel = document.getElementById('panel-banner');
+  const id = panel.dataset.bannerId;
+  const inputs = panel.querySelectorAll('input, textarea');
+  const payload = {
+    headline: inputs[0]?.value,
+    subheadline: inputs[1]?.value,
+    cta_primary_text: inputs[2]?.value,
+    cta_primary_url: inputs[3]?.value,
+    cta_secondary_text: inputs[4]?.value,
+    cta_secondary_url: inputs[5]?.value,
+    announcement_text: inputs[6]?.value,
+  };
+  const { error } = id
+    ? await sb.from('hero_banners').update(payload).eq('id', id)
+    : await sb.from('hero_banners').insert({...payload, is_active: true});
+  if (error) showAlert('Gagal simpan: ' + error.message, 'danger');
+  else showAlert('Hero banner berhasil disimpan ke database!');
+}
+
+// saveNewProduct removed — produk dikelola dari booking system Lovable
+
+async function saveNewFAQ() {
+  const panel = document.getElementById('panel-faq');
+  const addBtn = panel.querySelector('.btn-add');
+  const q = prompt('Tulis pertanyaan:');
+  if (!q) return;
+  const a = prompt('Tulis jawaban:');
+  if (!a) return;
+  const { error } = await sb.from('faqs').insert({ question: q, answer: a, is_active: true, sort_order: 99 });
+  if (error) showAlert('Gagal: ' + error.message, 'danger');
+  else { showAlert('FAQ berhasil ditambahkan!'); loadFAQAdmin(); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadDashboard();
+  document.querySelector('[onclick*="panel-faq"] .btn-add') && document.querySelector('.btn-add').addEventListener('click', () => {});
+  // produk panel — no add button, managed from Lovable booking system
+  document.querySelectorAll('#panel-faq .btn-add').forEach(b => b.addEventListener('click', saveNewFAQ));
+  document.getElementById('panel-banner') && loadBannerAdmin();
+});
+</script>
+</body>
+</html>
