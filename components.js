@@ -21,7 +21,7 @@ function injectNavbar() {
   <div class="nav-inner">
     <a href="/" class="nav-logo"><img src="/logo-7summits.png" alt="7summits Camera"></a>
     <ul class="nav-links">
-      <li><a href="/#produk">Produk</a></li>
+      <li><a href="/katalog.html">Katalog</a></li>
       <li><a href="/paket.html">Paket</a></li>
       <li><a href="/panduan.html">Panduan</a></li>
       <li><a href="/faq.html">FAQ</a></li>
@@ -63,11 +63,11 @@ function injectFooter() {
         </div>
       </div>
       <div class="fcol"><h4>Gear</h4><ul>
-        <li><a href="/#produk">Kamera</a></li>
-        <li><a href="/#produk">Lensa</a></li>
-        <li><a href="/#produk">Lighting</a></li>
-        <li><a href="/#produk">Video Support</a></li>
-        <li><a href="/#produk">Audio</a></li>
+        <li><a href="/katalog.html?cat=KAMERA">Kamera</a></li>
+        <li><a href="/katalog.html?cat=LENSA">Lensa</a></li>
+        <li><a href="/katalog.html?cat=LIGHTING">Lighting</a></li>
+        <li><a href="/katalog.html?cat=VIDEO%20SUPPORT">Video Support</a></li>
+        <li><a href="/katalog.html?cat=AUDIO%20SUPPORT">Audio</a></li>
       </ul></div>
       <div class="fcol"><h4>Paket</h4><ul>
         <li><a href="/paket.html#event">Paket Event</a></li>
