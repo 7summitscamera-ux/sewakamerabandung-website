@@ -1,6 +1,6 @@
 // 7summits Camera — Shared Components
-// Include di setiap halaman dengan: <script src="/components.js"></script>
-// Lalu di body: <div id="navbar-placeholder"></div> dan <div id="footer-placeholder"></div>
+// Include in each page: <script src="/components.js"></script>
+// Then in body: <div id="navbar-placeholder"></div> and <div id="footer-placeholder"></div>
 
 const BRAND = {
   bookingUrl: 'https://booking.sewakamerabandung.id',
@@ -30,20 +30,18 @@ function injectNavbar() {
     </ul>
     <div class="nav-acts">
       <a href="https://wa.me/${BRAND.waNumber}"><button class="btn-g">WhatsApp</button></a>
-      <a href="${BRAND.bookingUrl}"><button class="btn-p">Booking Sekarang →</button></a>
+      <a href="${BRAND.bookingUrl}"><button class="btn-p">Booking →</button></a>
     </div>
   </div>
 </nav>`;
-  // scroll effect
   window.addEventListener('scroll', () => {
     document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 20);
   });
-  // highlight active page
   const path = location.pathname;
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if (a.getAttribute('href') === path || (path === '/' && a.getAttribute('href') === '/')) {
-      a.style.color = '#fff';
-      a.style.background = 'rgba(255,255,255,0.06)';
+    const href = a.getAttribute('href');
+    if (href === path || (path === '/' && href === '/')) {
+      a.classList.add('is-active');
     }
   });
 }
@@ -59,9 +57,9 @@ function injectFooter() {
         <img src="/logo-7summits.png" alt="7summits Camera" class="footer-logo">
         <p class="footer-desc">Platform sewa gear produksi visual profesional di Bandung. Partner kreatif untuk filmmaker, fotografer, dan content creator.</p>
         <div class="footer-socs">
-          <a href="${BRAND.instagram}" target="_blank" class="footer-soc">📸</a>
-          <a href="${BRAND.youtube}" target="_blank" class="footer-soc">▶</a>
-          <a href="https://wa.me/${BRAND.waNumber}" class="footer-soc">💬</a>
+          <a href="${BRAND.instagram}" target="_blank" class="footer-soc" aria-label="Instagram">📸</a>
+          <a href="${BRAND.youtube}" target="_blank" class="footer-soc" aria-label="YouTube">▶</a>
+          <a href="https://wa.me/${BRAND.waNumber}" class="footer-soc" aria-label="WhatsApp">💬</a>
         </div>
       </div>
       <div class="fcol"><h4>Gear</h4><ul>
@@ -84,8 +82,8 @@ function injectFooter() {
       </ul></div>
       <div class="fcol"><h4>Perusahaan</h4><ul>
         <li><a href="/tentang.html">Tentang Kami</a></li>
-        <li><a href="/lokasi/cisaranten.html">Cisaranten</a></li>
-        <li><a href="/lokasi/sriwijaya.html">Sriwijaya</a></li>
+        <li><a href="/cisaranten.html">Cisaranten</a></li>
+        <li><a href="/sriwijaya.html">Sriwijaya</a></li>
         <li><a href="/syarat.html">Syarat & Ketentuan</a></li>
       </ul></div>
     </div>
