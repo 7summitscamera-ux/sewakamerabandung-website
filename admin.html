@@ -93,9 +93,10 @@ select option{background:var(--blk2)}
 .upload-zone:hover{border-color:rgba(240,104,36,.4);background:rgba(240,104,36,.03)}
 .upload-zone p{font-size:12px;color:var(--mu);margin-top:6px}
 /* ALERT */
-.alert{padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:16px;display:none}
-.alert.show{display:block}
-.alert.success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--success)}
+.alert{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-20px);padding:12px 24px;border-radius:8px;font-size:13px;font-weight:600;display:none;z-index:9999;box-shadow:0 12px 40px rgba(0,0,0,.5);min-width:280px;max-width:90vw;text-align:center;backdrop-filter:blur(12px);transition:transform .25s ease,opacity .25s ease;opacity:0;pointer-events:none}
+.alert.show{display:block;transform:translateX(-50%) translateY(0);opacity:1}
+.alert.success{background:rgba(34,197,94,.95);border:1px solid rgba(34,197,94,.4);color:#fff}
+.alert.danger{background:rgba(239,68,68,.95);border:1px solid rgba(239,68,68,.4);color:#fff}
 </style>
 </head>
 <body>
@@ -585,23 +586,46 @@ function openEnrichForm(productId, nama, harga, kategori) {
 
 async function saveEnrichment() {
   const productId = document.getElementById('enrich-product-id').value;
-  if (!productId) return;
+  if (!productId) {
+    showAlert('Tidak ada produk yang dipilih. Tutup form dan klik Edit lagi.', 'danger');
+    return;
+  }
+  const btn = document.querySelector('#enrich-form-card .btn-save');
+  const origBtnHtml = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = 'Menyimpan...'; btn.style.opacity = '0.7'; btn.style.cursor = 'wait'; }
   const payload = {
     booking_product_id: productId,
-    image_url: document.getElementById('enrich-img').value || null,
-    image_url_2: document.getElementById('enrich-img2').value || null,
+    image_url: document.getElementById('enrich-img').value.trim() || null,
+    image_url_2: document.getElementById('enrich-img2').value.trim() || null,
     description: document.getElementById('enrich-desc').value || null,
     specs: document.getElementById('enrich-specs').value || null,
     includes: document.getElementById('enrich-includes').value || null,
     is_featured: document.getElementById('enrich-featured').value === 'true',
     sort_order: parseInt(document.getElementById('enrich-order').value) || 99,
   };
-  const { error } = await sb.from('product_enrichments').upsert(payload, { onConflict: 'booking_product_id' });
-  if (error) showAlert('Gagal simpan: ' + error.message, 'danger');
-  else {
-    showAlert('Foto & deskripsi berhasil disimpan!');
+  console.log('[saveEnrichment] upserting', payload);
+  try {
+    const { data, error } = await sb.from('product_enrichments')
+      .upsert(payload, { onConflict: 'booking_product_id' })
+      .select();
+    if (error) {
+      console.error('[saveEnrichment] supabase error', error);
+      const msg = error.message || error.details || JSON.stringify(error);
+      const hint = /row.level security|rls|permission|denied|42501/i.test(msg)
+        ? ' (kemungkinan RLS belum di-allow untuk anon — perlu policy untuk INSERT/UPDATE di product_enrichments)'
+        : '';
+      showAlert('Gagal simpan: ' + msg + hint, 'danger');
+      return;
+    }
+    console.log('[saveEnrichment] success', data);
+    showAlert('✓ Foto & deskripsi berhasil disimpan');
     document.getElementById('enrich-form-card').style.display = 'none';
     loadProductsAdmin();
+  } catch (e) {
+    console.error('[saveEnrichment] exception', e);
+    showAlert('Error tidak terduga: ' + (e.message || e), 'danger');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = origBtnHtml; btn.style.opacity = ''; btn.style.cursor = ''; }
   }
 }
 
