@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/design-system.css">
+<link rel="icon" type="image/png" href="/logo-7summits-mark.png">
 </head>
 <body>
 <div id="navbar-placeholder"></div>
@@ -77,7 +78,33 @@
 </section>
 
 <div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/components.js"></script>
 <script src="/cart.js" defer></script>
+<script src="/branding-loader.js" defer></script>
+<script>
+// Load promos from Supabase, fall back to hardcoded if empty
+(async function(){
+  const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
+  const grid = document.querySelector('.promo-grid');
+  if (!grid) return;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/promos?select=*&order=sort_order.asc&order=id.asc`, {
+      headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+    });
+    if (!res.ok) return;
+    const rows = await res.json();
+    if (!rows || !rows.length) return; // keep hardcoded
+    const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    grid.innerHTML = rows.filter(r => r.status !== 'inactive').map(p => {
+      const tag = p.status === 'soon' ? '<span class="promo-tag promo-tag-soon">Segera Hadir</span>' : '<span class="promo-tag promo-tag-active">Aktif Sekarang</span>';
+      const badge = p.badge ? `<div class="promo-badge-big">${esc(p.badge)}</div>` : '';
+      const detail = (p.detail || []).map(d => `<div class="promo-detail-row"><span class="promo-detail-label">${esc(d.label)}</span><span class="promo-detail-value">${esc(d.value)}</span></div>`).join('');
+      return `<div class="promo-card${p.is_featured?' featured':''}">${badge}${tag}<div class="promo-title">${esc(p.title)}</div><div class="promo-desc">${esc(p.description||'')}</div><div class="promo-detail">${detail}</div><a href="${esc(p.cta_url||'#')}"><button class="promo-cta">${esc(p.cta_text||'Booking Sekarang')} →</button></a></div>`;
+    }).join('');
+  } catch(e) { /* keep hardcoded */ }
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,129 @@
+// 7summits Camera — Branding loader
+// Fetches site_settings from Supabase and applies them as CSS custom-properties
+// + dynamic font import + logo replacement. Runs on every page that loads it.
+
+(function () {
+  const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
+
+  function applySettings(s) {
+    if (!s) return;
+    const r = document.documentElement.style;
+    if (s.brand_orange)     { r.setProperty('--orange', s.brand_orange); }
+    if (s.brand_green)      { r.setProperty('--green', s.brand_green); r.setProperty('--green-l', s.brand_green); }
+    if (s.brand_green_deep) { r.setProperty('--green-deep', s.brand_green_deep); r.setProperty('--green-d', s.brand_green_deep); }
+    if (s.brand_silver)     { r.setProperty('--silver', s.brand_silver); }
+    if (s.brand_bg)         { r.setProperty('--bg', s.brand_bg); r.setProperty('--bg0', s.brand_bg); }
+    if (s.brand_ink)        { r.setProperty('--ink', s.brand_ink); }
+
+    // Typography
+    if (s.font_family) {
+      const fontStack = `'${s.font_family}','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+      r.setProperty('--font-sans', fontStack);
+      r.setProperty('--font-display', fontStack);
+    }
+    if (s.font_family_url && !document.querySelector(`link[href="${s.font_family_url}"]`)) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = s.font_family_url;
+      document.head.appendChild(link);
+    }
+    if (s.font_size_base) {
+      document.body.style.fontSize = s.font_size_base + 'px';
+    }
+    if (s.headline_letter_spacing) {
+      r.setProperty('--headline-tracking', s.headline_letter_spacing);
+    }
+
+    // Logos — swap any nav/footer logos
+    if (s.logo_url) {
+      document.querySelectorAll('.nav-logo img, .footer-logo, .sb-logo img')
+        .forEach(img => { img.src = s.logo_url; });
+    }
+    if (s.favicon_url) {
+      let f = document.querySelector('link[rel="icon"]');
+      if (!f) { f = document.createElement('link'); f.rel = 'icon'; document.head.appendChild(f); }
+      f.href = s.favicon_url;
+    }
+
+    // Hero on homepage
+    if (s.hero_image_url) {
+      const heroImg = document.querySelector('.hero-img');
+      if (heroImg) {
+        heroImg.style.backgroundImage = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%),url('${s.hero_image_url}')`;
+      }
+    }
+    if (s.hero_headline) {
+      const h1 = document.querySelector('.hero-h1');
+      if (h1 && h1.dataset.allowOverride !== 'no') {
+        const parts = s.hero_headline.split(/\s*\|\s*/);
+        h1.innerHTML = parts.length > 1
+          ? parts[0] + '<br><em>' + parts.slice(1).join(' ') + '</em>'
+          : s.hero_headline;
+      }
+    }
+    if (s.hero_subheadline) {
+      const sub = document.querySelector('.hero-sub');
+      if (sub) sub.textContent = s.hero_subheadline;
+    }
+    if (s.hero_cta_primary_text) {
+      const btn = document.querySelector('.hero-ctas .btn-hero-p, .hero-ctas a:first-child button');
+      if (btn) btn.firstChild && (btn.firstChild.textContent = s.hero_cta_primary_text + ' ');
+    }
+
+    // Announcement bar
+    if (s.ann_bar_text) {
+      const ann = document.querySelector('.ann-bar');
+      if (ann) {
+        const link = (s.ann_bar_link_text && s.ann_bar_link_url)
+          ? ` <a href="${s.ann_bar_link_url}">${s.ann_bar_link_text} →</a>` : '';
+        ann.innerHTML = s.ann_bar_text + link;
+      }
+    }
+
+    // YouTube videos override
+    if (Array.isArray(s.youtube_videos) && s.youtube_videos.length) {
+      const grid = document.querySelector('.yt-grid');
+      if (grid) {
+        grid.innerHTML = s.youtube_videos.slice(0, 6).map(v => {
+          const url = (v && (v.url || v)) || '';
+          const id = extractYouTubeId(url);
+          if (!id) return '';
+          return `<div class="yt-wrap"><iframe src="https://www.youtube.com/embed/${id}" allowfullscreen title="${(v.title||'Video').replace(/"/g,'&quot;')}"></iframe></div>`;
+        }).join('');
+      }
+    }
+
+    // Footer / WhatsApp / Booking URLs
+    if (s.whatsapp_number) {
+      document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+        a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + s.whatsapp_number);
+      });
+    }
+    if (s.booking_url) {
+      document.querySelectorAll('a[href*="booking.sewakamerabandung.id"]').forEach(a => {
+        a.href = s.booking_url + (a.hash || '');
+      });
+    }
+  }
+
+  function extractYouTubeId(url) {
+    if (!url) return '';
+    const m = String(url).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : '';
+  }
+
+  async function load() {
+    try {
+      const res = await fetch(`${SB_URL}/rest/v1/site_settings?id=eq.1&select=*`, {
+        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+      });
+      if (!res.ok) return;
+      const rows = await res.json();
+      if (rows && rows[0]) applySettings(rows[0]);
+    } catch (e) { /* fail silently — site has sane defaults */ }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+  else load();
+})();
