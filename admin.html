@@ -894,12 +894,17 @@ async function saveAll(){
   fields.forEach(k => { if ($(k)) payload[k] = $(k).value || null; });
   // Cast numerics
   ['font_weight_headline','font_weight_body','font_size_base'].forEach(k => { if (payload[k]) payload[k] = parseInt(payload[k]); });
-  payload.youtube_videos = collectYtVideos();
+  payload.youtube_videos = collectYtVideos(true);
   payload.updated_at = new Date().toISOString();
   const { error } = await sb.from('site_settings').upsert(payload, { onConflict:'id' });
   btn.disabled = false; btn.textContent = 'Simpan Perubahan';
-  if (error) { toast('Gagal simpan: ' + error.message, 'error'); console.error(error); }
-  else { toast('Tersimpan! Refresh halaman publik untuk lihat perubahan.'); _settings = payload; }
+  if (error) {
+    const hint = /column .* does not exist|relation .* does not exist/i.test(error.message)
+      ? ' — Tabel/kolom belum ada. Jalankan migrations.sql di Supabase SQL editor dulu.'
+      : '';
+    toast('Gagal simpan: ' + error.message + hint, 'error');
+    console.error(error);
+  } else { toast('Tersimpan! Refresh halaman publik untuk lihat perubahan.'); _settings = payload; }
 }
 
 // ====================================================================
@@ -925,22 +930,29 @@ function ytUpdatePreview(i){
   const div = document.querySelectorAll('#yt-list .form-row')[i].querySelector('.form-group div');
   div.innerHTML = ytPreview(url);
 }
-function collectYtVideos(){
+function collectYtVideos(filterEmpty){
   const urls = document.querySelectorAll('[data-yt-url]');
   const titles = document.querySelectorAll('[data-yt-title]');
   const arr = [];
   urls.forEach((u,i) => {
-    if (u.value.trim()) arr.push({ url: u.value.trim(), title: titles[i]?.value || '' });
+    const url = u.value.trim(), title = titles[i]?.value || '';
+    if (filterEmpty && !url) return;
+    arr.push({ url, title });
   });
   return arr;
 }
 function ytAdd(){
-  const arr = collectYtVideos();
+  const arr = collectYtVideos(false);
   arr.push({ url:'', title:'' });
   renderYt(arr);
+  // focus the new URL input
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-yt-url]');
+    inputs[inputs.length-1]?.focus();
+  }, 30);
 }
 function ytRemove(i){
-  const arr = collectYtVideos();
+  const arr = collectYtVideos(false);
   arr.splice(i,1);
   renderYt(arr);
 }
