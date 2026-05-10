@@ -17,6 +17,11 @@
   <url><loc>https://sewakamerabandung.id/area/buah-batu</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/area/setiabudi</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/area/lembang</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <!-- Service / use-case landing pages -->
+  <url><loc>https://sewakamerabandung.id/layanan/wedding</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sewakamerabandung.id/layanan/wisuda</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sewakamerabandung.id/layanan/content-creator</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sewakamerabandung.id/layanan/sineas</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <!-- Pillar articles (added when content engine PR merges) -->
   <url><loc>https://sewakamerabandung.id/panduan/wedding-camera</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/panduan/lighting-budget</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>

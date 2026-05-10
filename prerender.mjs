@@ -33,7 +33,7 @@ const COPY_HTML_AS_IS = [
   'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html'
   // faq, lokasi, sriwijaya, cisaranten get prerendered separately
 ];
-const COPY_DIRS = ['panduan','area'];
+const COPY_DIRS = ['panduan','area','layanan'];
 
 // ============================================================================
 // HELPERS

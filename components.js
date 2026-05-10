@@ -69,10 +69,12 @@ function injectFooter() {
         <li><a href="/katalog.html?cat=VIDEO%20SUPPORT">Video Support</a></li>
         <li><a href="/katalog.html?cat=AUDIO%20SUPPORT">Audio</a></li>
       </ul></div>
-      <div class="fcol"><h4>Paket</h4><ul>
-        <li><a href="/paket.html#event">Paket Event</a></li>
-        <li><a href="/paket.html#wisuda">Paket Wisuda</a></li>
-        <li><a href="/paket.html#sineas">Paket Sineas</a></li>
+      <div class="fcol"><h4>Layanan</h4><ul>
+        <li><a href="/layanan/wedding">Sewa Kamera Wedding</a></li>
+        <li><a href="/layanan/wisuda">Paket Wisuda Mahasiswa</a></li>
+        <li><a href="/layanan/content-creator">Content Creator Setup</a></li>
+        <li><a href="/layanan/sineas">Sineas Indie / TA Film</a></li>
+        <li><a href="/paket.html">Semua Paket</a></li>
       </ul></div>
       <div class="fcol"><h4>Platform</h4><ul>
         <li><a href="${BRAND.bookingUrl}">Sistem Booking</a></li>
