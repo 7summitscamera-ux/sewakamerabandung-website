@@ -29,7 +29,7 @@ const COPY_FILES = [
   'components.js','cart.js','branding-loader.js','auth.js',
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
   'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql',
-  'locations-amenities-migration.sql','faq-categories-migration.sql'
+  'locations-amenities-migration.sql','faq-categories-migration.sql','stats-brands-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
   'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
@@ -294,6 +294,37 @@ async function prerenderIndex(html, { produk, enrichMap, faqs, locations, settin
 
   // 4. Site settings overrides
   if (settings) {
+    // 4a. Stats grid
+    if (Array.isArray(settings.stats) && settings.stats.length) {
+      const statsHtml = settings.stats
+        .filter((s) => s && (s.number || s.label))
+        .map((s) => {
+          const num = escHtml(s.number || '');
+          const suf = s.suffix ? `<span class="acc">${escHtml(s.suffix)}</span>` : '';
+          const lbl = escHtml(s.label || '');
+          return `      <div class="stat-blk"><div class="stat-num">${num}${suf}</div><div class="stat-lbl">${lbl}</div></div>`;
+        })
+        .join('\n');
+      if (statsHtml) html = injectIntoElement(html, 'stats-grid', statsHtml);
+    }
+
+    // 4b. Brand slider — convert ticker text → logo strip
+    if (Array.isArray(settings.brands) && settings.brands.length) {
+      const brands = settings.brands.filter((b) => b && b.name);
+      if (brands.length) {
+        // Duplicate untuk seamless loop animation
+        const renderItem = (b) => {
+          const logo = b.logo_url ? normalizeImageUrl(b.logo_url) : '';
+          if (logo) {
+            return `<div class="ticker-item brand-only"><img class="brand-logo" src="${escHtml(logo)}" alt="${escHtml(b.name)}" loading="lazy" onerror="this.outerHTML='<span style=&quot;font-size:12px;font-weight:600;color:var(--ink-3)&quot;>${escHtml(b.name)}</span>'"></div>`;
+          }
+          return `<div class="ticker-item"><span class="tick-dot"></span>${escHtml(b.name)}</div>`;
+        };
+        const tickerHtml = brands.map(renderItem).join('') + brands.map(renderItem).join('');
+        html = injectIntoElement(html, 'ticker-inner', tickerHtml);
+      }
+    }
+
     if (settings.hero_image_url) {
       html = html.replace(
         /url\('https:\/\/images\.unsplash\.com\/[^']+'\)/,
