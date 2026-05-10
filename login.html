@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Admin — 7summits Camera</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Halaman login admin 7summits Camera Bandung.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/design-system.css">
+<link rel="stylesheet" href="/auth.css">
+<link rel="icon" type="image/png" href="/logo-7summits-mark.png">
+</head>
+<body>
+
+<main class="auth-wrap">
+  <section class="auth-card" role="region" aria-labelledby="auth-h1">
+    <div class="auth-brand">
+      <img src="/logo-7summits-mark.png" alt="" aria-hidden="true">
+      <span class="auth-brand-name">7summits Camera</span>
+    </div>
+
+    <span class="auth-eyebrow">Admin Portal</span>
+    <h1 id="auth-h1" class="auth-h1">Masuk ke dashboard</h1>
+    <p class="auth-sub">Login dengan akun admin yang telah dibuatkan untuk kelola katalog, FAQ, promo, dan branding.</p>
+
+    <div id="alert" class="auth-alert auth-alert--err" hidden role="alert" aria-live="assertive">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="alert-msg">Username atau password salah</span>
+    </div>
+
+    <form id="login-form" class="auth-form" novalidate autocomplete="on">
+      <div class="auth-field">
+        <label class="auth-label" for="f-username">Username</label>
+        <div class="auth-input-wrap">
+          <input
+            id="f-username"
+            class="auth-input"
+            type="text"
+            name="username"
+            autocomplete="username"
+            inputmode="text"
+            spellcheck="false"
+            autocapitalize="off"
+            required
+            minlength="3"
+            maxlength="64"
+            pattern="[a-zA-Z0-9_-]{3,64}"
+            placeholder="superadmin"
+            aria-describedby="username-hint username-err">
+        </div>
+        <div id="username-hint" class="auth-fieldhint">Huruf, angka, _ dan - · 3-64 karakter</div>
+        <div id="username-err" class="auth-fielderr" hidden></div>
+      </div>
+
+      <div class="auth-field">
+        <label class="auth-label" for="f-password">Password</label>
+        <div class="auth-input-wrap">
+          <input
+            id="f-password"
+            class="auth-input with-toggle"
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            required
+            minlength="8"
+            placeholder="••••••••"
+            aria-describedby="password-err">
+          <button id="toggle-pw" type="button" class="auth-toggle" aria-label="Tampilkan password" aria-pressed="false">
+            <svg id="pw-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="pw-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <div id="password-err" class="auth-fielderr" hidden></div>
+      </div>
+
+      <button id="submit" class="auth-submit" type="submit">
+        <span class="auth-spinner" aria-hidden="true"></span>
+        <span class="auth-submit-label">Masuk</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Bukan admin? <a href="/">Kembali ke website</a>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/auth.js"></script>
+<script>
+  (function () {
+    'use strict';
+    const $ = (id) => document.getElementById(id);
+    const form     = $('login-form');
+    const fUser    = $('f-username');
+    const fPass    = $('f-password');
+    const errUser  = $('username-err');
+    const errPass  = $('password-err');
+    const alertBox = $('alert');
+    const alertMsg = $('alert-msg');
+    const submit   = $('submit');
+    const submitLb = submit.querySelector('.auth-submit-label');
+    const tglPw    = $('toggle-pw');
+    const eye      = $('pw-eye');
+    const eyeOff   = $('pw-eye-off');
+
+    // --- Show/hide password toggle ---
+    tglPw.addEventListener('click', () => {
+      const showing = fPass.type === 'text';
+      fPass.type = showing ? 'password' : 'text';
+      tglPw.setAttribute('aria-pressed', String(!showing));
+      tglPw.setAttribute('aria-label', showing ? 'Tampilkan password' : 'Sembunyikan password');
+      eye.style.display    = showing ? '' : 'none';
+      eyeOff.style.display = showing ? 'none' : '';
+    });
+
+    // --- Field-level validation feedback ---
+    function setFieldError(input, errEl, msg) {
+      if (msg) {
+        input.classList.add('is-invalid');
+        input.setAttribute('aria-invalid', 'true');
+        errEl.textContent = msg;
+        errEl.hidden = false;
+      } else {
+        input.classList.remove('is-invalid');
+        input.removeAttribute('aria-invalid');
+        errEl.hidden = true;
+        errEl.textContent = '';
+      }
+    }
+    fUser.addEventListener('input', () => setFieldError(fUser, errUser, ''));
+    fPass.addEventListener('input', () => setFieldError(fPass, errPass, ''));
+
+    function showAlert(msg) {
+      alertMsg.textContent = msg;
+      alertBox.hidden = false;
+      alertBox.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function hideAlert() { alertBox.hidden = true; }
+
+    function setLoading(loading) {
+      if (loading) {
+        submit.disabled = true;
+        submit.classList.add('is-loading');
+        submitLb.textContent = 'Memproses...';
+        submit.setAttribute('aria-busy', 'true');
+      } else {
+        submit.disabled = false;
+        submit.classList.remove('is-loading');
+        submitLb.textContent = 'Masuk';
+        submit.removeAttribute('aria-busy');
+      }
+    }
+
+    // --- Already logged in? Redirect ---
+    (async function checkExistingSession() {
+      if (!window.SK7Auth) return;
+      try {
+        const me = await window.SK7Auth.getCurrentUser();
+        if (me) {
+          const next = new URLSearchParams(location.search).get('next');
+          location.replace(next && next.startsWith('/') ? next : '/admin');
+        }
+      } catch (_) { /* not logged in, continue */ }
+    })();
+
+    // --- Submit ---
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+      setFieldError(fUser, errUser, '');
+      setFieldError(fPass, errPass, '');
+
+      const username = fUser.value.trim();
+      const password = fPass.value;
+
+      // Client-side validation
+      const eU = window.SK7Auth.validateUsername(username);
+      const eP = window.SK7Auth.validatePassword(password);
+      if (eU) { setFieldError(fUser, errUser, eU); fUser.focus(); return; }
+      if (eP) { setFieldError(fPass, errPass, eP); fPass.focus(); return; }
+
+      setLoading(true);
+      try {
+        await window.SK7Auth.login(username, password);
+        // Success → redirect ke ?next= atau /admin
+        const next = new URLSearchParams(location.search).get('next');
+        location.replace(next && next.startsWith('/') ? next : '/admin');
+      } catch (err) {
+        console.error('Login error:', err);
+        showAlert(err.message || 'Login gagal — coba lagi');
+        setLoading(false);
+        fPass.focus();
+        fPass.select();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
