@@ -28,7 +28,7 @@ const COPY_FILES = [
   'design-system.css','article.css','area.css','auth.css',
   'components.js','cart.js','branding-loader.js','auth.js',
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
-  'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql'
+  'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
   'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
