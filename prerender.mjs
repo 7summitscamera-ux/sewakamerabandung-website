@@ -30,10 +30,10 @@ const COPY_FILES = [
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
   'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql',
   'locations-amenities-migration.sql','faq-categories-migration.sql','stats-brands-migration.sql',
-  'brand-slider-settings-migration.sql'
+  'brand-slider-settings-migration.sql','packages-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
-  'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
+  'admin.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
   'glosarium.html','sewa-vs-beli.html','404.html','login.html'
   // faq, lokasi, sriwijaya, cisaranten get prerendered separately
 ];
@@ -560,6 +560,76 @@ ${amenitiesHtml}
     </div>`;
 }
 
+async function prerenderPaketPage(html, packages) {
+  if (!packages.length) return html;
+  const active = packages.filter((p) => p.is_active !== false);
+  // Group by category preserving original order from data
+  const byCat = new Map();
+  active.forEach((p) => {
+    const slug = p.category || 'other';
+    if (!byCat.has(slug)) byCat.set(slug, { slug, label: p.category_label || slug, items: [] });
+    byCat.get(slug).items.push(p);
+  });
+  // Sort items within each category by sort_order
+  byCat.forEach((cat) => cat.items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+
+  const cats = [...byCat.values()];
+  const tabsHtml = [
+    `<button class="pkg-tab active" onclick="switchPkg('all',this)">Semua Paket</button>`,
+    ...cats.map((c) => `<button class="pkg-tab" onclick="switchPkg('${escHtml(c.slug)}',this)">${escHtml(c.label)}</button>`),
+  ].join('\n      ');
+  html = injectIntoElement(html, 'pkg-tabs', tabsHtml);
+
+  const sectionsHtml = cats.map((cat) => {
+    const cardsHtml = cat.items.map((p, i) => {
+      const isFeat = i === 0 && cat.items.length > 1;
+      const itemsLi = (p.items || []).map((it) => `<li>${escHtml(it)}</li>`).join('');
+      const taglineHtml = p.description ? `<div class="pkg-tagline">${escHtml(p.description)}</div>` : '';
+      const popBadge = isFeat ? '<div class="pkg-pop">Paling Populer</div>' : '';
+      const btnClass = isFeat ? 'btn-pkg feat' : 'btn-pkg';
+      const cardClass = isFeat ? 'pkg-card featured' : 'pkg-card';
+      const waMsg = encodeURIComponent(`Halo, saya mau tanya tentang ${p.name} (Rp ${Number(p.price).toLocaleString('id-ID')}/hari)`);
+      return `<div class="${cardClass}">
+          ${popBadge}
+          <div class="pkg-name">${escHtml(p.name)}</div>
+          ${taglineHtml}
+          <ul class="pkg-items">${itemsLi}</ul>
+          <div class="pkg-price">Rp ${Number(p.price).toLocaleString('id-ID')} <small>/ hari</small></div>
+          <a href="https://wa.me/6281121114410?text=${waMsg}"><button class="${btnClass}">Booking Paket Ini →</button></a>
+        </div>`;
+    }).join('\n');
+    return `<div class="pkg-section" data-cat="${escHtml(cat.slug)}">
+      <div class="sec-lbl">${escHtml(cat.label)}</div>
+      <h2 class="sec-h2" style="font-size:clamp(20px,2.5vw,32px);margin-bottom:32px">Paket ${escHtml(cat.label)}</h2>
+      <div class="pkg-grid">${cardsHtml}</div>
+    </div>`;
+  }).join('\n');
+  html = injectIntoElement(html, 'pkg-sections', sectionsHtml);
+
+  // ItemList schema for SEO
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Paket Sewa Kamera 7summits',
+    numberOfItems: active.length,
+    itemListElement: active.map((p, i) => ({
+      '@type': 'Product',
+      position: i + 1,
+      name: p.name,
+      description: p.description || `${p.category_label} bundling — ${(p.items || []).length} item`,
+      offers: {
+        '@type': 'Offer',
+        price: p.price,
+        priceCurrency: 'IDR',
+        priceSpecification: { '@type': 'UnitPriceSpecification', price: p.price, priceCurrency: 'IDR', unitText: 'per hari' },
+        availability: 'https://schema.org/InStock',
+      },
+    })),
+  };
+  html = injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(ld)}</script>`);
+  return html;
+}
+
 async function prerenderLokasiPage(html, locations) {
   if (!locations.length) return html;
   // Inject LocalBusiness array schema
@@ -836,17 +906,18 @@ async function main() {
 
   // 3. Fetch all data in parallel
   console.log('  ↳ fetching Supabase...');
-  const [produk, enrichAll, faqs, locations, settingsArr] = await Promise.all([
+  const [produk, enrichAll, faqs, locations, settingsArr, packages] = await Promise.all([
     tryFetch(BOOKING, 'produk', 'select=id,nama_produk,kategori_produk,harga_sewa_per_hari,kelengkapan,stok_total,stok_dalam_perbaikan,cabang_id&is_deleted=eq.false&status=eq.active&limit=2000'),
     tryFetch(CMS, 'product_enrichments', 'select=*&limit=2000'),
     tryFetch(CMS, 'faqs', 'select=*&is_active=eq.true&order=sort_order.asc&limit=200'),
     tryFetch(CMS, 'locations', 'select=*&is_active=eq.true&order=sort_order.asc&limit=20'),
-    tryFetch(CMS, 'site_settings', 'select=*&id=eq.1&limit=1')
+    tryFetch(CMS, 'site_settings', 'select=*&id=eq.1&limit=1'),
+    tryFetch(CMS, 'packages', 'select=*&is_active=eq.true&order=sort_order.asc&limit=200')
   ]);
   const settings = Array.isArray(settingsArr) && settingsArr[0] ? settingsArr[0] : null;
   const enrichMap = {};
   enrichAll.forEach((e) => { enrichMap[e.booking_product_id] = e; });
-  console.log(`  ↳ produk=${produk.length} enrich=${enrichAll.length} faqs=${faqs.length} locations=${locations.length} settings=${settings ? '✓' : '✗'}`);
+  console.log(`  ↳ produk=${produk.length} enrich=${enrichAll.length} faqs=${faqs.length} locations=${locations.length} packages=${packages.length} settings=${settings ? '✓' : '✗'}`);
 
   // 4. Read templates
   const indexTpl = await fs.readFile(path.join(SRC, 'index.html'), 'utf8');
@@ -854,6 +925,7 @@ async function main() {
   const pdpTpl = await fs.readFile(path.join(SRC, 'pdp.html'), 'utf8');
   const faqTpl = await fs.readFile(path.join(SRC, 'faq.html'), 'utf8').catch(() => null);
   const lokasiTpl = await fs.readFile(path.join(SRC, 'lokasi.html'), 'utf8').catch(() => null);
+  const paketTpl = await fs.readFile(path.join(SRC, 'paket.html'), 'utf8').catch(() => null);
   const sriwijayaTpl = await fs.readFile(path.join(SRC, 'sriwijaya.html'), 'utf8').catch(() => null);
   const cisarantenTpl = await fs.readFile(path.join(SRC, 'cisaranten.html'), 'utf8').catch(() => null);
 
@@ -879,6 +951,11 @@ async function main() {
     const out = await prerenderLokasiPage(lokasiTpl, locations);
     await fs.writeFile(path.join(OUT, 'lokasi.html'), out);
     console.log(`  ↳ wrote lokasi.html with LocalBusiness schema`);
+  }
+  if (paketTpl) {
+    const out = await prerenderPaketPage(paketTpl, packages);
+    await fs.writeFile(path.join(OUT, 'paket.html'), out);
+    console.log(`  ↳ wrote paket.html (${packages.length} packages)`);
   }
   if (sriwijayaTpl) await fs.writeFile(path.join(OUT, 'sriwijaya.html'), await prerenderLokasiPage(sriwijayaTpl, locations.filter((l) => /sriwij/i.test(l.branch_name || ''))));
   if (cisarantenTpl) await fs.writeFile(path.join(OUT, 'cisaranten.html'), await prerenderLokasiPage(cisarantenTpl, locations.filter((l) => /cisar/i.test(l.branch_name || ''))));
