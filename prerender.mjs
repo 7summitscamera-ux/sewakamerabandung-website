@@ -30,7 +30,8 @@ const COPY_FILES = [
   'robots.txt','sitemap.xml','migrations.sql'
 ];
 const COPY_HTML_AS_IS = [
-  'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html'
+  'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
+  'glosarium.html','sewa-vs-beli.html','404.html'
   // faq, lokasi, sriwijaya, cisaranten get prerendered separately
 ];
 const COPY_DIRS = ['panduan','area','layanan'];
