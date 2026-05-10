@@ -80,6 +80,13 @@ function injectFooter() {
         <li><a href="/faq.html">FAQ Lengkap</a></li>
         <li><a href="/promo.html">Promo Aktif</a></li>
       </ul></div>
+      <div class="fcol"><h4>Area Layanan</h4><ul>
+        <li><a href="/area/dago">Sewa Kamera Dago</a></li>
+        <li><a href="/area/buah-batu">Sewa Kamera Buah Batu</a></li>
+        <li><a href="/area/setiabudi">Sewa Kamera Setiabudi</a></li>
+        <li><a href="/area/lembang">Sewa Kamera Lembang</a></li>
+        <li><a href="/lokasi.html">Semua Lokasi</a></li>
+      </ul></div>
       <div class="fcol"><h4>Perusahaan</h4><ul>
         <li><a href="/tentang.html">Tentang Kami</a></li>
         <li><a href="/cisaranten.html">Cisaranten</a></li>
