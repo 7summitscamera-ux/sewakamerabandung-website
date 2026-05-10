@@ -30,7 +30,7 @@ const COPY_FILES = [
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
   'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql',
   'locations-amenities-migration.sql','faq-categories-migration.sql','stats-brands-migration.sql',
-  'brand-slider-settings-migration.sql','packages-migration.sql'
+  'brand-slider-settings-migration.sql','packages-migration.sql','reviews-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
   'admin.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
@@ -345,6 +345,66 @@ async function prerenderIndex(html, { produk, enrichMap, faqs, locations, settin
 .ticker-item:hover img.brand-logo{filter:none;opacity:1}
 </style>`;
       html = injectBeforeClose(html, 'head', overrideCss);
+    }
+
+    // 4d. Reviews / testimonials (compact, no photo)
+    if (Array.isArray(settings.reviews) && settings.reviews.length) {
+      const accentBg = (a) => {
+        switch (a) {
+          case 'orange':     return 'linear-gradient(135deg,#F06824,#D55A1A)';
+          case 'green':      return 'linear-gradient(135deg,#8EC64E,#4F7B39)';
+          case 'silver':     return 'linear-gradient(135deg,#a8b5b5,#6b7676)';
+          case 'green-deep': default: return 'linear-gradient(135deg,#4F7B39,#2d4a23)';
+        }
+      };
+      const initials = (name) => String(name || '').trim().split(/\s+/).map((w) => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
+      const reviewCards = settings.reviews
+        .filter((r) => r && (r.name || r.text))
+        .map((r) => {
+          const stars = '★'.repeat(Math.max(0, Math.min(5, r.rating || 5)));
+          const date = r.date ? `${escHtml(r.date)} · ${escHtml(r.source || 'Google Review')}` : escHtml(r.source || 'Google Review');
+          return `<article class="rev-card">
+          <div class="rev-stars" aria-label="${r.rating || 5} dari 5 bintang">${stars}</div>
+          <p class="rev-txt">"${escHtml(r.text || '')}"</p>
+          <div class="rev-author">
+            <div class="rev-ava" style="background:${accentBg(r.accent)}" aria-hidden="true">${escHtml(initials(r.name))}</div>
+            <div class="rev-meta-wrap">
+              <div class="rev-name">${escHtml(r.name || '')}</div>
+              <div class="rev-src">${date}</div>
+            </div>
+          </div>
+        </article>`;
+        }).join('');
+      const googleUrl = settings.reviews_google_url || 'https://maps.google.com/?q=7SUMMITS+CAMERA+Bandung';
+      const ctaHtml = `<a href="${escHtml(googleUrl)}" target="_blank" rel="noopener" class="rev-more">
+          <span>Lihat semua review di Google Maps →</span>
+        </a>`;
+      html = injectIntoElement(html, 'reviews-container', reviewCards + '\n        ' + ctaHtml);
+
+      // Review schema (aggregateRating + Review array) for SEO
+      const ratings = settings.reviews.map((r) => r.rating || 5);
+      const avg = ratings.length ? (ratings.reduce((s, n) => s + n, 0) / ratings.length).toFixed(1) : '5';
+      const reviewLd = {
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        '@id': `${SITE_URL}#business`,
+        name: '7summits Camera Bandung',
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: avg,
+          reviewCount: ratings.length,
+          bestRating: '5',
+          worstRating: '1',
+        },
+        review: settings.reviews.slice(0, 10).map((r) => ({
+          '@type': 'Review',
+          author: { '@type': 'Person', name: r.name || 'Anonymous' },
+          reviewRating: { '@type': 'Rating', ratingValue: r.rating || 5, bestRating: '5' },
+          reviewBody: r.text || '',
+          datePublished: r.date || '',
+        })),
+      };
+      html = injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(reviewLd)}</script>`);
     }
 
     if (settings.hero_image_url) {

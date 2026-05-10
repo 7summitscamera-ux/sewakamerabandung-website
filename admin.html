@@ -271,6 +271,7 @@ tr:hover td{background:#FAFBF7}
     <div class="sb-item" data-panel="stats"><span class="sb-icon">📈</span><span>Statistik</span></div>
     <div class="sb-item" data-panel="brands"><span class="sb-icon">🏢</span><span>Brand Slider</span></div>
     <div class="sb-item" data-panel="paket"><span class="sb-icon">📦</span><span>Paket Sewa</span></div>
+    <div class="sb-item" data-panel="reviews"><span class="sb-icon">⭐</span><span>Google Reviews</span></div>
 
     <div class="sb-section">Bisnis</div>
     <div class="sb-item" data-panel="lokasi"><span class="sb-icon">📍</span><span>Lokasi & Cabang</span></div>
@@ -811,6 +812,49 @@ tr:hover td{background:#FAFBF7}
       <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
         💡 <strong>Format Items:</strong> satu item per baris di textarea Edit Paket. Contoh: <code>Sony A7IV - body x1</code>. Format <code>x1, x2, x3</code> di akhir untuk indikasi quantity.
       </p>
+    </div>
+
+    <!-- ============ GOOGLE REVIEWS ============ -->
+    <div class="panel" id="panel-reviews">
+      <div class="panel-hdr">
+        <h2>Google Reviews / Testimonial</h2>
+        <p class="panel-desc">Testimonial yang muncul di section "Bukan sekadar tempat rental" homepage. Copy-paste review real dari Google Maps profile kamu.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hdr"><div class="card-title">Link Google Maps</div></div>
+        <div class="card-body">
+          <div class="form-row full">
+            <div class="form-group">
+              <label>URL Google Maps Profile</label>
+              <input type="url" id="reviews_google_url" placeholder="https://maps.google.com/?q=..." style="font-family:monospace;font-size:12.5px">
+              <small style="color:var(--ink-4);font-size:11.5px">Tombol "Lihat semua review di Google Maps" di homepage akan link ke URL ini.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Daftar Review</div>
+          <button class="btn btn-green btn-sm" type="button" onclick="reviewsAdd()">+ Tambah Review</button>
+        </div>
+        <div class="card-body">
+          <div id="reviews-list"></div>
+        </div>
+      </div>
+      <div class="card" style="padding:18px 22px;margin-top:16px;background:#f7f8fa;border:1px solid var(--bd)">
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">💡 Cara copy review dari Google Maps</h3>
+        <ol style="font-size:13px;color:var(--ink-3);line-height:1.7;padding-left:18px;margin:0">
+          <li>Buka <a href="https://maps.google.com/?q=7SUMMITS+CAMERA+Bandung" target="_blank" rel="noopener" style="color:var(--green-deep);font-weight:600">profile 7summits Camera di Google Maps</a></li>
+          <li>Klik tab <strong>Reviews</strong></li>
+          <li>Copy: nama reviewer, jumlah bintang, tanggal, isi review</li>
+          <li>Klik <strong>+ Tambah Review</strong> di atas → paste data → Simpan Perubahan → klik Publish</li>
+        </ol>
+        <p style="font-size:12px;color:var(--ink-4);margin-top:10px;line-height:1.55">
+          ⚠️ Saya gak bisa fetch review dari Google otomatis (mereka block scraping). Manual paste adalah satu-satunya cara legal. Untuk auto-sync butuh <strong>Google Places API</strong> ($) + Edge Function — bisa di-add later kalau perlu.
+        </p>
+      </div>
     </div>
 
     <!-- ============ LOKASI ============ -->
@@ -1698,7 +1742,8 @@ function showPanel(name){
     deploy:['Deploy & Publish','Trigger Vercel rebuild untuk publish perubahan ke public web'],
     stats:['Statistik Homepage','Stats card di homepage — angka & label editable'],
     brands:['Brand Slider','Logo brand yang scroll di homepage'],
-    paket:['Paket Sewa','Paket bundling yang muncul di /paket']
+    paket:['Paket Sewa','Paket bundling yang muncul di /paket'],
+    reviews:['Google Reviews','Testimonial yang muncul di homepage']
   };
   const t = titles[name] || [name, ''];
   $('topbar-title').textContent = t[0];
@@ -1764,6 +1809,8 @@ async function loadSettings(){
   // Stats & Brands
   renderStats(Array.isArray(_settings.stats) ? _settings.stats : []);
   renderBrands(Array.isArray(_settings.brands) ? _settings.brands : []);
+  renderReviews(Array.isArray(_settings.reviews) ? _settings.reviews : []);
+  if ($('reviews_google_url')) $('reviews_google_url').value = _settings.reviews_google_url || '';
   updateTypePreview();
 }
 
@@ -1849,6 +1896,8 @@ async function saveAll(){
   payload.youtube_videos = collectYtVideos(true);
   payload.stats = collectStats();
   payload.brands = collectBrands();
+  payload.reviews = collectReviews();
+  payload.reviews_google_url = $('reviews_google_url')?.value.trim() || null;
   payload.updated_at = new Date().toISOString();
   const { error } = await sb.from('site_settings').upsert(payload, { onConflict:'id' });
   btn.disabled = false; btn.textContent = 'Simpan Perubahan';
@@ -2035,6 +2084,91 @@ function brandsGoogleSearch(i) {
   }
   const q = encodeURIComponent(`${name} logo png transparent`);
   window.open(`https://www.google.com/search?q=${q}&tbm=isch`, '_blank', 'noopener');
+}
+
+// ====================================================================
+// REVIEWS / TESTIMONIAL (homepage section)
+// ====================================================================
+const REVIEW_ACCENTS = ['orange', 'green', 'green-deep', 'silver'];
+function reviewAccentBg(accent) {
+  switch (accent) {
+    case 'orange':     return 'linear-gradient(135deg,#F06824,#D55A1A)';
+    case 'green':      return 'linear-gradient(135deg,#8EC64E,#4F7B39)';
+    case 'green-deep': return 'linear-gradient(135deg,#4F7B39,#2d4a23)';
+    case 'silver':     return 'linear-gradient(135deg,#a8b5b5,#6b7676)';
+    default:           return 'linear-gradient(135deg,#F06824,#D55A1A)';
+  }
+}
+function reviewInitials(name) {
+  return String(name || '').trim().split(/\s+/).map(w => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
+}
+function renderReviews(arr) {
+  const list = $('reviews-list');
+  if (!list) return;
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">⭐</div><div class="empty-state-ttl">Belum ada review</div><div class="empty-state-sub">Klik "+ Tambah Review" untuk paste review dari Google Maps.</div></div>';
+    return;
+  }
+  list.innerHTML = arr.map((r, i) => {
+    const initials = reviewInitials(r.name);
+    return `
+    <div class="form-row" style="grid-template-columns:60px 1fr 1fr;align-items:start;gap:10px;border-bottom:1px solid var(--bd);padding-bottom:14px;margin-bottom:14px">
+      <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <div style="width:32px;height:32px;border-radius:50%;background:${reviewAccentBg(r.accent)};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">${escHtml(initials)}</div>
+        <strong style="font-size:13px">${escHtml(r.name || 'Untitled')}</strong>
+        <span style="color:var(--ink-4);font-size:12px">${escHtml(r.date || '')}</span>
+        <button class="btn btn-danger btn-xs" type="button" style="margin-left:auto" onclick="reviewsRemove(${i})" aria-label="Hapus review">×</button>
+      </div>
+      <div class="form-group" style="grid-column:1/2"><label>Bintang</label>
+        <select data-rev-rating="${i}">
+          ${[5,4,3,2,1].map(n => `<option value="${n}"${(r.rating || 5) === n ? ' selected' : ''}>${'★'.repeat(n) + '☆'.repeat(5-n)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Nama Reviewer</label><input type="text" data-rev-name="${i}" value="${escHtml(r.name || '')}" placeholder="John Doe"></div>
+      <div class="form-group"><label>Tanggal</label><input type="text" data-rev-date="${i}" value="${escHtml(r.date || '')}" placeholder="Jul 2025"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Isi Review</label>
+        <textarea data-rev-text="${i}" rows="3" placeholder="Pelayanan ramah, gear lengkap...">${escHtml(r.text || '')}</textarea>
+      </div>
+      <div class="form-group"><label>Source</label><input type="text" data-rev-source="${i}" value="${escHtml(r.source || 'Google Review')}" placeholder="Google Review"></div>
+      <div class="form-group" style="grid-column:2/-1"><label>Warna Avatar</label>
+        <select data-rev-accent="${i}">
+          <option value="orange"${r.accent === 'orange' ? ' selected' : ''}>Orange (warm)</option>
+          <option value="green"${r.accent === 'green' ? ' selected' : ''}>Green (vivid)</option>
+          <option value="green-deep"${(!r.accent || r.accent === 'green-deep') ? ' selected' : ''}>Green Deep</option>
+          <option value="silver"${r.accent === 'silver' ? ' selected' : ''}>Silver</option>
+        </select>
+      </div>
+    </div>`;
+  }).join('');
+}
+function collectReviews() {
+  const rows = document.querySelectorAll('[data-rev-name]');
+  const arr = [];
+  rows.forEach((nEl) => {
+    const i = nEl.dataset.revName;
+    const name   = nEl.value.trim();
+    const text   = document.querySelector(`[data-rev-text="${i}"]`)?.value.trim() || '';
+    const date   = document.querySelector(`[data-rev-date="${i}"]`)?.value.trim() || '';
+    const source = document.querySelector(`[data-rev-source="${i}"]`)?.value.trim() || 'Google Review';
+    const rating = parseInt(document.querySelector(`[data-rev-rating="${i}"]`)?.value) || 5;
+    const accent = document.querySelector(`[data-rev-accent="${i}"]`)?.value || 'green-deep';
+    if (name || text) arr.push({ name, text, date, source, rating, accent });
+  });
+  return arr;
+}
+function reviewsAdd() {
+  const arr = collectReviews();
+  arr.push({ name: '', text: '', date: '', source: 'Google Review', rating: 5, accent: REVIEW_ACCENTS[arr.length % REVIEW_ACCENTS.length] });
+  renderReviews(arr);
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-rev-name]');
+    inputs[inputs.length - 1]?.focus();
+  }, 30);
+}
+function reviewsRemove(i) {
+  const arr = collectReviews();
+  arr.splice(i, 1);
+  renderReviews(arr);
 }
 
 // ====================================================================
