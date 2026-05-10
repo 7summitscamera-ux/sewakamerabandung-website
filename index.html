@@ -247,26 +247,23 @@
 .why-h3{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--ink);letter-spacing:-.005em}
 .why-p{font-size:13.5px;color:var(--ink-3);line-height:1.65;font-weight:400}
 .revs{display:flex;flex-direction:column;gap:14px}
-.rev-card{background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-3);overflow:hidden;transition:var(--tr-fast)}
-.rev-card:hover{border-color:var(--bd-2);box-shadow:var(--sh-2);transform:translateY(-2px)}
-.rev-thumb{aspect-ratio:5/2;background:#1a1d2e;position:relative;overflow:hidden}
-.rev-thumb::before{content:'';position:absolute;inset:0;background-image:radial-gradient(ellipse 60% 50% at 30% 40%,rgba(240,104,36,.18) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 80% 70%,rgba(142,198,78,.15) 0%,transparent 60%);pointer-events:none}
-.rev-thumb-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;color:#fff;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.55) 100%)}
-.rev-thumb-tag{font-size:11px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);backdrop-filter:blur(8px);padding:4px 10px;border-radius:999px;align-self:flex-start;border:1px solid rgba(255,255,255,.18);margin-bottom:8px}
-.rev-thumb-gear{font-size:11.5px;font-weight:500;color:rgba(255,255,255,.78);letter-spacing:.02em}
-.rev-body{padding:20px}
-.rev-more{display:flex;align-items:center;justify-content:center;padding:14px;background:var(--bg-2);border:1px dashed var(--bd-strong);border-radius:var(--r-3);color:var(--ink-3);text-decoration:none;font-size:13px;font-weight:600;transition:var(--tr-fast)}
-.rev-more:hover{background:var(--bg-3);color:var(--green-deep);border-color:var(--green-line)}
-.rev-stars{color:#F5A623;font-size:13px;letter-spacing:2px;margin-bottom:10px}
-.rev-txt{font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-bottom:14px;font-weight:400}
+/* === Compact futuristic review card === */
+.rev-card{position:relative;background:linear-gradient(180deg,var(--surface) 0%,var(--bg-2) 100%);border:1px solid var(--bd);border-radius:var(--r-3);padding:18px 20px;transition:var(--tr-fast);overflow:hidden}
+.rev-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--orange) 0%,var(--green-deep) 100%);opacity:.55;transition:var(--tr-fast)}
+.rev-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle 200px at 100% 0%,rgba(240,104,36,.04) 0%,transparent 70%);pointer-events:none;transition:var(--tr-fast);opacity:0}
+.rev-card:hover{border-color:var(--bd-2);box-shadow:0 4px 24px rgba(15,18,23,.06);transform:translateY(-1px)}
+.rev-card:hover::before{opacity:1;width:4px}
+.rev-card:hover::after{opacity:1}
+.rev-stars{color:#F5A623;font-size:12.5px;letter-spacing:2px;margin-bottom:8px;line-height:1}
+.rev-txt{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-bottom:14px;font-weight:400}
 .rev-author{display:flex;align-items:center;gap:10px}
-.rev-ava{
-  width:34px;height:34px;border-radius:50%;
-  background:linear-gradient(135deg,var(--green) 0%,var(--green-deep) 100%);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;flex-shrink:0;
-}
-.rev-name{font-size:13px;font-weight:600;color:var(--ink)}
-.rev-src{font-size:11.5px;color:var(--ink-4);margin-top:2px}
+.rev-ava{flex-shrink:0;width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;letter-spacing:.02em;border:1px solid rgba(255,255,255,.08)}
+.rev-meta-wrap{flex:1;min-width:0}
+.rev-name{font-size:13px;font-weight:600;color:var(--ink);line-height:1.2}
+.rev-src{font-size:11px;color:var(--ink-4);margin-top:3px;font-feature-settings:"tnum";letter-spacing:.02em}
+.rev-source-badge{font-size:10.5px;font-weight:600;color:var(--green-deep);background:rgba(142,198,78,.1);padding:2px 7px;border-radius:999px;border:1px solid rgba(142,198,78,.18);letter-spacing:.04em;text-transform:uppercase;margin-left:auto}
+.rev-more{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;background:transparent;border:1px dashed var(--bd-strong);border-radius:var(--r-3);color:var(--ink-3);text-decoration:none;font-size:12.5px;font-weight:600;transition:var(--tr-fast)}
+.rev-more:hover{background:var(--bg-3);color:var(--green-deep);border-color:var(--green-line);border-style:solid}
 
 /* ============ YT GRID ============ */
 .yt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
@@ -379,7 +376,6 @@
   .ins-list{grid-template-columns:1fr}
   .ins-ttl{font-size:20px}
   .ins-price{font-size:28px}
-  .rev-thumb{aspect-ratio:16/7}
 }
 </style>
 </head>
@@ -536,55 +532,18 @@
       </div>
       <div class="revs" id="reviews-container">
         <article class="rev-card">
-          <div class="rev-thumb" style="background:linear-gradient(135deg,#1a1d2e 0%,#2d1b3d 50%,#1a1d2e 100%)">
-            <div class="rev-thumb-overlay">
-              <div class="rev-thumb-tag">🎬 Wedding film</div>
-              <div class="rev-thumb-gear">Sony FX3 · 24-70 GM · DJI RS3</div>
-            </div>
-          </div>
-          <div class="rev-body">
-            <div class="rev-stars">★★★★★</div>
-            <p class="rev-txt">"Tempat sewa equipment camera yang cukup lengkap, pelayan terbaik dan harga terjangkau, plus dapat diskon sewa 3 hari bayar 2 hari."</p>
-            <div class="rev-author">
-              <div class="rev-ava" style="background:linear-gradient(135deg,#F06824,#D55A1A)">AV</div>
-              <div><div class="rev-name">Arap Visuals</div><div class="rev-src">Wedding videographer · Jul 2025</div></div>
-            </div>
-          </div>
-        </article>
-        <article class="rev-card">
-          <div class="rev-thumb" style="background:linear-gradient(135deg,#142318 0%,#1f4029 50%,#142318 100%)">
-            <div class="rev-thumb-overlay">
-              <div class="rev-thumb-tag">📱 Content Creator</div>
-              <div class="rev-thumb-gear">Sony A7CII · 16-35mm · Lark M2</div>
-            </div>
-          </div>
-          <div class="rev-body">
-            <div class="rev-stars">★★★★★</div>
-            <p class="rev-txt">"Pelayanan ramah, harga sewa terjangkau & syarat ga ribet. Bahkan menawarkan kerjasama sponsor asal memberikan proposal."</p>
-            <div class="rev-author">
-              <div class="rev-ava" style="background:linear-gradient(135deg,#8EC64E,#4F7B39)">RP</div>
-              <div><div class="rev-name">Rizky Pratama</div><div class="rev-src">YouTube creator · Jul 2025</div></div>
-            </div>
-          </div>
-        </article>
-        <article class="rev-card">
-          <div class="rev-thumb" style="background:linear-gradient(135deg,#1a1410 0%,#3d2814 50%,#1a1410 100%)">
-            <div class="rev-thumb-overlay">
-              <div class="rev-thumb-tag">🎓 TA Film Pendek</div>
-              <div class="rev-thumb-gear">Sony FX30 · Aputure 300X · Tilta Nucleus</div>
-            </div>
-          </div>
-          <div class="rev-body">
-            <div class="rev-stars">★★★★★</div>
-            <p class="rev-txt">"Alat yang disewakan kondisinya oke. Pelayanan ramah. Sangat rekomen untuk yang butuh gear produksi di Bandung."</p>
-            <div class="rev-author">
-              <div class="rev-ava" style="background:linear-gradient(135deg,#4F7B39,#2d4a23)">GP</div>
-              <div><div class="rev-name">Galih E.P.</div><div class="rev-src">Mahasiswa Sineas · Jun 2025</div></div>
+          <div class="rev-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+          <p class="rev-txt">"Tempat sewa equipment camera yang cukup lengkap, pelayan terbaik dan harga terjangkau, plus dapat diskon sewa 3 hari bayar 2 hari."</p>
+          <div class="rev-author">
+            <div class="rev-ava" style="background:linear-gradient(135deg,#F06824,#D55A1A)" aria-hidden="true">AV</div>
+            <div class="rev-meta-wrap">
+              <div class="rev-name">Arap Visuals</div>
+              <div class="rev-src">Jul 2025 · Google Review</div>
             </div>
           </div>
         </article>
         <a href="https://maps.google.com/?q=7SUMMITS+CAMERA+Bandung" target="_blank" rel="noopener" class="rev-more">
-          <span>Lihat 100+ review di Google Maps →</span>
+          <span>Lihat semua review di Google Maps →</span>
         </a>
       </div>
     </div>
