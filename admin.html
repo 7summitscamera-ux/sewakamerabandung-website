@@ -43,26 +43,34 @@ a{color:inherit;text-decoration:none}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;min-width:0}
-.topbar{min-height:64px;background:var(--surface);border-bottom:1px solid var(--bd);display:flex;align-items:center;flex-wrap:wrap;padding:12px 24px;gap:10px;position:sticky;top:0;z-index:10}
-.topbar > div:first-child{flex:1 1 220px;min-width:0}
-.topbar h1{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.015em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topbar-user{flex-shrink:0}
-.topbar .btn{flex-shrink:0}
-@media(max-width:980px){
-  .topbar{padding:10px 16px;gap:8px}
-  .topbar .btn{padding:8px 14px;font-size:12.5px}
-  .topbar-user span:not(:first-child){display:none}
-  .topbar-user{padding:4px 8px!important}
-  #topbar-user-avatar{width:24px!important;height:24px!important;font-size:11px!important}
-}
-@media(max-width:680px){
-  .topbar{padding:10px 14px}
-  .topbar > div:first-child{flex:1 1 100%}
-  .topbar h1{font-size:15px}
+/* Topbar: 1 baris di desktop, wrap rapi di mobile */
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 20px;gap:8px;position:sticky;top:0;z-index:10;overflow:visible}
+.topbar-title-block{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.topbar h1{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.015em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.topbar-sub{font-size:12.5px;color:var(--ink-4);font-weight:500;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-user{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:5px 10px;background:#fff;border:1px solid var(--bd);border-radius:999px;font-size:12.5px;color:var(--ink-2);max-width:180px;overflow:hidden}
+.topbar-user-name-wrap{display:flex;flex-direction:column;line-height:1.2;min-width:0;overflow:hidden}
+.topbar-user-name-wrap > strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+.topbar-user-name-wrap > span{font-size:11px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#topbar-user-avatar{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--green-soft,#e8f5db);color:var(--green-deep);font-weight:700;font-size:12px}
+.topbar .btn,.topbar a{flex-shrink:0;white-space:nowrap}
+.topbar .btn{padding:8px 14px;font-size:13px}
+@media(max-width:1100px){
   .topbar-sub{display:none}
+}
+@media(max-width:900px){
+  .topbar{padding:0 14px;gap:6px}
+  .topbar-user-name-wrap{display:none}
+  .topbar-user{max-width:38px;padding:3px;justify-content:center}
+  .topbar .btn{padding:8px 12px;font-size:12px}
   #btn-view-site{display:none}
-  #btn-logout{padding:8px 10px}
-  #btn-logout span:nth-child(2){display:none}
+}
+@media(max-width:600px){
+  .topbar{padding:0 12px}
+  .topbar h1{font-size:15px}
+  .topbar .btn{padding:7px 10px}
+  .topbar-user{display:none}
+  #btn-save-all{padding:8px 12px}
 }
 .topbar-sub{font-size:12.5px;color:var(--ink-4);font-weight:500;margin-top:2px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;font-weight:600;font-size:13px;padding:9px 18px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:var(--tr);white-space:nowrap;letter-spacing:-.005em}
@@ -277,19 +285,17 @@ tr:hover td{background:#FAFBF7}
 
 <div class="main">
   <div class="topbar">
-    <div style="flex:1">
+    <div class="topbar-title-block">
       <h1 id="topbar-title">Dashboard</h1>
       <div id="topbar-sub" class="topbar-sub">Ringkasan konten dan pengaturan website</div>
     </div>
-    <div id="topbar-user" class="topbar-user" style="display:flex;align-items:center;gap:10px;padding:6px 12px;background:#fff;border:1px solid var(--bd);border-radius:999px;font-size:13px;color:var(--ink-2);margin-right:6px" hidden>
-      <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--green-soft,#e8f5db);color:var(--green-deep);font-weight:700;font-size:12.5px" aria-hidden="true" id="topbar-user-avatar">U</span>
-      <span><strong id="topbar-user-name">—</strong> <span style="color:var(--ink-4);font-weight:500" id="topbar-user-role"></span></span>
+    <div id="topbar-user" class="topbar-user" hidden>
+      <span id="topbar-user-avatar" aria-hidden="true">U</span>
+      <div class="topbar-user-name-wrap"><strong id="topbar-user-name">—</strong><span id="topbar-user-role"></span></div>
     </div>
-    <button class="btn btn-ghost" id="btn-view-site" type="button" onclick="window.open('/','_blank')">Lihat Website ↗</button>
-    <button class="btn btn-primary" id="btn-save-all" onclick="saveAll()">Simpan Perubahan</button>
-    <button class="btn btn-ghost" id="btn-logout" type="button" aria-label="Logout dari dashboard" title="Logout">
-      <span aria-hidden="true">⎋</span> Logout
-    </button>
+    <a id="btn-view-site" class="btn btn-ghost" href="/" target="_blank" rel="noopener">Lihat Website ↗</a>
+    <button class="btn btn-primary" id="btn-save-all" type="button" onclick="saveAll()">Simpan</button>
+    <button class="btn btn-ghost" id="btn-logout" type="button" aria-label="Logout dari dashboard" title="Logout">⎋</button>
   </div>
 
   <div class="content">
@@ -999,7 +1005,7 @@ let CURRENT_USER = null;
   // Render user info di topbar
   const tbu = document.getElementById('topbar-user');
   document.getElementById('topbar-user-name').textContent = CURRENT_USER.username;
-  document.getElementById('topbar-user-role').textContent = '· ' + CURRENT_USER.role;
+  document.getElementById('topbar-user-role').textContent = CURRENT_USER.role;
   document.getElementById('topbar-user-avatar').textContent = (CURRENT_USER.username || '?').charAt(0).toUpperCase();
   tbu.hidden = false;
   // Tampilkan menu Sistem (User Management + Deploy) hanya untuk superadmin

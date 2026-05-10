@@ -100,9 +100,39 @@ function injectAt(html, marker, replacement) {
 }
 
 function injectIntoElement(html, id, innerHtml) {
-  // Replace innerHTML of <div id="X">...</div>
-  const re = new RegExp(`(<(?:div|section|main)[^>]*\\bid=["']${id}["'][^>]*>)([\\s\\S]*?)(</(?:div|section|main)>)`);
-  return html.replace(re, `$1${innerHtml}$3`);
+  // Replace innerHTML of <div|section|main id="X">...</div> dengan balanced
+  // tag matching (handle nested elements). Lazy regex would corrupt jika ada
+  // child element dengan tag yang sama.
+  const openRe = new RegExp(`<(div|section|main)[^>]*\\bid=["']${id}["'][^>]*>`, 'i');
+  const m = html.match(openRe);
+  if (!m) return html;
+  const tag = m[1].toLowerCase();
+  const start = m.index + m[0].length;
+  const openTok = new RegExp(`<${tag}\\b`, 'gi');
+  const closeTok = new RegExp(`</${tag}\\s*>`, 'gi');
+  // Walk forward, count opens vs closes, find matching close
+  openTok.lastIndex = start;
+  closeTok.lastIndex = start;
+  let depth = 1;
+  let pos = start;
+  while (depth > 0) {
+    openTok.lastIndex = pos;
+    closeTok.lastIndex = pos;
+    const o = openTok.exec(html);
+    const c = closeTok.exec(html);
+    if (!c) return html; // malformed
+    if (o && o.index < c.index) {
+      depth++;
+      pos = o.index + o[0].length;
+    } else {
+      depth--;
+      if (depth === 0) {
+        return html.slice(0, start) + innerHtml + html.slice(c.index);
+      }
+      pos = c.index + c[0].length;
+    }
+  }
+  return html;
 }
 
 function setMeta(html, attrName, attrVal, content) {
@@ -202,7 +232,7 @@ function renderLocationCard(loc, idx) {
     <span class="loc-tag">${escHtml(tagPrefix)}</span>
     <div class="loc-name" itemprop="name">${escHtml(loc.branch_name)}</div>
     <div class="loc-addr" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-      <span itemprop="streetAddress">${escHtml((loc.address || '').replace(/,/g, '<br>'))}</span>
+      <span itemprop="streetAddress">${formatMultiline(loc.address || '')}</span>
     </div>
     <div class="loc-rows">
       <div class="loc-row"><div class="loc-ico">🕘</div>${escHtml(days)} · ${escHtml(open)} – ${escHtml(close)} WIB</div>
@@ -213,6 +243,14 @@ ${amenitiesHtml}
       <a href="${escHtml(loc.maps_url || '#')}" target="_blank" rel="noopener"><button class="btn btn-maps" style="width:100%">Google Maps</button></a>
     </div>
   </div>`;
+}
+
+// Render multi-line text safely: escape HTML, lalu allow user-typed
+// <br>, newlines, atau koma sebagai pemisah baris.
+function formatMultiline(s) {
+  return escHtml(s)
+    .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
+    .replace(/\r?\n/g, '<br>');
 }
 
 // ============================================================================
@@ -380,6 +418,40 @@ async function prerenderFaqPage(html, faqs) {
   return injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(faqLd)}</script>`);
 }
 
+function renderLocationBigCard(loc, idx) {
+  const tagPrefix = loc.tagline || `Lokasi ${idx + 1}`;
+  const days = loc.days_label || 'Senin – Minggu';
+  const open = loc.open_time || '09.00';
+  const close = loc.close_time || '20.00';
+  const amenities = Array.isArray(loc.amenities) && loc.amenities.length
+    ? loc.amenities
+    : [
+        { icon: '🛵', text: 'Tersedia antar via ojek online' },
+        { icon: '🅿', text: 'Parkir tersedia' },
+      ];
+  const amenitiesHtml = amenities
+    .map((a) => `        <div class="loc-row"><div class="loc-ico">${escHtml(a.icon || '·')}</div>${escHtml(a.text || '')}</div>`)
+    .join('\n');
+  const slug = loc.slug || '';
+  const detailLink = slug ? `<a href="/lokasi/${escHtml(slug)}.html" class="btn-detail">Detail →</a>` : '';
+  return `<div class="loc-big-card">
+      <div class="loc-big-header">
+        <span class="loc-tag">${escHtml(tagPrefix)}</span>
+        <div class="loc-big-name">${escHtml(loc.branch_name || '')}</div>
+        <div class="loc-big-addr">${formatMultiline(loc.address || '')}</div>
+        <div class="loc-rows">
+          <div class="loc-row"><div class="loc-ico">🕘</div>${escHtml(days)} · ${escHtml(open)} – ${escHtml(close)} WIB</div>
+${amenitiesHtml}
+        </div>
+      </div>
+      <div class="loc-big-footer">
+        <a href="${escHtml(loc.whatsapp_url || '#')}" class="btn-wa">WhatsApp</a>
+        <a href="${escHtml(loc.maps_url || '#')}" target="_blank" rel="noopener" class="btn-maps">Maps</a>
+        ${detailLink}
+      </div>
+    </div>`;
+}
+
 async function prerenderLokasiPage(html, locations) {
   if (!locations.length) return html;
   // Inject LocalBusiness array schema
@@ -393,7 +465,11 @@ async function prerenderLokasiPage(html, locations) {
     openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: l.open_time || '09:00', closes: l.close_time || '20:00' }],
     priceRange: 'Rp75.000 - Rp1.000.000'
   }));
-  return injectBeforeClose(html, 'head', businessLd.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`).join('\n'));
+  html = injectBeforeClose(html, 'head', businessLd.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`).join('\n'));
+  // Replace loc-overview-grid with dynamic cards
+  const cardsHtml = locations.map((l, i) => renderLocationBigCard(l, i)).join('\n');
+  html = injectIntoElement(html, 'loc-overview-grid', cardsHtml);
+  return html;
 }
 
 // Category-aware product FAQ generator. Picks 6-7 questions most relevant to
