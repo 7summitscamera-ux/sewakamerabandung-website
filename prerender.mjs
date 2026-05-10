@@ -25,10 +25,11 @@ const SRC = '.';
 const OUT = 'dist';
 
 const COPY_FILES = [
-  'design-system.css','components.js','cart.js','branding-loader.js',
+  'design-system.css','article.css','components.js','cart.js','branding-loader.js',
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
   'robots.txt','sitemap.xml','migrations.sql'
 ];
+const COPY_DIRS = ['panduan'];
 const COPY_HTML_AS_IS = [
   'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html'
   // faq, lokasi, sriwijaya, cisaranten get prerendered separately
@@ -629,6 +630,10 @@ async function main() {
   for (const f of COPY_HTML_AS_IS) {
     try { await fs.copyFile(path.join(SRC, f), path.join(OUT, f)); }
     catch (e) { console.warn(`⚠ skip copy ${f}: ${e.message}`); }
+  }
+  for (const d of COPY_DIRS) {
+    try { await fs.cp(path.join(SRC, d), path.join(OUT, d), { recursive: true }); }
+    catch (e) { console.warn(`⚠ skip copy dir ${d}: ${e.message}`); }
   }
 
   // 3. Fetch all data in parallel
