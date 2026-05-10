@@ -17,6 +17,12 @@
   <url><loc>https://sewakamerabandung.id/area/buah-batu</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/area/setiabudi</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/area/lembang</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/area/pasteur</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/area/cihampelas</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/area/cibiru</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/area/dipatiukur</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/area/kopo</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/area/cikutra</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <!-- Pillar articles (added when content engine PR merges) -->
   <url><loc>https://sewakamerabandung.id/panduan/wedding-camera</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/panduan/lighting-budget</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
@@ -24,6 +30,9 @@
   <url><loc>https://sewakamerabandung.id/panduan/lensa-portrait</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/panduan/sony-a7cii-vs-a7iv</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/panduan/drone-bandung-pemula</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/panduan/saramonic-vs-rode-mic</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/panduan/audio-vlogging</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://sewakamerabandung.id/panduan/lensa-cinema-vs-photo</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <!-- Catalog filter URLs -->
   <url><loc>https://sewakamerabandung.id/katalog?cat=KAMERA</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
   <url><loc>https://sewakamerabandung.id/katalog?cat=LENSA</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
