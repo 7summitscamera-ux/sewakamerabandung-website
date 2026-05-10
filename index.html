@@ -115,6 +115,9 @@
   font-size:12px;font-weight:600;color:var(--ink-3);letter-spacing:.04em;white-space:nowrap;
 }
 .tick-dot{width:4px;height:4px;border-radius:50%;background:var(--green);flex-shrink:0}
+.ticker-item img.brand-logo{height:32px;max-width:120px;object-fit:contain;filter:grayscale(100%) brightness(.45);opacity:.78;transition:filter .25s,opacity .25s}
+.ticker-item:hover img.brand-logo{filter:grayscale(0) brightness(1);opacity:1}
+.ticker-item.brand-only{padding:0 28px;gap:0}
 
 /* ============ CATEGORY GRID ============ */
 .cats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:36px}
@@ -442,8 +445,8 @@
   </div>
 </section>
 
-<div class="ticker">
-  <div class="ticker-inner">
+<div class="ticker" id="brand-ticker">
+  <div class="ticker-inner" id="ticker-inner">
     <div class="ticker-item"><span class="tick-dot"></span>Sony Alpha</div>
     <div class="ticker-item"><span class="tick-dot"></span>DJI Drone & Gimbal</div>
     <div class="ticker-item"><span class="tick-dot"></span>Canon Cinema EOS</div>
@@ -496,7 +499,7 @@
 
 <div class="stats-band">
   <div class="cont">
-    <div class="stats-grid">
+    <div class="stats-grid" id="stats-grid">
       <div class="stat-blk"><div class="stat-num">767<span class="acc">+</span></div><div class="stat-lbl">Unit gear tersedia</div></div>
       <div class="stat-blk"><div class="stat-num">5<span class="acc">★</span></div><div class="stat-lbl">Rating Google Maps</div></div>
       <div class="stat-blk"><div class="stat-num">2</div><div class="stat-lbl">Lokasi di Bandung</div></div>

@@ -268,6 +268,8 @@ tr:hover td{background:#FAFBF7}
     <div class="sb-item" data-panel="youtube"><span class="sb-icon">▶</span><span>YouTube Videos</span></div>
     <div class="sb-item" data-panel="faq"><span class="sb-icon">❓</span><span>FAQ</span></div>
     <div class="sb-item" data-panel="promo"><span class="sb-icon">🏷</span><span>Promo</span></div>
+    <div class="sb-item" data-panel="stats"><span class="sb-icon">📈</span><span>Statistik</span></div>
+    <div class="sb-item" data-panel="brands"><span class="sb-icon">🏢</span><span>Brand Slider</span></div>
 
     <div class="sb-section">Bisnis</div>
     <div class="sb-item" data-panel="lokasi"><span class="sb-icon">📍</span><span>Lokasi & Cabang</span></div>
@@ -684,6 +686,46 @@ tr:hover td{background:#FAFBF7}
           </table>
         </div>
       </div>
+    </div>
+
+    <!-- ============ STATISTIK ============ -->
+    <div class="panel" id="panel-stats">
+      <div class="panel-hdr">
+        <h2>Statistik Homepage</h2>
+        <p class="panel-desc">Stats card di homepage (cth: 767+ Unit gear, 5★ Rating, dst). Maximum 4 item ditampilkan rapi 4-kolom; lebih dari itu jadi grid responsive.</p>
+      </div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Stats</div>
+          <button class="btn btn-green btn-sm" type="button" onclick="statsAdd()">+ Tambah Stat</button>
+        </div>
+        <div class="card-body">
+          <div id="stats-list"></div>
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
+        💡 Field <strong>Number</strong> = angka utama (cth: <code>767</code>). Field <strong>Suffix</strong> = simbol kecil di belakang (cth: <code>+</code>, <code>★</code>, <code>%</code>) — boleh kosong. Field <strong>Label</strong> = teks deskriptif di bawah angka.
+      </p>
+    </div>
+
+    <!-- ============ BRAND SLIDER ============ -->
+    <div class="panel" id="panel-brands">
+      <div class="panel-hdr">
+        <h2>Brand Slider</h2>
+        <p class="panel-desc">Logo brand yang scroll otomatis di homepage (di bawah hero). Tambah nama brand + URL logo. Pakai tombol 🔍 untuk cari logo via Google Image Search.</p>
+      </div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Daftar Brand</div>
+          <button class="btn btn-green btn-sm" type="button" onclick="brandsAdd()">+ Tambah Brand</button>
+        </div>
+        <div class="card-body">
+          <div id="brands-list"></div>
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
+        💡 <strong>Cara cari logo:</strong> Klik tombol <strong>🔍 Cari Logo</strong> di samping field URL — browser buka tab baru ke Google Images dengan query <code>{nama brand} logo png transparent</code>. Klik kanan logo yang cocok → <strong>Copy image address</strong> → paste di field URL. Atau pakai <strong>Drive URL</strong> kalau punya logo sendiri (akan auto-convert).
+      </p>
     </div>
 
     <!-- ============ LOKASI ============ -->
@@ -1490,7 +1532,9 @@ function showPanel(name){
     lokasi:['Lokasi & Cabang','Cabang yang tampil di website'],
     kontak:['Kontak & Sosial Media','Nomor & link sosial'],
     users:['User Management','Kelola admin user dan role akses dashboard'],
-    deploy:['Deploy & Publish','Trigger Vercel rebuild untuk publish perubahan ke public web']
+    deploy:['Deploy & Publish','Trigger Vercel rebuild untuk publish perubahan ke public web'],
+    stats:['Statistik Homepage','Stats card di homepage — angka & label editable'],
+    brands:['Brand Slider','Logo brand yang scroll di homepage']
   };
   const t = titles[name] || [name, ''];
   $('topbar-title').textContent = t[0];
@@ -1543,6 +1587,9 @@ async function loadSettings(){
   });
   // YouTube videos
   renderYt(_settings.youtube_videos || []);
+  // Stats & Brands
+  renderStats(Array.isArray(_settings.stats) ? _settings.stats : []);
+  renderBrands(Array.isArray(_settings.brands) ? _settings.brands : []);
   updateTypePreview();
 }
 
@@ -1620,6 +1667,8 @@ async function saveAll(){
   // Cast numerics
   ['font_weight_headline','font_weight_body','font_size_base'].forEach(k => { if (payload[k]) payload[k] = parseInt(payload[k]); });
   payload.youtube_videos = collectYtVideos(true);
+  payload.stats = collectStats();
+  payload.brands = collectBrands();
   payload.updated_at = new Date().toISOString();
   const { error } = await sb.from('site_settings').upsert(payload, { onConflict:'id' });
   btn.disabled = false; btn.textContent = 'Simpan Perubahan';
@@ -1684,6 +1733,128 @@ function ytRemove(i){
   const arr = collectYtVideos(false);
   arr.splice(i,1);
   renderYt(arr);
+}
+
+// ====================================================================
+// STATS (homepage stats-band)
+// ====================================================================
+function renderStats(arr) {
+  const list = $('stats-list');
+  if (!list) return;
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">📈</div><div class="empty-state-ttl">Belum ada stat</div><div class="empty-state-sub">Klik "+ Tambah Stat" untuk mulai. Direkomendasikan 4 item.</div></div>';
+    return;
+  }
+  list.innerHTML = arr.map((s, i) => `
+    <div class="form-row" style="grid-template-columns:1fr 1fr 2fr 60px;align-items:end;border-bottom:1px solid var(--bd);padding-bottom:12px">
+      <div class="form-group"><label>Number</label><input type="text" data-stat-num="${i}" value="${escHtml(s.number || '')}" placeholder="767"></div>
+      <div class="form-group"><label>Suffix</label><input type="text" data-stat-suffix="${i}" value="${escHtml(s.suffix || '')}" placeholder="+ atau ★" maxlength="3"></div>
+      <div class="form-group"><label>Label</label><input type="text" data-stat-label="${i}" value="${escHtml(s.label || '')}" placeholder="Unit gear tersedia"></div>
+      <button class="btn btn-danger btn-sm" type="button" onclick="statsRemove(${i})" aria-label="Hapus stat">×</button>
+    </div>`).join('');
+}
+function collectStats() {
+  const nums = document.querySelectorAll('[data-stat-num]');
+  const sufs = document.querySelectorAll('[data-stat-suffix]');
+  const lbls = document.querySelectorAll('[data-stat-label]');
+  const arr = [];
+  nums.forEach((n, i) => {
+    const number = n.value.trim();
+    const suffix = sufs[i]?.value || '';
+    const label  = lbls[i]?.value.trim() || '';
+    if (number || label) arr.push({ number, suffix, label });
+  });
+  return arr;
+}
+function statsAdd() {
+  const arr = collectStats();
+  arr.push({ number: '', suffix: '', label: '' });
+  renderStats(arr);
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-stat-num]');
+    inputs[inputs.length - 1]?.focus();
+  }, 30);
+}
+function statsRemove(i) {
+  const arr = collectStats();
+  arr.splice(i, 1);
+  renderStats(arr);
+}
+
+// ====================================================================
+// BRANDS (homepage logo slider)
+// ====================================================================
+function renderBrands(arr) {
+  const list = $('brands-list');
+  if (!list) return;
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">🏢</div><div class="empty-state-ttl">Belum ada brand</div><div class="empty-state-sub">Klik "+ Tambah Brand" untuk mulai.</div></div>';
+    return;
+  }
+  list.innerHTML = arr.map((b, i) => {
+    const logo = b.logo_url || '';
+    const previewSrc = logo ? normalizeImageUrl(logo) : '';
+    const preview = previewSrc
+      ? `<img src="${escHtml(previewSrc)}" alt="${escHtml(b.name||'logo')}" style="max-height:40px;max-width:90px;object-fit:contain" onerror="this.outerHTML='<span style=\\'color:var(--ink-5);font-size:11px\\'>?</span>'">`
+      : '<span style="color:var(--ink-5);font-size:11px">no logo</span>';
+    return `
+    <div class="form-row" style="grid-template-columns:120px 1fr 2fr 110px 60px;align-items:end;gap:10px;border-bottom:1px solid var(--bd);padding-bottom:12px">
+      <div class="form-group"><label>Preview</label><div style="height:48px;background:var(--bg-2);border-radius:8px;display:flex;align-items:center;justify-content:center;padding:4px">${preview}</div></div>
+      <div class="form-group"><label>Nama Brand</label><input type="text" data-brand-name="${i}" value="${escHtml(b.name || '')}" placeholder="Sony" oninput="brandsRefreshPreview(${i})"></div>
+      <div class="form-group"><label>Logo URL</label><input type="url" data-brand-logo="${i}" value="${escHtml(logo)}" placeholder="https://...png" oninput="brandsRefreshPreview(${i})"></div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="brandsGoogleSearch(${i})" title="Cari logo via Google Image" style="white-space:nowrap">🔍 Cari Logo</button>
+      <button class="btn btn-danger btn-sm" type="button" onclick="brandsRemove(${i})" aria-label="Hapus brand">×</button>
+    </div>`;
+  }).join('');
+}
+function collectBrands() {
+  const names = document.querySelectorAll('[data-brand-name]');
+  const logos = document.querySelectorAll('[data-brand-logo]');
+  const arr = [];
+  names.forEach((n, i) => {
+    const name = n.value.trim();
+    const logo_url = normalizeImageUrl(logos[i]?.value.trim() || '');
+    if (name || logo_url) arr.push({ name, logo_url });
+  });
+  return arr;
+}
+function brandsAdd() {
+  const arr = collectBrands();
+  arr.push({ name: '', logo_url: '' });
+  renderBrands(arr);
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-brand-name]');
+    inputs[inputs.length - 1]?.focus();
+  }, 30);
+}
+function brandsRemove(i) {
+  const arr = collectBrands();
+  arr.splice(i, 1);
+  renderBrands(arr);
+}
+function brandsRefreshPreview(i) {
+  // Re-render only the preview cell of row i
+  const row = document.querySelectorAll('#brands-list .form-row')[i];
+  if (!row) return;
+  const logo = row.querySelector(`[data-brand-logo="${i}"]`)?.value || '';
+  const name = row.querySelector(`[data-brand-name="${i}"]`)?.value || 'logo';
+  const previewWrap = row.querySelector('.form-group:first-child > div');
+  if (!previewWrap) return;
+  const u = logo ? normalizeImageUrl(logo) : '';
+  previewWrap.innerHTML = u
+    ? `<img src="${escHtml(u)}" alt="${escHtml(name)}" style="max-height:40px;max-width:90px;object-fit:contain" onerror="this.outerHTML='<span style=\\'color:var(--ink-5);font-size:11px\\'>?</span>'">`
+    : '<span style="color:var(--ink-5);font-size:11px">no logo</span>';
+}
+function brandsGoogleSearch(i) {
+  const row = document.querySelectorAll('#brands-list .form-row')[i];
+  if (!row) return;
+  const name = row.querySelector(`[data-brand-name="${i}"]`)?.value.trim() || '';
+  if (!name) {
+    if (window.notify) notify.warn('Isi nama brand dulu', 'Klik di field "Nama Brand", ketik nama brand, lalu coba lagi');
+    return;
+  }
+  const q = encodeURIComponent(`${name} logo png transparent`);
+  window.open(`https://www.google.com/search?q=${q}&tbm=isch`, '_blank', 'noopener');
 }
 
 // ====================================================================
