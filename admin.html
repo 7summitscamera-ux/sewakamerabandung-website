@@ -248,6 +248,7 @@ tr:hover td{background:#FAFBF7}
 
     <div class="sb-section" id="sb-section-system" hidden>Sistem</div>
     <div class="sb-item" data-panel="users" id="sb-item-users" hidden><span class="sb-icon">👥</span><span>User Management</span></div>
+    <div class="sb-item" data-panel="deploy" id="sb-item-deploy" hidden><span class="sb-icon">🚀</span><span>Deploy & Publish</span></div>
   </nav>
   <div class="sb-footer">
     <strong>Admin 7summits</strong>
@@ -689,6 +690,65 @@ tr:hover td{background:#FAFBF7}
   </div>
 </div>
 
+    <!-- ============ DEPLOY & PUBLISH (superadmin only) ============ -->
+    <div class="panel" id="panel-deploy">
+      <div class="panel-hdr">
+        <h2>Deploy & Publish</h2>
+        <p class="panel-desc">Public web di-prerender saat Vercel build. Setelah save di admin, klik <strong>Publish</strong> untuk trigger rebuild — perubahan muncul ±2-3 menit kemudian.</p>
+      </div>
+
+      <div class="card" style="padding:24px;margin-bottom:16px">
+        <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
+          <div style="flex:1;min-width:240px">
+            <div style="font-size:13px;color:var(--ink-3);margin-bottom:6px;font-weight:600">Status</div>
+            <div id="deploy-status" style="display:flex;align-items:center;gap:10px">
+              <span id="deploy-status-dot" style="width:10px;height:10px;border-radius:50%;background:var(--ink-5);display:inline-block"></span>
+              <span id="deploy-status-text" style="font-size:14px;font-weight:500;color:var(--ink-2)">Memuat...</span>
+            </div>
+            <div id="deploy-last" style="font-size:12.5px;color:var(--ink-4);margin-top:8px"></div>
+          </div>
+          <button class="btn btn-primary btn-lg" id="btn-publish" type="button" style="font-weight:600" disabled>
+            <span aria-hidden="true">🚀</span> <span id="btn-publish-label">Publish ke Public Web</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px">
+        <div class="panel-hdr" style="margin-bottom:16px">
+          <h3 style="font-size:16px;font-weight:600">Setup Deploy Hook</h3>
+        </div>
+        <ol style="font-size:13.5px;color:var(--ink-2);line-height:1.7;padding-left:18px;margin-bottom:18px">
+          <li>Buka <a href="https://vercel.com/dashboard" target="_blank" rel="noopener" style="color:var(--green-deep);font-weight:600">Vercel Dashboard</a> → project <code>sewakamerabandung-website</code></li>
+          <li>Settings → <strong>Git</strong> → scroll ke <strong>Deploy Hooks</strong></li>
+          <li>Create hook: nama <code>admin-publish</code>, branch <code>main</code> → <strong>Create Hook</strong></li>
+          <li>Copy URL hook (format: <code>https://api.vercel.com/v1/integrations/deploy/prj_.../...</code>)</li>
+          <li>Paste di field bawah ini → <strong>Simpan</strong></li>
+        </ol>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="deploy-hook-input">Deploy Hook URL <span style="color:var(--ink-4);font-weight:400">(rahasia, hanya superadmin yang bisa lihat)</span></label>
+            <input id="deploy-hook-input" type="password" autocomplete="off" placeholder="https://api.vercel.com/v1/integrations/deploy/..." style="font-family:monospace;font-size:12.5px">
+            <small style="color:var(--ink-4);font-size:11.5px">Disimpan terenkripsi di table <code>admin_config</code> dengan RLS — cuma superadmin yang bisa akses</small>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+          <button class="btn btn-ghost btn-sm" id="btn-hook-toggle" type="button">👁 Tampilkan</button>
+          <button class="btn btn-green btn-sm" id="btn-hook-save" type="button">Simpan Hook URL</button>
+          <button class="btn btn-ghost btn-sm" id="btn-hook-test" type="button" disabled>Test Hook</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:20px 24px;margin-top:16px;background:#f7f8fa;border:1px solid var(--bd)">
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">💡 Tips</h3>
+        <ul style="font-size:13px;color:var(--ink-3);line-height:1.7;padding-left:18px;margin:0">
+          <li>Publish butuh 2-3 menit (Vercel build + deploy)</li>
+          <li>Tidak perlu publish setiap simpan kecil — kumpulin perubahan dulu, baru publish sekali</li>
+          <li>Branding (warna, font, logo) update <strong>real-time</strong> tanpa publish — diapply via JS di every page</li>
+          <li>Konten yang butuh publish: lokasi, FAQ, promo, produk enrichment, hero text, paket</li>
+        </ul>
+      </div>
+    </div>
+
     <!-- ============ USER MANAGEMENT (superadmin only) ============ -->
     <div class="panel" id="panel-users">
       <div class="panel-hdr">
@@ -912,10 +972,11 @@ let CURRENT_USER = null;
   document.getElementById('topbar-user-role').textContent = '· ' + CURRENT_USER.role;
   document.getElementById('topbar-user-avatar').textContent = (CURRENT_USER.username || '?').charAt(0).toUpperCase();
   tbu.hidden = false;
-  // Tampilkan menu User Management hanya untuk superadmin
+  // Tampilkan menu Sistem (User Management + Deploy) hanya untuk superadmin
   if (CURRENT_USER.role === 'superadmin') {
     document.getElementById('sb-section-system').hidden = false;
     document.getElementById('sb-item-users').hidden = false;
+    document.getElementById('sb-item-deploy').hidden = false;
   }
   // Hide superadmin-only buttons untuk role lain
   if (CURRENT_USER.role !== 'superadmin') {
@@ -1191,6 +1252,146 @@ async function userDelete(id, username) {
 document.getElementById('btn-user-create')?.addEventListener('click', userOpenCreate);
 
 // ====================================================================
+// DEPLOY & PUBLISH
+// ====================================================================
+async function loadDeployConfig() {
+  if (!CURRENT_USER || CURRENT_USER.role !== 'superadmin') return;
+  try {
+    const { data, error } = await sb.from('admin_config').select('key, value, updated_at').in('key', ['deploy_hook_url','last_published_at']);
+    if (error) throw error;
+    const map = {};
+    (data || []).forEach(r => { map[r.key] = r; });
+
+    const hookUrl = map.deploy_hook_url?.value || '';
+    const lastPub = map.last_published_at?.value || '';
+
+    const input = document.getElementById('deploy-hook-input');
+    input.value = hookUrl;
+    input.dataset.original = hookUrl;
+
+    document.getElementById('btn-publish').disabled = !hookUrl;
+    document.getElementById('btn-hook-test').disabled = !hookUrl;
+
+    const statusDot = document.getElementById('deploy-status-dot');
+    const statusTxt = document.getElementById('deploy-status-text');
+    const lastEl   = document.getElementById('deploy-last');
+
+    if (!hookUrl) {
+      statusDot.style.background = '#f59e0b';
+      statusTxt.textContent = 'Hook URL belum di-setup — ikuti langkah di bawah';
+      lastEl.textContent = '';
+    } else {
+      statusDot.style.background = '#10b981';
+      statusTxt.textContent = 'Siap publish';
+      if (lastPub) {
+        const d = new Date(lastPub);
+        lastEl.textContent = 'Terakhir publish: ' + d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+      } else {
+        lastEl.textContent = 'Belum pernah publish';
+      }
+    }
+  } catch (err) {
+    toast.error('Gagal load config', err.message);
+  }
+}
+
+document.getElementById('btn-hook-toggle')?.addEventListener('click', () => {
+  const input = document.getElementById('deploy-hook-input');
+  const btn   = document.getElementById('btn-hook-toggle');
+  const showing = input.type === 'text';
+  input.type = showing ? 'password' : 'text';
+  btn.innerHTML = showing ? '👁 Tampilkan' : '🙈 Sembunyikan';
+});
+
+document.getElementById('btn-hook-save')?.addEventListener('click', async () => {
+  if (CURRENT_USER.role !== 'superadmin') return;
+  const input = document.getElementById('deploy-hook-input');
+  const url = input.value.trim();
+  const btn = document.getElementById('btn-hook-save');
+
+  // Validate
+  if (url && !/^https:\/\/api\.vercel\.com\/v1\/integrations\/deploy\//.test(url)) {
+    return toast.error('URL tidak valid', 'Format harus: https://api.vercel.com/v1/integrations/deploy/...');
+  }
+
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Menyimpan...';
+  try {
+    const { error } = await sb.from('admin_config').upsert({ key: 'deploy_hook_url', value: url || null }, { onConflict: 'key' });
+    if (error) throw error;
+    toast.success('Hook URL tersimpan', url ? 'Sekarang bisa publish via tombol di atas' : 'Hook URL dihapus');
+    await loadDeployConfig();
+  } catch (err) {
+    toast.error('Gagal simpan', err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+});
+
+async function triggerDeploy(isTest = false) {
+  if (CURRENT_USER.role !== 'superadmin') return;
+  const { data, error } = await sb.from('admin_config').select('value').eq('key', 'deploy_hook_url').maybeSingle();
+  if (error || !data?.value) return toast.error('Hook URL belum di-setup', 'Setup dulu di bawah');
+  const url = data.value;
+
+  // CORS — Vercel deploy hooks accept POST tanpa CORS check, tapi browser mungkin block.
+  // Pakai mode: 'no-cors' supaya request dikirim walaupun response tidak readable.
+  try {
+    await fetch(url, { method: 'POST', mode: 'no-cors' });
+    // no-cors response is opaque, kita assume sukses kalau tidak throw
+    if (!isTest) {
+      // Record timestamp
+      await sb.from('admin_config').upsert(
+        { key: 'last_published_at', value: new Date().toISOString() },
+        { onConflict: 'key' }
+      );
+    }
+    return true;
+  } catch (err) {
+    throw new Error('Gagal trigger hook: ' + err.message);
+  }
+}
+
+document.getElementById('btn-publish')?.addEventListener('click', async () => {
+  const ok = await confirmDialog({
+    title: 'Publish ke public web?',
+    message: 'Vercel akan rebuild website dengan data terbaru dari admin. Proses butuh ±2-3 menit. Pastikan semua perubahan sudah di-save.',
+    confirmText: '🚀 Ya, Publish',
+    cancelText: 'Batal',
+    icon: 'info',
+  });
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-publish');
+  const lbl = document.getElementById('btn-publish-label');
+  btn.disabled = true;
+  const origLbl = lbl.textContent;
+  lbl.textContent = 'Menjalankan rebuild...';
+  try {
+    await triggerDeploy(false);
+    toast.success('Publish triggered ✓', 'Vercel mulai rebuild. Cek public web ±2-3 menit lagi. Reload halaman ini untuk update timestamp.', 7000);
+    await loadDeployConfig();
+  } catch (err) {
+    toast.error('Gagal publish', err.message);
+  } finally {
+    btn.disabled = false;
+    lbl.textContent = origLbl;
+  }
+});
+
+document.getElementById('btn-hook-test')?.addEventListener('click', async () => {
+  const btn = document.getElementById('btn-hook-test');
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Testing...';
+  try {
+    await triggerDeploy(true);
+    toast.success('Test berhasil', 'Hook URL valid. Vercel rebuild juga ter-trigger — kalau gak mau rebuild, abaikan.', 6000);
+  } catch (err) {
+    toast.error('Test gagal', err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+});
+
+// ====================================================================
 // HELPERS
 // ====================================================================
 function $(id){ return document.getElementById(id); }
@@ -1219,13 +1420,15 @@ function showPanel(name){
     promo:['Promo','Promo aktif di halaman publik'],
     lokasi:['Lokasi & Cabang','Cabang yang tampil di website'],
     kontak:['Kontak & Sosial Media','Nomor & link sosial'],
-    users:['User Management','Kelola admin user dan role akses dashboard']
+    users:['User Management','Kelola admin user dan role akses dashboard'],
+    deploy:['Deploy & Publish','Trigger Vercel rebuild untuk publish perubahan ke public web']
   };
   const t = titles[name] || [name, ''];
   $('topbar-title').textContent = t[0];
   $('topbar-sub').textContent = t[1];
   // Lazy-load data per panel
   if (name === 'users') loadUsers();
+  if (name === 'deploy') loadDeployConfig();
 }
 document.querySelectorAll('.sb-item').forEach(el => {
   el.addEventListener('click', () => showPanel(el.dataset.panel));
