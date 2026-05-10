@@ -28,7 +28,8 @@ const COPY_FILES = [
   'design-system.css','article.css','area.css','auth.css',
   'components.js','cart.js','branding-loader.js','auth.js',
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
-  'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql'
+  'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql',
+  'locations-amenities-migration.sql','faq-categories-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
   'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
@@ -405,24 +406,69 @@ function renderKatalogCard(p, enrich) {
   </a>`;
 }
 
+// Category labels untuk public FAQ page tabs.
+// Slug → display label. Order = order tampil sebagai tabs.
+const FAQ_CATEGORIES = [
+  { slug: 'harga',  label: 'Harga & Paket' },
+  { slug: 'lokasi', label: 'Lokasi & Operasional' },
+  { slug: 'syarat', label: 'Syarat & Ketentuan' },
+  { slug: 'produk', label: 'Produk & Gear' },
+  { slug: 'proses', label: 'Proses Booking' },
+  { slug: 'umum',   label: 'Umum' },
+];
+
 async function prerenderFaqPage(html, faqs) {
   if (!faqs.length) return html;
-  // The faq.html has groups by category. Group active faqs by category.
+
+  // Group FAQs by category (active only)
+  const active = faqs.filter((f) => f.is_active !== false);
   const byCat = {};
-  faqs.forEach((f) => {
+  active.forEach((f) => {
     const c = f.category || 'umum';
     (byCat[c] = byCat[c] || []).push(f);
   });
-  // Note: The static faq.html has hardcoded groups. We don't replace those
-  // (they are content-rich already); instead we inject FAQPage JSON-LD only.
+
+  // Sort each category by sort_order
+  Object.keys(byCat).forEach((c) => {
+    byCat[c].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  });
+
+  // Build category tabs — only show categories that have active FAQs
+  const visibleCats = FAQ_CATEGORIES.filter((cat) => (byCat[cat.slug] || []).length > 0);
+  const tabsHtml = [
+    `<button class="faq-cat-btn active" onclick="filterFaq('all',this)">Semua</button>`,
+    ...visibleCats.map((cat) =>
+      `<button class="faq-cat-btn" onclick="filterFaq('${cat.slug}',this)">${escHtml(cat.label)}</button>`
+    ),
+  ].join('\n      ');
+  html = injectIntoElement(html, 'faq-cats', tabsHtml);
+
+  // Build groups
+  const groupsHtml = visibleCats.map((cat) => {
+    const items = byCat[cat.slug] || [];
+    const itemsHtml = items
+      .map((f) =>
+        `        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">${escHtml(f.question)}<div class="faq-q-icon">+</div></div><div class="faq-a"><div class="faq-a-inner">${f.answer || ''}</div></div></div>`
+      )
+      .join('\n');
+    return `    <div class="faq-group" data-cat="${escHtml(cat.slug)}">
+      <div class="faq-group-title">${escHtml(cat.label)}</div>
+      <div class="faq-list">
+${itemsHtml}
+      </div>
+    </div>`;
+  }).join('\n');
+  html = injectIntoElement(html, 'faq-groups', groupsHtml);
+
+  // FAQPage JSON-LD
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqs.map((f) => ({
+    mainEntity: active.map((f) => ({
       '@type': 'Question',
       name: f.question,
-      acceptedAnswer: { '@type': 'Answer', text: (f.answer || '').replace(/<[^>]+>/g, '') }
-    }))
+      acceptedAnswer: { '@type': 'Answer', text: (f.answer || '').replace(/<[^>]+>/g, '') },
+    })),
   };
   return injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(faqLd)}</script>`);
 }
