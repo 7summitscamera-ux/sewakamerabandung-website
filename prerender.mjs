@@ -29,7 +29,8 @@ const COPY_FILES = [
   'components.js','cart.js','branding-loader.js','auth.js',
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
   'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql',
-  'locations-amenities-migration.sql','faq-categories-migration.sql','stats-brands-migration.sql'
+  'locations-amenities-migration.sql','faq-categories-migration.sql','stats-brands-migration.sql',
+  'brand-slider-settings-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
   'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
@@ -323,6 +324,27 @@ async function prerenderIndex(html, { produk, enrichMap, faqs, locations, settin
         const tickerHtml = brands.map(renderItem).join('') + brands.map(renderItem).join('');
         html = injectIntoElement(html, 'ticker-inner', tickerHtml);
       }
+    }
+
+    // 4c. Brand slider visual settings — inject inline CSS overrides
+    {
+      const h    = parseInt(settings.brand_logo_height)    || 32;
+      const maxw = parseInt(settings.brand_logo_max_width) || 120;
+      const gap  = parseInt(settings.brand_gap)            || 56;
+      const dur  = parseInt(settings.brand_anim_duration)  || 38;
+      const op   = parseFloat(settings.brand_logo_opacity) || 0.78;
+      const grayscale = settings.brand_logo_style !== 'color';
+      const filterRule = grayscale
+        ? `filter:grayscale(100%) brightness(.45);opacity:${op}`
+        : `filter:none;opacity:${op}`;
+      const overrideCss = `<style id="brand-slider-overrides">
+.ticker-inner{animation-duration:${dur}s}
+.ticker-item{padding:0 ${Math.round(gap / 2)}px}
+.ticker-item.brand-only{padding:0 ${Math.round(gap / 2)}px}
+.ticker-item img.brand-logo{height:${h}px;max-width:${maxw}px;${filterRule}}
+.ticker-item:hover img.brand-logo{filter:none;opacity:1}
+</style>`;
+      html = injectBeforeClose(html, 'head', overrideCss);
     }
 
     if (settings.hero_image_url) {

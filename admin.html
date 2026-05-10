@@ -714,6 +714,52 @@ tr:hover td{background:#FAFBF7}
         <h2>Brand Slider</h2>
         <p class="panel-desc">Logo brand yang scroll otomatis di homepage (di bawah hero). Tambah nama brand + URL logo. Pakai tombol 🔍 untuk cari logo via Google Image Search.</p>
       </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hdr"><div class="card-title">Tampilan Slider</div></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tinggi Logo (px)</label>
+              <input type="number" id="brand_logo_height" min="16" max="120" step="2" value="32">
+              <small style="color:var(--ink-4);font-size:11.5px">Rekomendasi: 24-48px. Default 32px.</small>
+            </div>
+            <div class="form-group">
+              <label>Lebar Maksimal Logo (px)</label>
+              <input type="number" id="brand_logo_max_width" min="60" max="300" step="10" value="120">
+              <small style="color:var(--ink-4);font-size:11.5px">Logo akan fit dalam lebar ini sambil pertahankan aspect ratio. Default 120px.</small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Jarak Antar Logo (px)</label>
+              <input type="number" id="brand_gap" min="10" max="120" step="2" value="56">
+              <small style="color:var(--ink-4);font-size:11.5px">Padding kiri+kanan tiap item. Default 56px (28px each side).</small>
+            </div>
+            <div class="form-group">
+              <label>Kecepatan Animasi (detik per loop)</label>
+              <input type="number" id="brand_anim_duration" min="10" max="120" step="2" value="38">
+              <small style="color:var(--ink-4);font-size:11.5px">Lebih kecil = lebih cepat. Default 38 detik.</small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Style Logo</label>
+              <select id="brand_logo_style">
+                <option value="grayscale">Grayscale (color on hover) — minimal</option>
+                <option value="color">Always color</option>
+              </select>
+              <small style="color:var(--ink-4);font-size:11.5px">Grayscale memberikan vibe minimal & konsisten. Color = penuh warna.</small>
+            </div>
+            <div class="form-group">
+              <label>Opacity Default</label>
+              <input type="number" id="brand_logo_opacity" min="0.3" max="1" step="0.05" value="0.78">
+              <small style="color:var(--ink-4);font-size:11.5px">0.3 = sangat transparan, 1 = penuh. Default 0.78.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-hdr">
           <div class="card-title">Daftar Brand</div>
@@ -1585,6 +1631,15 @@ async function loadSettings(){
   ['whatsapp_number','instagram_url','youtube_channel','booking_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
   });
+  // Brand slider settings (with sensible defaults if null)
+  const brandDefaults = {
+    brand_logo_height: 32, brand_logo_max_width: 120, brand_gap: 56,
+    brand_anim_duration: 38, brand_logo_style: 'grayscale', brand_logo_opacity: 0.78
+  };
+  Object.entries(brandDefaults).forEach(([k, defaultVal]) => {
+    const v = _settings[k] != null ? _settings[k] : defaultVal;
+    if ($(k)) $(k).value = v;
+  });
   // YouTube videos
   renderYt(_settings.youtube_videos || []);
   // Stats & Brands
@@ -1657,9 +1712,15 @@ async function saveAll(){
     'logo_url','logo_mark_url','logo_dark_url','favicon_url',
     'hero_image_url','hero_headline','hero_subheadline','hero_cta_primary_text','hero_cta_primary_url','hero_cta_secondary_text','hero_cta_secondary_url',
     'ann_bar_text','ann_bar_link_text','ann_bar_link_url',
-    'whatsapp_number','instagram_url','youtube_channel','booking_url'];
+    'whatsapp_number','instagram_url','youtube_channel','booking_url',
+    'brand_logo_height','brand_logo_max_width','brand_gap','brand_anim_duration','brand_logo_style','brand_logo_opacity'];
   const payload = { id: 1 };
   fields.forEach(k => { if ($(k)) payload[k] = $(k).value || null; });
+  // Cast brand slider numerics
+  ['brand_logo_height','brand_logo_max_width','brand_gap','brand_anim_duration'].forEach(k => {
+    if (payload[k]) payload[k] = parseInt(payload[k]);
+  });
+  if (payload.brand_logo_opacity != null) payload.brand_logo_opacity = parseFloat(payload.brand_logo_opacity);
   // Auto-convert Google Drive URLs ke direct image URLs
   ['logo_url','logo_mark_url','logo_dark_url','favicon_url','hero_image_url'].forEach(k => {
     if (payload[k]) payload[k] = normalizeImageUrl(payload[k]);
