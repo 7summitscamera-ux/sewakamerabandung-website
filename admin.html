@@ -474,6 +474,9 @@ tr:hover td{background:#FAFBF7}
       <div class="card">
         <div class="card-hdr"><div class="card-title">Varian Logo</div></div>
         <div class="card-body">
+          <div class="alert" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:14px;display:block;line-height:1.55">
+            💡 <strong>Pakai Google Drive?</strong> Upload file → klik kanan file → <strong>Share</strong> → ubah ke <strong>"Anyone with the link"</strong> → Copy link → paste di field bawah. Kami auto-convert ke direct image URL. Atau pakai URL gambar langsung yang ujungnya <code>.png</code>/<code>.jpg</code> (Unsplash, Imgur, dll).
+          </div>
           <div class="form-row">
             <div class="form-group">
               <label>Logo Landscape (default — wordmark + icon)</label>
@@ -1433,6 +1436,25 @@ document.getElementById('btn-hook-test')?.addEventListener('click', async () => 
 function $(id){ return document.getElementById(id); }
 function escHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmtRp(n){ return 'Rp ' + Number(n||0).toLocaleString('id-ID'); }
+
+// Normalize image URL — auto-convert Google Drive viewer URLs ke direct image URL.
+// Drive URL formats yang di-handle:
+//   https://drive.google.com/open?id=FILE_ID
+//   https://drive.google.com/file/d/FILE_ID/view?usp=...
+//   https://drive.google.com/file/d/FILE_ID/preview
+//   https://drive.google.com/uc?export=view&id=FILE_ID
+//   https://drive.google.com/thumbnail?id=FILE_ID
+// Pre-req: file di-share dengan "Anyone with the link" supaya bisa di-fetch.
+function normalizeImageUrl(url) {
+  if (!url || typeof url !== 'string') return url || '';
+  url = url.trim();
+  // Detect Drive URL & extract file ID
+  const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]{20,})/);
+  if (m && m[1]) {
+    return `https://lh3.googleusercontent.com/d/${m[1]}=w2000`;
+  }
+  return url;
+}
 function toast(msg, kind){
   const a = $('alert');
   a.className = 'alert ' + (kind || 'success') + ' show';
@@ -1497,13 +1519,13 @@ async function loadSettings(){
   ['logo_url','logo_mark_url','logo_dark_url','favicon_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
   });
-  if (_settings.logo_url) $('prev-logo').innerHTML = '<img src="'+escHtml(_settings.logo_url)+'" style="max-height:40px">';
-  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(_settings.logo_mark_url || '/logo-7summits-mark.png')+'" style="max-height:60px;border-radius:8px">';
+  if (_settings.logo_url) $('prev-logo').innerHTML = '<img src="'+escHtml(normalizeImageUrl(_settings.logo_url))+'" alt="Logo" style="max-height:40px" onerror="this.outerHTML=\'<span style=color:var(--danger);font-size:12px>⚠ Gambar gak ke-load. Pastikan link Drive di-share \\\'Anyone with link\\\' atau pakai URL gambar langsung.</span>\'">';
+  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(normalizeImageUrl(_settings.logo_mark_url || '/logo-7summits-mark.png'))+'" alt="Logo mark" style="max-height:60px;border-radius:8px">';
   // Hero
   ['hero_image_url','hero_headline','hero_subheadline','hero_cta_primary_text','hero_cta_primary_url','hero_cta_secondary_text','hero_cta_secondary_url','ann_bar_text','ann_bar_link_text','ann_bar_link_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
   });
-  if (_settings.hero_image_url) $('prev-hero').style.backgroundImage = 'url("'+_settings.hero_image_url+'")';
+  if (_settings.hero_image_url) $('prev-hero').style.backgroundImage = 'url("'+normalizeImageUrl(_settings.hero_image_url)+'")';
   // Kontak
   ['whatsapp_number','instagram_url','youtube_channel','booking_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
@@ -1518,14 +1540,28 @@ function updateSwatch(input, name){
   $('prev-'+name).style.background = hex;
   const t = $('brand_'+name+'_txt'); if (t && t.value !== hex) t.value = hex;
 }
+function imgErrFallback() {
+  return ' onerror="this.outerHTML=\'<span style=&quot;color:var(--danger);font-size:11.5px;line-height:1.4&quot;>⚠ Gambar gak ke-load. Pastikan link Drive di-share <strong>Anyone with link</strong>, atau pakai URL gambar langsung (.png/.jpg).</span>\'"';
+}
 $('hero_image_url')?.addEventListener('input', e => {
-  $('prev-hero').style.backgroundImage = e.target.value ? 'url("'+e.target.value+'")' : '';
+  const url = normalizeImageUrl(e.target.value);
+  $('prev-hero').style.backgroundImage = url ? 'url("'+url+'")' : '';
 });
 $('logo_url')?.addEventListener('input', e => {
-  $('prev-logo').innerHTML = e.target.value ? '<img src="'+escHtml(e.target.value)+'" style="max-height:40px">' : '';
+  const url = normalizeImageUrl(e.target.value);
+  $('prev-logo').innerHTML = url ? '<img src="'+escHtml(url)+'" alt="Logo" style="max-height:40px"'+imgErrFallback()+'>' : '';
 });
 $('logo_mark_url')?.addEventListener('input', e => {
-  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(e.target.value || '/logo-7summits-mark.png')+'" style="max-height:60px;border-radius:8px">';
+  const url = normalizeImageUrl(e.target.value || '/logo-7summits-mark.png');
+  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(url)+'" alt="Logo mark" style="max-height:60px;border-radius:8px"'+imgErrFallback()+'>';
+});
+$('logo_dark_url')?.addEventListener('input', e => {
+  const norm = normalizeImageUrl(e.target.value);
+  if (e.target.value && norm !== e.target.value) e.target.title = 'Akan disimpan sebagai: ' + norm;
+});
+$('favicon_url')?.addEventListener('input', e => {
+  const norm = normalizeImageUrl(e.target.value);
+  if (e.target.value && norm !== e.target.value) e.target.title = 'Akan disimpan sebagai: ' + norm;
 });
 
 // Typography preview
@@ -1566,6 +1602,10 @@ async function saveAll(){
     'whatsapp_number','instagram_url','youtube_channel','booking_url'];
   const payload = { id: 1 };
   fields.forEach(k => { if ($(k)) payload[k] = $(k).value || null; });
+  // Auto-convert Google Drive URLs ke direct image URLs
+  ['logo_url','logo_mark_url','logo_dark_url','favicon_url','hero_image_url'].forEach(k => {
+    if (payload[k]) payload[k] = normalizeImageUrl(payload[k]);
+  });
   // Cast numerics
   ['font_weight_headline','font_weight_body','font_size_base'].forEach(k => { if (payload[k]) payload[k] = parseInt(payload[k]); });
   payload.youtube_videos = collectYtVideos(true);

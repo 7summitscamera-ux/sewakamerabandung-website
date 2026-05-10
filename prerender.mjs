@@ -41,6 +41,15 @@ const COPY_DIRS = ['panduan','area','layanan','vs'];
 // HELPERS
 // ============================================================================
 const escHtml = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Normalize image URL — auto-convert Google Drive viewer URLs ke direct image URL.
+function normalizeImageUrl(url) {
+  if (!url || typeof url !== 'string') return url || '';
+  url = url.trim();
+  const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]{20,})/);
+  if (m && m[1]) return `https://lh3.googleusercontent.com/d/${m[1]}=w2000`;
+  return url;
+}
 const fmtRp = (n) => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
 function slugify(s) {
   return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
@@ -287,7 +296,7 @@ async function prerenderIndex(html, { produk, enrichMap, faqs, locations, settin
     if (settings.hero_image_url) {
       html = html.replace(
         /url\('https:\/\/images\.unsplash\.com\/[^']+'\)/,
-        `url('${settings.hero_image_url}')`
+        `url('${normalizeImageUrl(settings.hero_image_url)}')`
       );
     }
     if (settings.hero_headline) {
