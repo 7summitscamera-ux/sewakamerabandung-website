@@ -630,11 +630,22 @@ tr:hover td{background:#FAFBF7}
 
     <!-- ============ FAQ ============ -->
     <div class="panel" id="panel-faq">
-      <div class="panel-hdr"><h2>FAQ</h2><p>Pertanyaan & jawaban yang muncul di homepage dan halaman /faq.</p></div>
+      <div class="panel-hdr"><h2>FAQ</h2><p>Pertanyaan & jawaban yang muncul di homepage dan halaman /faq. Kategori menentukan tab di public page.</p></div>
       <div class="card">
         <div class="card-hdr">
           <div class="card-title">Daftar FAQ</div>
-          <button class="btn btn-green btn-sm" onclick="faqOpen()">+ Tambah FAQ</button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="faq-filter-cat" onchange="renderFaqs()" style="padding:7px 12px;border:1px solid var(--bd);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
+              <option value="all">Semua Kategori</option>
+              <option value="harga">Harga & Paket</option>
+              <option value="lokasi">Lokasi & Operasional</option>
+              <option value="syarat">Syarat & Ketentuan</option>
+              <option value="produk">Produk & Gear</option>
+              <option value="proses">Proses Booking</option>
+              <option value="umum">Umum</option>
+            </select>
+            <button class="btn btn-green btn-sm" onclick="faqOpen()">+ Tambah FAQ</button>
+          </div>
         </div>
         <div class="tbl-wrap" style="border-radius:0;border-left:0;border-right:0;border-top:0">
           <table>
@@ -1687,8 +1698,14 @@ async function loadFaqs(){
 }
 function renderFaqs(){
   const tb = $('faq-tbody');
-  if (!_faqs.length) { tb.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-state-ico">❓</div><div class="empty-state-ttl">Belum ada FAQ</div></div></td></tr>'; return; }
-  tb.innerHTML = _faqs.map(f => `
+  const filter = $('faq-filter-cat')?.value || 'all';
+  const list = filter === 'all' ? _faqs : _faqs.filter(f => (f.category || 'umum') === filter);
+  if (!list.length) {
+    const msg = _faqs.length ? `Tidak ada FAQ di kategori ini` : `Belum ada FAQ`;
+    tb.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state-ico">❓</div><div class="empty-state-ttl">${msg}</div></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = list.map(f => `
     <tr>
       <td><div style="font-weight:600;color:var(--ink);margin-bottom:3px">${escHtml(f.question)}</div><div style="color:var(--ink-4);font-size:12px">${escHtml((f.answer||'').slice(0,100))}${(f.answer||'').length>100?'...':''}</div></td>
       <td><span class="badge active">${escHtml(f.category||'umum')}</span></td>
