@@ -997,7 +997,7 @@ const sbB = supabase.createClient(BOOKING_URL, BOOKING_KEY);
 // ====================================================================
 // TOAST & CONFIRM helpers (reusable di seluruh dashboard)
 // ====================================================================
-const toast = (() => {
+const notify = (() => {
   const ICONS = {
     success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>',
     error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
@@ -1090,7 +1090,7 @@ document.getElementById('btn-logout')?.addEventListener('click', async () => {
     icon: 'warn',
   });
   if (!ok) return;
-  toast.info('Logout...', '');
+  notify.info('Logout...', '');
   try { await window.SK7Auth.logout(); } catch (_) {}
   location.replace('/login');
 });
@@ -1138,7 +1138,7 @@ async function loadUsers() {
     }).join('');
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--danger)">Gagal load users: ${escHtml(err.message)}</td></tr>`;
-    toast.error('Gagal load user', err.message);
+    notify.error('Gagal load user', err.message);
   }
 }
 function roleBadgeHtml(role) {
@@ -1152,7 +1152,7 @@ function roleBadgeHtml(role) {
 }
 
 function userOpenCreate() {
-  if (CURRENT_USER.role !== 'superadmin') return toast.warn('Akses ditolak', 'Hanya superadmin yang bisa create user');
+  if (CURRENT_USER.role !== 'superadmin') return notify.warn('Akses ditolak', 'Hanya superadmin yang bisa create user');
   document.getElementById('modal-user-ttl').textContent = 'Tambah User';
   document.getElementById('usr-id').value = '';
   document.getElementById('usr-mode').value = 'create';
@@ -1171,7 +1171,7 @@ function userOpenCreate() {
 async function userOpen(id) {
   const me = CURRENT_USER;
   const isSelf = id === me.id;
-  if (!isSelf && me.role !== 'superadmin') return toast.warn('Akses ditolak', 'Hanya bisa edit profile sendiri');
+  if (!isSelf && me.role !== 'superadmin') return notify.warn('Akses ditolak', 'Hanya bisa edit profile sendiri');
   // Fetch user
   try {
     const { data, error } = await sb.from('admin_users').select('*').eq('id', id).single();
@@ -1193,7 +1193,7 @@ async function userOpen(id) {
     document.getElementById('usr-err').style.display = 'none';
     openModal('modal-user');
   } catch (err) {
-    toast.error('Gagal load user', err.message);
+    notify.error('Gagal load user', err.message);
   }
 }
 
@@ -1213,18 +1213,18 @@ async function userSave() {
   try {
     if (mode === 'create') {
       await window.SK7Auth.createUser({ username, password, role });
-      toast.success('User dibuat', `${username} berhasil ditambah dengan role ${role}`);
+      notify.success('User dibuat', `${username} berhasil ditambah dengan role ${role}`);
     } else {
       const updates = { username, role };
       if (password) updates.password = password;
       await window.SK7Auth.updateUser(id, updates);
-      toast.success('User diperbarui', `Perubahan ${username} tersimpan`);
+      notify.success('User diperbarui', `Perubahan ${username} tersimpan`);
     }
     closeModal('modal-user');
     await loadUsers();
   } catch (err) {
     showErr(err.message);
-    toast.error('Gagal simpan', err.message);
+    notify.error('Gagal simpan', err.message);
   } finally {
     btn.disabled = false; btn.textContent = oldText;
   }
@@ -1232,7 +1232,7 @@ async function userSave() {
 
 async function userDelete(id, username) {
   if (CURRENT_USER.role !== 'superadmin') return;
-  if (id === CURRENT_USER.id) return toast.warn('Tidak diizinkan', 'Tidak bisa hapus akun sendiri');
+  if (id === CURRENT_USER.id) return notify.warn('Tidak diizinkan', 'Tidak bisa hapus akun sendiri');
   const ok = await confirmDialog({
     title: 'Hapus user ini?',
     message: `User <strong>${escHtml(username)}</strong> akan dihapus dari akses dashboard. Aksi ini <strong>tidak bisa di-undo</strong>.`,
@@ -1242,10 +1242,10 @@ async function userDelete(id, username) {
   if (!ok) return;
   try {
     await window.SK7Auth.deleteUser(id);
-    toast.success('User dihapus', `${username} berhasil dihapus`);
+    notify.success('User dihapus', `${username} berhasil dihapus`);
     await loadUsers();
   } catch (err) {
-    toast.error('Gagal hapus', err.message);
+    notify.error('Gagal hapus', err.message);
   }
 }
 
@@ -1291,7 +1291,7 @@ async function loadDeployConfig() {
       }
     }
   } catch (err) {
-    toast.error('Gagal load config', err.message);
+    notify.error('Gagal load config', err.message);
   }
 }
 
@@ -1311,17 +1311,17 @@ document.getElementById('btn-hook-save')?.addEventListener('click', async () => 
 
   // Validate
   if (url && !/^https:\/\/api\.vercel\.com\/v1\/integrations\/deploy\//.test(url)) {
-    return toast.error('URL tidak valid', 'Format harus: https://api.vercel.com/v1/integrations/deploy/...');
+    return notify.error('URL tidak valid', 'Format harus: https://api.vercel.com/v1/integrations/deploy/...');
   }
 
   btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Menyimpan...';
   try {
     const { error } = await sb.from('admin_config').upsert({ key: 'deploy_hook_url', value: url || null }, { onConflict: 'key' });
     if (error) throw error;
-    toast.success('Hook URL tersimpan', url ? 'Sekarang bisa publish via tombol di atas' : 'Hook URL dihapus');
+    notify.success('Hook URL tersimpan', url ? 'Sekarang bisa publish via tombol di atas' : 'Hook URL dihapus');
     await loadDeployConfig();
   } catch (err) {
-    toast.error('Gagal simpan', err.message);
+    notify.error('Gagal simpan', err.message);
   } finally {
     btn.disabled = false; btn.textContent = orig;
   }
@@ -1330,7 +1330,7 @@ document.getElementById('btn-hook-save')?.addEventListener('click', async () => 
 async function triggerDeploy(isTest = false) {
   if (CURRENT_USER.role !== 'superadmin') return;
   const { data, error } = await sb.from('admin_config').select('value').eq('key', 'deploy_hook_url').maybeSingle();
-  if (error || !data?.value) return toast.error('Hook URL belum di-setup', 'Setup dulu di bawah');
+  if (error || !data?.value) return notify.error('Hook URL belum di-setup', 'Setup dulu di bawah');
   const url = data.value;
 
   // CORS — Vercel deploy hooks accept POST tanpa CORS check, tapi browser mungkin block.
@@ -1368,10 +1368,10 @@ document.getElementById('btn-publish')?.addEventListener('click', async () => {
   lbl.textContent = 'Menjalankan rebuild...';
   try {
     await triggerDeploy(false);
-    toast.success('Publish triggered ✓', 'Vercel mulai rebuild. Cek public web ±2-3 menit lagi. Reload halaman ini untuk update timestamp.', 7000);
+    notify.success('Publish triggered ✓', 'Vercel mulai rebuild. Cek public web ±2-3 menit lagi. Reload halaman ini untuk update timestamp.', 7000);
     await loadDeployConfig();
   } catch (err) {
-    toast.error('Gagal publish', err.message);
+    notify.error('Gagal publish', err.message);
   } finally {
     btn.disabled = false;
     lbl.textContent = origLbl;
@@ -1383,9 +1383,9 @@ document.getElementById('btn-hook-test')?.addEventListener('click', async () => 
   btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Testing...';
   try {
     await triggerDeploy(true);
-    toast.success('Test berhasil', 'Hook URL valid. Vercel rebuild juga ter-trigger — kalau gak mau rebuild, abaikan.', 6000);
+    notify.success('Test berhasil', 'Hook URL valid. Vercel rebuild juga ter-trigger — kalau gak mau rebuild, abaikan.', 6000);
   } catch (err) {
-    toast.error('Test gagal', err.message);
+    notify.error('Test gagal', err.message);
   } finally {
     btn.disabled = false; btn.textContent = orig;
   }
