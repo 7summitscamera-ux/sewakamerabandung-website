@@ -34,7 +34,7 @@ const COPY_HTML_AS_IS = [
   'glosarium.html','sewa-vs-beli.html','404.html'
   // faq, lokasi, sriwijaya, cisaranten get prerendered separately
 ];
-const COPY_DIRS = ['panduan','area','layanan'];
+const COPY_DIRS = ['panduan','area','layanan','vs'];
 
 // ============================================================================
 // HELPERS
