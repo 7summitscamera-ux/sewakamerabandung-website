@@ -681,7 +681,7 @@ tr:hover td{background:#FAFBF7}
 <!-- ============ MODALS ============ -->
 <div id="modal-prod" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-prod')">
   <div class="modal" style="max-width:760px">
-    <div class="modal-hdr"><h3>Edit Produk Enrichment</h3><button class="modal-close" onclick="closeModal('modal-prod')">×</button></div>
+    <div class="modal-hdr"><h3>Edit Produk Enrichment</h3><button class="modal-close" onclick="closeModal('modal-prod')" aria-label="Tutup">×</button></div>
     <div class="modal-body" id="modal-prod-body"></div>
     <div class="modal-ftr">
       <button class="btn btn-ghost" onclick="closeModal('modal-prod')">Batal</button>
@@ -692,7 +692,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-faq" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-faq')">
   <div class="modal">
-    <div class="modal-hdr"><h3 id="modal-faq-ttl">Tambah FAQ</h3><button class="modal-close" onclick="closeModal('modal-faq')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-faq-ttl">Tambah FAQ</h3><button class="modal-close" onclick="closeModal('modal-faq')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="faq-id">
       <div class="form-row full"><div class="form-group"><label>Pertanyaan</label><input type="text" id="faq-q" placeholder="Berapa harga sewa kamera...?"></div></div>
@@ -723,7 +723,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-promo" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-promo')">
   <div class="modal" style="max-width:720px">
-    <div class="modal-hdr"><h3 id="modal-promo-ttl">Tambah Promo</h3><button class="modal-close" onclick="closeModal('modal-promo')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-promo-ttl">Tambah Promo</h3><button class="modal-close" onclick="closeModal('modal-promo')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="promo-id">
       <div class="form-row">
@@ -759,7 +759,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-lok" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-lok')">
   <div class="modal" style="max-width:720px">
-    <div class="modal-hdr"><h3 id="modal-lok-ttl">Tambah Cabang</h3><button class="modal-close" onclick="closeModal('modal-lok')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-lok-ttl">Tambah Cabang</h3><button class="modal-close" onclick="closeModal('modal-lok')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="lok-id">
       <div class="form-row">
@@ -962,7 +962,7 @@ function renderYt(arr){
       <div class="form-group"><label>Preview</label><div style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;overflow:hidden">${ytPreview(v.url||v||'')}</div></div>
       <div class="form-group"><label>YouTube URL</label><input type="url" data-yt-url="${i}" value="${escHtml(v.url||v||'')}" oninput="ytUpdatePreview(${i})"></div>
       <div class="form-group"><label>Title (opsional)</label><input type="text" data-yt-title="${i}" value="${escHtml(v.title||'')}"></div>
-      <button class="btn btn-danger btn-sm" onclick="ytRemove(${i})">×</button>
+      <button class="btn btn-danger btn-sm" onclick="ytRemove(${i})" aria-label="Hapus video">×</button>
     </div>`).join('');
 }
 function ytPreview(url){
@@ -1020,7 +1020,7 @@ function renderFaqs(){
       <td><span class="badge active">${escHtml(f.category||'umum')}</span></td>
       <td>${f.sort_order||0}</td>
       <td><span class="badge ${f.is_active?'active':'inactive'}">${f.is_active?'Aktif':'Nonaktif'}</span></td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="faqOpen(${f.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="faqDelete(${f.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="faqOpen(${f.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="faqDelete(${f.id})" aria-label="Hapus FAQ">×</button></div></td>
     </tr>`).join('');
 }
 function faqOpen(id){
@@ -1079,7 +1079,7 @@ function renderPromos(){
       <td><span class="badge ${p.status||'active'}">${p.status||'active'}</span></td>
       <td>${p.is_featured?'⭐ Featured':'—'}</td>
       <td>${p.sort_order||0}</td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="promoOpen(${p.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="promoDelete(${p.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="promoOpen(${p.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="promoDelete(${p.id})" aria-label="Hapus promo">×</button></div></td>
     </tr>`).join('');
 }
 function promoOpen(id){
@@ -1102,7 +1102,7 @@ function renderPromoDetail(rows){
     <div class="kv-row">
       <input type="text" data-pd-label="${i}" placeholder="Label" value="${escHtml(r.label||'')}">
       <input type="text" data-pd-value="${i}" placeholder="Value" value="${escHtml(r.value||'')}">
-      <button class="kv-rm" onclick="this.parentElement.remove()">×</button>
+      <button class="kv-rm" onclick="this.parentElement.remove()" aria-label="Hapus pasangan key-value">×</button>
     </div>`).join('');
 }
 function promoAddDetail(){
@@ -1168,7 +1168,7 @@ function renderLoks(){
       <td>${escHtml((l.address||'').slice(0,60))}${(l.address||'').length>60?'...':''}</td>
       <td>${escHtml(l.open_time||'')} – ${escHtml(l.close_time||'')}</td>
       <td><span class="badge ${l.is_active?'active':'inactive'}">${l.is_active?'Aktif':'Nonaktif'}</span></td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="lokOpen(${l.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="lokDelete(${l.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="lokOpen(${l.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="lokDelete(${l.id})" aria-label="Hapus cabang">×</button></div></td>
     </tr>`).join('');
 }
 function lokOpen(id){
@@ -1394,7 +1394,7 @@ function prodOpen(id){
           const k = n===1 ? 'image_url' : 'image_url_'+n;
           const v = e[k] || '';
           return `<div class="img-slot" data-slot="${n}">
-            ${v?`<img src="${escHtml(v)}"><button class="img-slot-rm" onclick="prodRmImg(${n})">×</button>`:'<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto '+n+'</div>'}
+            ${v?`<img src="${escHtml(v)}"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button>`:'<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto '+n+'</div>'}
             <input type="url" data-img="${n}" value="${escHtml(v)}" oninput="prodSetImg(${n})" placeholder="URL gambar...">
           </div>`;
         }).join('')}
@@ -1407,7 +1407,7 @@ function prodOpen(id){
 function prodSetImg(n){
   const url = document.querySelector(`[data-img="${n}"]`).value;
   const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);
-  if (url) slot.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none'"><button class="img-slot-rm" onclick="prodRmImg(${n})">×</button><input type="url" data-img="${n}" value="${escHtml(url)}" oninput="prodSetImg(${n})">`;
+  if (url) slot.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none'"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button><input type="url" data-img="${n}" value="${escHtml(url)}" oninput="prodSetImg(${n})">`;
 }
 function prodRmImg(n){
   const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);
