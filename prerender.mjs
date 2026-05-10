@@ -186,6 +186,18 @@ function renderFaqItem(f, idx) {
 
 function renderLocationCard(loc, idx) {
   const tagPrefix = loc.tagline || `Lokasi ${idx + 1}`;
+  const days = loc.days_label || 'Senin – Minggu';
+  const open = loc.open_time || '09.00';
+  const close = loc.close_time || '20.00';
+  const amenities = Array.isArray(loc.amenities) && loc.amenities.length
+    ? loc.amenities
+    : [
+        { icon: '🛵', text: 'Tersedia antar via ojek online' },
+        { icon: '🅿', text: 'Parkir tersedia' },
+      ];
+  const amenitiesHtml = amenities
+    .map((a) => `      <div class="loc-row"><div class="loc-ico">${escHtml(a.icon || '·')}</div>${escHtml(a.text || '')}</div>`)
+    .join('\n');
   return `<div class="loc-card" itemscope itemtype="https://schema.org/LocalBusiness">
     <span class="loc-tag">${escHtml(tagPrefix)}</span>
     <div class="loc-name" itemprop="name">${escHtml(loc.branch_name)}</div>
@@ -193,8 +205,8 @@ function renderLocationCard(loc, idx) {
       <span itemprop="streetAddress">${escHtml((loc.address || '').replace(/,/g, '<br>'))}</span>
     </div>
     <div class="loc-rows">
-      <div class="loc-row"><div class="loc-ico">🕘</div>${escHtml(loc.open_time || '09.00')} – ${escHtml(loc.close_time || '20.00')} WIB</div>
-      <div class="loc-row"><div class="loc-ico">🛵</div>Tersedia antar via ojek online</div>
+      <div class="loc-row"><div class="loc-ico">🕘</div>${escHtml(days)} · ${escHtml(open)} – ${escHtml(close)} WIB</div>
+${amenitiesHtml}
     </div>
     <div class="loc-acts">
       <a href="${escHtml(loc.whatsapp_url || '#')}"><button class="btn btn-wa" style="width:100%">WhatsApp</button></a>
