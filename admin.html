@@ -1587,13 +1587,17 @@ async function saveAll(){
 function renderYt(arr){
   const list = $('yt-list');
   if (!arr.length) { list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">▶</div><div class="empty-state-ttl">Belum ada video</div><div class="empty-state-sub">Klik "+ Tambah Video" untuk mulai.</div></div>'; return; }
-  list.innerHTML = arr.map((v,i) => `
+  list.innerHTML = arr.map((v,i) => {
+    const url   = (v && typeof v === 'object') ? (v.url   || '') : (typeof v === 'string' ? v : '');
+    const title = (v && typeof v === 'object') ? (v.title || '') : '';
+    return `
     <div class="form-row" style="grid-template-columns:120px 1fr 1fr 60px;align-items:end;border-bottom:1px solid var(--bd);padding-bottom:12px">
-      <div class="form-group"><label>Preview</label><div style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;overflow:hidden">${ytPreview(v.url||v||'')}</div></div>
-      <div class="form-group"><label>YouTube URL</label><input type="url" data-yt-url="${i}" value="${escHtml(v.url||v||'')}" oninput="ytUpdatePreview(${i})"></div>
-      <div class="form-group"><label>Title (opsional)</label><input type="text" data-yt-title="${i}" value="${escHtml(v.title||'')}"></div>
+      <div class="form-group"><label>Preview</label><div style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;overflow:hidden">${ytPreview(url)}</div></div>
+      <div class="form-group"><label>YouTube URL</label><input type="url" data-yt-url="${i}" value="${escHtml(url)}" oninput="ytUpdatePreview(${i})"></div>
+      <div class="form-group"><label>Title (opsional)</label><input type="text" data-yt-title="${i}" value="${escHtml(title)}"></div>
       <button class="btn btn-danger btn-sm" onclick="ytRemove(${i})" aria-label="Hapus video">×</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function ytPreview(url){
   const id = (url || '').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)?.[1];
