@@ -22,6 +22,8 @@ Allow: /
 
 Disallow: /admin.html
 Disallow: /admin
+Disallow: /login.html
+Disallow: /login
 Disallow: /*?utm_*
 Disallow: /*?fbclid=
 Disallow: /*?gclid=

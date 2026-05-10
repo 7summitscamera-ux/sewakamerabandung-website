@@ -368,11 +368,11 @@ function renderKatalog(){
         ${e.is_featured ? '<div class="kcard-feat">⭐ Featured</div>' : ''}
         ${!avail ? '<div class="kcard-out">Stok habis</div>' : ''}
         <div class="kcard-actions">
-          <button class="kcard-icon" title="Tambah ke daftar inquiry" onclick="event.stopPropagation();event.preventDefault();katAddCart(this,${cartPayload})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <button class="kcard-icon" title="Tambah ke daftar inquiry" aria-label="Tambah ${escHtml(e.nama_produk||'produk')} ke daftar inquiry" onclick="event.stopPropagation();event.preventDefault();katAddCart(this,${cartPayload})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
-          <button class="kcard-icon" title="Lihat detail" onclick="event.stopPropagation();event.preventDefault();location.href='/product/${slug}'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <button class="kcard-icon" title="Lihat detail" aria-label="Lihat detail ${escHtml(e.nama_produk||'produk')}" onclick="event.stopPropagation();event.preventDefault();location.href='/product/${slug}'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
       </div>

@@ -25,16 +25,17 @@ const SRC = '.';
 const OUT = 'dist';
 
 const COPY_FILES = [
-  'design-system.css','article.css','area.css','components.js','cart.js','branding-loader.js',
+  'design-system.css','article.css','area.css','auth.css',
+  'components.js','cart.js','branding-loader.js','auth.js',
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
-  'robots.txt','sitemap.xml','migrations.sql'
+  'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
   'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
-  'glosarium.html','sewa-vs-beli.html','404.html'
+  'glosarium.html','sewa-vs-beli.html','404.html','login.html'
   // faq, lokasi, sriwijaya, cisaranten get prerendered separately
 ];
-const COPY_DIRS = ['panduan','area','layanan'];
+const COPY_DIRS = ['panduan','area','layanan','vs'];
 
 // ============================================================================
 // HELPERS

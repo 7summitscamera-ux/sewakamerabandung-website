@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/auth.css">
 <style>
 :root{
   --orange:#F06824;--orange-d:#D55A1A;
@@ -244,6 +245,9 @@ tr:hover td{background:#FAFBF7}
     <div class="sb-section">Bisnis</div>
     <div class="sb-item" data-panel="lokasi"><span class="sb-icon">📍</span><span>Lokasi & Cabang</span></div>
     <div class="sb-item" data-panel="kontak"><span class="sb-icon">💬</span><span>Kontak & Sosial</span></div>
+
+    <div class="sb-section" id="sb-section-system" hidden>Sistem</div>
+    <div class="sb-item" data-panel="users" id="sb-item-users" hidden><span class="sb-icon">👥</span><span>User Management</span></div>
   </nav>
   <div class="sb-footer">
     <strong>Admin 7summits</strong>
@@ -257,8 +261,15 @@ tr:hover td{background:#FAFBF7}
       <h1 id="topbar-title">Dashboard</h1>
       <div id="topbar-sub" class="topbar-sub">Ringkasan konten dan pengaturan website</div>
     </div>
+    <div id="topbar-user" class="topbar-user" style="display:flex;align-items:center;gap:10px;padding:6px 12px;background:#fff;border:1px solid var(--bd);border-radius:999px;font-size:13px;color:var(--ink-2);margin-right:6px" hidden>
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--green-soft,#e8f5db);color:var(--green-deep);font-weight:700;font-size:12.5px" aria-hidden="true" id="topbar-user-avatar">U</span>
+      <span><strong id="topbar-user-name">—</strong> <span style="color:var(--ink-4);font-weight:500" id="topbar-user-role"></span></span>
+    </div>
     <button class="btn btn-ghost" onclick="window.open('/','_blank')">Lihat Website ↗</button>
     <button class="btn btn-primary" id="btn-save-all" onclick="saveAll()">Simpan Perubahan</button>
+    <button class="btn btn-ghost" id="btn-logout" type="button" aria-label="Logout dari dashboard" title="Logout">
+      <span aria-hidden="true">⎋</span> Logout
+    </button>
   </div>
 
   <div class="content">
@@ -678,10 +689,41 @@ tr:hover td{background:#FAFBF7}
   </div>
 </div>
 
+    <!-- ============ USER MANAGEMENT (superadmin only) ============ -->
+    <div class="panel" id="panel-users">
+      <div class="panel-hdr">
+        <div>
+          <h2>User Management</h2>
+          <p class="panel-desc">Kelola admin user yang punya akses ke dashboard ini. Hanya superadmin yang bisa create / delete user.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-user-create" type="button" data-superadmin-only>+ Tambah User</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="overflow-x:auto">
+          <table class="tbl" id="users-table">
+            <thead>
+              <tr>
+                <th style="min-width:180px">Username</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th style="text-align:right;min-width:140px">Action</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--ink-4)">Memuat...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
+        💡 <strong>Note:</strong> Password diri sendiri bisa diganti via Edit User. Untuk reset password user lain, minta user yang bersangkutan login lalu ganti password sendiri (limitasi keamanan frontend-only setup).
+      </p>
+    </div>
+
 <!-- ============ MODALS ============ -->
 <div id="modal-prod" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-prod')">
   <div class="modal" style="max-width:760px">
-    <div class="modal-hdr"><h3>Edit Produk Enrichment</h3><button class="modal-close" onclick="closeModal('modal-prod')">×</button></div>
+    <div class="modal-hdr"><h3>Edit Produk Enrichment</h3><button class="modal-close" onclick="closeModal('modal-prod')" aria-label="Tutup">×</button></div>
     <div class="modal-body" id="modal-prod-body"></div>
     <div class="modal-ftr">
       <button class="btn btn-ghost" onclick="closeModal('modal-prod')">Batal</button>
@@ -692,7 +734,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-faq" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-faq')">
   <div class="modal">
-    <div class="modal-hdr"><h3 id="modal-faq-ttl">Tambah FAQ</h3><button class="modal-close" onclick="closeModal('modal-faq')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-faq-ttl">Tambah FAQ</h3><button class="modal-close" onclick="closeModal('modal-faq')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="faq-id">
       <div class="form-row full"><div class="form-group"><label>Pertanyaan</label><input type="text" id="faq-q" placeholder="Berapa harga sewa kamera...?"></div></div>
@@ -723,7 +765,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-promo" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-promo')">
   <div class="modal" style="max-width:720px">
-    <div class="modal-hdr"><h3 id="modal-promo-ttl">Tambah Promo</h3><button class="modal-close" onclick="closeModal('modal-promo')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-promo-ttl">Tambah Promo</h3><button class="modal-close" onclick="closeModal('modal-promo')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="promo-id">
       <div class="form-row">
@@ -759,7 +801,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-lok" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-lok')">
   <div class="modal" style="max-width:720px">
-    <div class="modal-hdr"><h3 id="modal-lok-ttl">Tambah Cabang</h3><button class="modal-close" onclick="closeModal('modal-lok')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-lok-ttl">Tambah Cabang</h3><button class="modal-close" onclick="closeModal('modal-lok')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="lok-id">
       <div class="form-row">
@@ -791,17 +833,362 @@ tr:hover td{background:#FAFBF7}
   </div>
 </div>
 
+<!-- Toast & confirmation modal containers (rendered via JS) -->
+<div id="sk-toast-container" class="sk-toast-container" role="region" aria-live="polite" aria-label="Notifikasi"></div>
+<div id="sk-confirm-overlay" class="sk-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sk-confirm-title" aria-describedby="sk-confirm-msg" hidden>
+  <div class="sk-modal">
+    <div class="sk-modal-ico sk-modal-ico--danger" id="sk-confirm-ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 class="sk-modal-ttl" id="sk-confirm-title">Konfirmasi</h3>
+    <p class="sk-modal-msg" id="sk-confirm-msg">Yakin?</p>
+    <div class="sk-modal-acts">
+      <button class="sk-modal-btn sk-modal-btn--ghost" type="button" id="sk-confirm-cancel">Batal</button>
+      <button class="sk-modal-btn sk-modal-btn--danger" type="button" id="sk-confirm-ok">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Edit / Create modal -->
+<div id="modal-user" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-user')">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hdr"><h3 id="modal-user-ttl">Tambah User</h3><button class="modal-close" onclick="closeModal('modal-user')" aria-label="Tutup">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="usr-id">
+      <input type="hidden" id="usr-mode" value="create">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="usr-username">Username <span style="color:var(--danger)">*</span></label>
+          <input id="usr-username" type="text" autocomplete="off" minlength="3" maxlength="64" pattern="[a-zA-Z0-9_-]{3,64}" required spellcheck="false" autocapitalize="off">
+          <small style="color:var(--ink-4);font-size:11.5px">Huruf, angka, _ dan - · 3-64 karakter</small>
+        </div>
+      </div>
+      <div class="form-row" id="usr-pw-row">
+        <div class="form-group">
+          <label for="usr-password">Password <span id="usr-pw-required" style="color:var(--danger)">*</span></label>
+          <input id="usr-password" type="password" autocomplete="new-password" minlength="8">
+          <small id="usr-pw-hint" style="color:var(--ink-4);font-size:11.5px">Minimal 8 karakter</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="usr-role">Role <span style="color:var(--danger)">*</span></label>
+          <select id="usr-role">
+            <option value="staff">Staff (read-only akses panel publik)</option>
+            <option value="admin">Admin (kelola konten)</option>
+            <option value="superadmin">Superadmin (kelola user + semua)</option>
+          </select>
+        </div>
+      </div>
+      <div id="usr-err" class="alert" style="display:none;background:#fef2f2;border-color:#fecaca;color:#991b1b;margin-top:12px"></div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn btn-ghost" onclick="closeModal('modal-user')">Batal</button>
+      <button class="btn btn-green" id="usr-save-btn" onclick="userSave()">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/auth.js"></script>
 <script>
 // ====================================================================
-// CONFIG
+// AUTH GUARD — wajib login sebelum render apapun
+// ====================================================================
+let CURRENT_USER = null;
+(async function authGuard() {
+  if (!window.SK7Auth) {
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:Inter,sans-serif"><h1>Auth module gagal load</h1><p>Refresh halaman atau cek koneksi.</p></div>';
+    return;
+  }
+  CURRENT_USER = await window.SK7Auth.requireAuth({
+    allowedRoles: ['superadmin', 'admin', 'staff'],
+    loginPath: '/login',
+  });
+  if (!CURRENT_USER) return;
+  // Render user info di topbar
+  const tbu = document.getElementById('topbar-user');
+  document.getElementById('topbar-user-name').textContent = CURRENT_USER.username;
+  document.getElementById('topbar-user-role').textContent = '· ' + CURRENT_USER.role;
+  document.getElementById('topbar-user-avatar').textContent = (CURRENT_USER.username || '?').charAt(0).toUpperCase();
+  tbu.hidden = false;
+  // Tampilkan menu User Management hanya untuk superadmin
+  if (CURRENT_USER.role === 'superadmin') {
+    document.getElementById('sb-section-system').hidden = false;
+    document.getElementById('sb-item-users').hidden = false;
+  }
+  // Hide superadmin-only buttons untuk role lain
+  if (CURRENT_USER.role !== 'superadmin') {
+    document.querySelectorAll('[data-superadmin-only]').forEach(el => el.style.display = 'none');
+  }
+})();
+
+// ====================================================================
+// CONFIG — gunakan auth-aware client untuk CMS, separate client untuk Booking
 // ====================================================================
 const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
 const BOOKING_URL = 'https://yxcssruutgpzkgcsqrit.supabase.co';
 const BOOKING_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4Y3NzcnV1dGdwemtnY3Nxcml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTAzMTYsImV4cCI6MjA5MTU2NjMxNn0.NMZqMuEUR2c-V3CnbW-bJNn1bjlS6vHLPUQSD7nArM0';
-const sb = supabase.createClient(SB_URL, SB_KEY);
+const sb  = (window.SK7Auth && window.SK7Auth.sb) || supabase.createClient(SB_URL, SB_KEY);
 const sbB = supabase.createClient(BOOKING_URL, BOOKING_KEY);
+
+// ====================================================================
+// TOAST & CONFIRM helpers (reusable di seluruh dashboard)
+// ====================================================================
+const toast = (() => {
+  const ICONS = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>',
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    warn:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>',
+    info:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  };
+  function show(type, title, msg, duration) {
+    const c = document.getElementById('sk-toast-container');
+    if (!c) { console.log(`[${type}] ${title}: ${msg||''}`); return; }
+    const el = document.createElement('div');
+    el.className = 'sk-toast sk-toast--' + type;
+    el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    el.innerHTML = `
+      <div class="sk-toast-ico" aria-hidden="true">${ICONS[type] || ICONS.info}</div>
+      <div class="sk-toast-body"><div class="sk-toast-ttl"></div><div class="sk-toast-msg"></div></div>
+      <button class="sk-toast-close" aria-label="Tutup notifikasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+    el.querySelector('.sk-toast-ttl').textContent = title || '';
+    el.querySelector('.sk-toast-msg').textContent = msg || '';
+    if (!msg) el.querySelector('.sk-toast-msg').style.display = 'none';
+    const dismiss = () => {
+      el.classList.add('sk-toast-out');
+      setTimeout(() => el.remove(), 220);
+    };
+    el.querySelector('.sk-toast-close').addEventListener('click', dismiss);
+    c.appendChild(el);
+    if (duration !== 0) setTimeout(dismiss, duration || 4500);
+    return el;
+  }
+  return {
+    success: (t, m, d) => show('success', t, m, d),
+    error:   (t, m, d) => show('error',   t, m, d || 6000),
+    warn:    (t, m, d) => show('warn',    t, m, d),
+    info:    (t, m, d) => show('info',    t, m, d),
+  };
+})();
+
+function confirmDialog({ title, message, confirmText, cancelText, danger, icon } = {}) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('sk-confirm-overlay');
+    const ok      = document.getElementById('sk-confirm-ok');
+    const cancel  = document.getElementById('sk-confirm-cancel');
+    const ttl     = document.getElementById('sk-confirm-title');
+    const msg     = document.getElementById('sk-confirm-msg');
+    const ico     = document.getElementById('sk-confirm-ico');
+
+    ttl.textContent = title || 'Konfirmasi';
+    msg.innerHTML = message || 'Lanjutkan?';
+    ok.textContent = confirmText || (danger ? 'Hapus' : 'OK');
+    cancel.textContent = cancelText || 'Batal';
+
+    ico.className = 'sk-modal-ico sk-modal-ico--' + (icon || (danger ? 'danger' : 'info'));
+    ok.className = 'sk-modal-btn ' + (danger ? 'sk-modal-btn--danger' : 'sk-modal-btn--primary');
+
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add('is-open'));
+    setTimeout(() => ok.focus(), 80);
+
+    const cleanup = (val) => {
+      overlay.classList.remove('is-open');
+      setTimeout(() => { overlay.hidden = true; }, 200);
+      ok.removeEventListener('click', onOk);
+      cancel.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onBg);
+      document.removeEventListener('keydown', onKey);
+      resolve(val);
+    };
+    const onOk     = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    const onBg     = (e) => { if (e.target === overlay) cleanup(false); };
+    const onKey    = (e) => {
+      if (e.key === 'Escape') cleanup(false);
+      if (e.key === 'Enter' && document.activeElement !== cancel) cleanup(true);
+    };
+    ok.addEventListener('click', onOk);
+    cancel.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onBg);
+    document.addEventListener('keydown', onKey);
+  });
+}
+
+// ====================================================================
+// LOGOUT
+// ====================================================================
+document.getElementById('btn-logout')?.addEventListener('click', async () => {
+  const ok = await confirmDialog({
+    title: 'Logout dari dashboard?',
+    message: 'Kamu perlu login lagi untuk akses dashboard. Pastikan semua perubahan sudah disimpan.',
+    confirmText: 'Logout',
+    cancelText: 'Batal',
+    icon: 'warn',
+  });
+  if (!ok) return;
+  toast.info('Logout...', '');
+  try { await window.SK7Auth.logout(); } catch (_) {}
+  location.replace('/login');
+});
+
+// ====================================================================
+// USER MANAGEMENT
+// ====================================================================
+async function loadUsers() {
+  if (!CURRENT_USER) return;
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--ink-4)">Memuat...</td></tr>';
+  try {
+    const users = await window.SK7Auth.listUsers();
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--ink-4)">Belum ada user</td></tr>';
+      return;
+    }
+    const isSuper = CURRENT_USER.role === 'superadmin';
+    tbody.innerHTML = users.map(u => {
+      const isSelf = u.id === CURRENT_USER.id;
+      const created = new Date(u.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+      const roleBadge = roleBadgeHtml(u.role);
+      const canEdit = isSuper || isSelf;
+      const canDel  = isSuper && !isSelf;
+      return `
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--green-soft,#e8f5db);color:var(--green-deep);font-weight:700;font-size:13px">${escHtml(u.username.charAt(0).toUpperCase())}</span>
+              <div>
+                <div style="font-weight:600;color:var(--ink)">${escHtml(u.username)}${isSelf ? ' <span style="color:var(--ink-4);font-weight:500;font-size:11.5px">(kamu)</span>' : ''}</div>
+              </div>
+            </div>
+          </td>
+          <td>${roleBadge}</td>
+          <td style="color:var(--ink-3);font-size:13px">${created}</td>
+          <td>
+            <div class="tbl-actions" style="justify-content:flex-end">
+              ${canEdit ? `<button class="btn btn-ghost btn-xs" onclick="userOpen('${u.id}')" type="button">Edit</button>` : ''}
+              ${canDel  ? `<button class="btn btn-danger btn-xs" onclick="userDelete('${u.id}','${escHtml(u.username)}')" type="button">Hapus</button>` : ''}
+              ${!canEdit && !canDel ? '<span style="color:var(--ink-5);font-size:12px">—</span>' : ''}
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--danger)">Gagal load users: ${escHtml(err.message)}</td></tr>`;
+    toast.error('Gagal load user', err.message);
+  }
+}
+function roleBadgeHtml(role) {
+  const colors = {
+    superadmin: ['#fef3c7', '#92400e'],
+    admin:      ['#dbeafe', '#1e40af'],
+    staff:      ['#f3f4f6', '#374151'],
+  };
+  const c = colors[role] || colors.staff;
+  return `<span style="display:inline-block;padding:3px 10px;border-radius:999px;background:${c[0]};color:${c[1]};font-size:11.5px;font-weight:600;letter-spacing:.02em">${escHtml(role)}</span>`;
+}
+
+function userOpenCreate() {
+  if (CURRENT_USER.role !== 'superadmin') return toast.warn('Akses ditolak', 'Hanya superadmin yang bisa create user');
+  document.getElementById('modal-user-ttl').textContent = 'Tambah User';
+  document.getElementById('usr-id').value = '';
+  document.getElementById('usr-mode').value = 'create';
+  document.getElementById('usr-username').value = '';
+  document.getElementById('usr-username').disabled = false;
+  document.getElementById('usr-password').value = '';
+  document.getElementById('usr-password').required = true;
+  document.getElementById('usr-pw-required').style.display = '';
+  document.getElementById('usr-pw-hint').textContent = 'Minimal 8 karakter';
+  document.getElementById('usr-role').value = 'staff';
+  document.getElementById('usr-err').style.display = 'none';
+  openModal('modal-user');
+  setTimeout(() => document.getElementById('usr-username').focus(), 80);
+}
+
+async function userOpen(id) {
+  const me = CURRENT_USER;
+  const isSelf = id === me.id;
+  if (!isSelf && me.role !== 'superadmin') return toast.warn('Akses ditolak', 'Hanya bisa edit profile sendiri');
+  // Fetch user
+  try {
+    const { data, error } = await sb.from('admin_users').select('*').eq('id', id).single();
+    if (error) throw error;
+    document.getElementById('modal-user-ttl').textContent = 'Edit User';
+    document.getElementById('usr-id').value = data.id;
+    document.getElementById('usr-mode').value = 'edit';
+    document.getElementById('usr-username').value = data.username;
+    document.getElementById('usr-username').disabled = (me.role !== 'superadmin');
+    document.getElementById('usr-password').value = '';
+    document.getElementById('usr-password').required = false;
+    document.getElementById('usr-pw-required').style.display = 'none';
+    document.getElementById('usr-pw-hint').textContent = isSelf
+      ? 'Kosongkan kalau tidak ingin ganti. Minimal 8 karakter.'
+      : 'Ganti password user lain butuh service_role — tidak tersedia di setup ini.';
+    document.getElementById('usr-password').disabled = !isSelf;
+    document.getElementById('usr-role').value = data.role;
+    document.getElementById('usr-role').disabled = (me.role !== 'superadmin');
+    document.getElementById('usr-err').style.display = 'none';
+    openModal('modal-user');
+  } catch (err) {
+    toast.error('Gagal load user', err.message);
+  }
+}
+
+async function userSave() {
+  const errBox = document.getElementById('usr-err');
+  errBox.style.display = 'none';
+  const showErr = (m) => { errBox.textContent = m; errBox.style.display = 'block'; };
+
+  const mode     = document.getElementById('usr-mode').value;
+  const username = document.getElementById('usr-username').value;
+  const password = document.getElementById('usr-password').value;
+  const role     = document.getElementById('usr-role').value;
+  const id       = document.getElementById('usr-id').value;
+  const btn      = document.getElementById('usr-save-btn');
+
+  btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'Menyimpan...';
+  try {
+    if (mode === 'create') {
+      await window.SK7Auth.createUser({ username, password, role });
+      toast.success('User dibuat', `${username} berhasil ditambah dengan role ${role}`);
+    } else {
+      const updates = { username, role };
+      if (password) updates.password = password;
+      await window.SK7Auth.updateUser(id, updates);
+      toast.success('User diperbarui', `Perubahan ${username} tersimpan`);
+    }
+    closeModal('modal-user');
+    await loadUsers();
+  } catch (err) {
+    showErr(err.message);
+    toast.error('Gagal simpan', err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = oldText;
+  }
+}
+
+async function userDelete(id, username) {
+  if (CURRENT_USER.role !== 'superadmin') return;
+  if (id === CURRENT_USER.id) return toast.warn('Tidak diizinkan', 'Tidak bisa hapus akun sendiri');
+  const ok = await confirmDialog({
+    title: 'Hapus user ini?',
+    message: `User <strong>${escHtml(username)}</strong> akan dihapus dari akses dashboard. Aksi ini <strong>tidak bisa di-undo</strong>.`,
+    confirmText: 'Ya, Hapus',
+    danger: true,
+  });
+  if (!ok) return;
+  try {
+    await window.SK7Auth.deleteUser(id);
+    toast.success('User dihapus', `${username} berhasil dihapus`);
+    await loadUsers();
+  } catch (err) {
+    toast.error('Gagal hapus', err.message);
+  }
+}
+
+document.getElementById('btn-user-create')?.addEventListener('click', userOpenCreate);
 
 // ====================================================================
 // HELPERS
@@ -831,10 +1218,14 @@ function showPanel(name){
     faq:['FAQ','Pertanyaan yang sering diajukan'],
     promo:['Promo','Promo aktif di halaman publik'],
     lokasi:['Lokasi & Cabang','Cabang yang tampil di website'],
-    kontak:['Kontak & Sosial Media','Nomor & link sosial']
+    kontak:['Kontak & Sosial Media','Nomor & link sosial'],
+    users:['User Management','Kelola admin user dan role akses dashboard']
   };
-  $('topbar-title').textContent = titles[name][0];
-  $('topbar-sub').textContent = titles[name][1];
+  const t = titles[name] || [name, ''];
+  $('topbar-title').textContent = t[0];
+  $('topbar-sub').textContent = t[1];
+  // Lazy-load data per panel
+  if (name === 'users') loadUsers();
 }
 document.querySelectorAll('.sb-item').forEach(el => {
   el.addEventListener('click', () => showPanel(el.dataset.panel));
@@ -962,7 +1353,7 @@ function renderYt(arr){
       <div class="form-group"><label>Preview</label><div style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;overflow:hidden">${ytPreview(v.url||v||'')}</div></div>
       <div class="form-group"><label>YouTube URL</label><input type="url" data-yt-url="${i}" value="${escHtml(v.url||v||'')}" oninput="ytUpdatePreview(${i})"></div>
       <div class="form-group"><label>Title (opsional)</label><input type="text" data-yt-title="${i}" value="${escHtml(v.title||'')}"></div>
-      <button class="btn btn-danger btn-sm" onclick="ytRemove(${i})">×</button>
+      <button class="btn btn-danger btn-sm" onclick="ytRemove(${i})" aria-label="Hapus video">×</button>
     </div>`).join('');
 }
 function ytPreview(url){
@@ -1020,7 +1411,7 @@ function renderFaqs(){
       <td><span class="badge active">${escHtml(f.category||'umum')}</span></td>
       <td>${f.sort_order||0}</td>
       <td><span class="badge ${f.is_active?'active':'inactive'}">${f.is_active?'Aktif':'Nonaktif'}</span></td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="faqOpen(${f.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="faqDelete(${f.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="faqOpen(${f.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="faqDelete(${f.id})" aria-label="Hapus FAQ">×</button></div></td>
     </tr>`).join('');
 }
 function faqOpen(id){
@@ -1079,7 +1470,7 @@ function renderPromos(){
       <td><span class="badge ${p.status||'active'}">${p.status||'active'}</span></td>
       <td>${p.is_featured?'⭐ Featured':'—'}</td>
       <td>${p.sort_order||0}</td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="promoOpen(${p.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="promoDelete(${p.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="promoOpen(${p.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="promoDelete(${p.id})" aria-label="Hapus promo">×</button></div></td>
     </tr>`).join('');
 }
 function promoOpen(id){
@@ -1102,7 +1493,7 @@ function renderPromoDetail(rows){
     <div class="kv-row">
       <input type="text" data-pd-label="${i}" placeholder="Label" value="${escHtml(r.label||'')}">
       <input type="text" data-pd-value="${i}" placeholder="Value" value="${escHtml(r.value||'')}">
-      <button class="kv-rm" onclick="this.parentElement.remove()">×</button>
+      <button class="kv-rm" onclick="this.parentElement.remove()" aria-label="Hapus pasangan key-value">×</button>
     </div>`).join('');
 }
 function promoAddDetail(){
@@ -1168,7 +1559,7 @@ function renderLoks(){
       <td>${escHtml((l.address||'').slice(0,60))}${(l.address||'').length>60?'...':''}</td>
       <td>${escHtml(l.open_time||'')} – ${escHtml(l.close_time||'')}</td>
       <td><span class="badge ${l.is_active?'active':'inactive'}">${l.is_active?'Aktif':'Nonaktif'}</span></td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="lokOpen(${l.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="lokDelete(${l.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="lokOpen(${l.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="lokDelete(${l.id})" aria-label="Hapus cabang">×</button></div></td>
     </tr>`).join('');
 }
 function lokOpen(id){
@@ -1394,7 +1785,7 @@ function prodOpen(id){
           const k = n===1 ? 'image_url' : 'image_url_'+n;
           const v = e[k] || '';
           return `<div class="img-slot" data-slot="${n}">
-            ${v?`<img src="${escHtml(v)}"><button class="img-slot-rm" onclick="prodRmImg(${n})">×</button>`:'<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto '+n+'</div>'}
+            ${v?`<img src="${escHtml(v)}"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button>`:'<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto '+n+'</div>'}
             <input type="url" data-img="${n}" value="${escHtml(v)}" oninput="prodSetImg(${n})" placeholder="URL gambar...">
           </div>`;
         }).join('')}
@@ -1407,7 +1798,7 @@ function prodOpen(id){
 function prodSetImg(n){
   const url = document.querySelector(`[data-img="${n}"]`).value;
   const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);
-  if (url) slot.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none'"><button class="img-slot-rm" onclick="prodRmImg(${n})">×</button><input type="url" data-img="${n}" value="${escHtml(url)}" oninput="prodSetImg(${n})">`;
+  if (url) slot.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none'"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button><input type="url" data-img="${n}" value="${escHtml(url)}" oninput="prodSetImg(${n})">`;
 }
 function prodRmImg(n){
   const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);

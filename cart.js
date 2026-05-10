@@ -67,10 +67,10 @@
             <a href="/product/${escHtml(x.slug)}" class="sc7-cart-name">${escHtml(x.name)}</a>
             <div class="sc7-cart-meta">${escHtml(x.kategori||'')} · ${fmtRp(x.harga)}/hari</div>
             <div class="sc7-cart-qty">
-              <button onclick="sc7Cart.setQty('${escHtml(x.id)}',${(x.qty||1)-1})" class="sc7-qty-btn">−</button>
-              <span class="sc7-qty-val">${x.qty||1}</span>
-              <button onclick="sc7Cart.setQty('${escHtml(x.id)}',${(x.qty||1)+1})" class="sc7-qty-btn">+</button>
-              <button onclick="sc7Cart.remove('${escHtml(x.id)}')" class="sc7-cart-rm" title="Hapus">×</button>
+              <button onclick="sc7Cart.setQty('${escHtml(x.id)}',${(x.qty||1)-1})" class="sc7-qty-btn" aria-label="Kurangi jumlah ${escHtml(x.nama||'item')}">−</button>
+              <span class="sc7-qty-val" aria-live="polite">${x.qty||1}</span>
+              <button onclick="sc7Cart.setQty('${escHtml(x.id)}',${(x.qty||1)+1})" class="sc7-qty-btn" aria-label="Tambah jumlah ${escHtml(x.nama||'item')}">+</button>
+              <button onclick="sc7Cart.remove('${escHtml(x.id)}')" class="sc7-cart-rm" title="Hapus" aria-label="Hapus ${escHtml(x.nama||'item')} dari daftar">×</button>
             </div>
           </div>
         </div>
@@ -82,16 +82,28 @@
     if (submit) submit.disabled = !items.length;
   }
 
+  let _lastTrigger = null;
   function open() {
-    document.getElementById('sc7-cart-drawer').classList.add('open');
-    document.getElementById('sc7-cart-overlay').classList.add('open');
+    _lastTrigger = document.activeElement;
+    const drawer = document.getElementById('sc7-cart-drawer');
+    const overlay = document.getElementById('sc7-cart-overlay');
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     render();
+    setTimeout(() => drawer.querySelector('.sc7-drawer-close')?.focus(), 50);
   }
   function close() {
-    document.getElementById('sc7-cart-drawer').classList.remove('open');
-    document.getElementById('sc7-cart-overlay').classList.remove('open');
+    const drawer = document.getElementById('sc7-cart-drawer');
+    const overlay = document.getElementById('sc7-cart-overlay');
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    if (_lastTrigger && typeof _lastTrigger.focus === 'function') _lastTrigger.focus();
   }
 
   function submit() {
@@ -177,14 +189,14 @@
   </svg>
   <span id="sc7-cart-badge" class="sc7-fab-badge">0</span>
 </button>
-<div id="sc7-cart-overlay" class="sc7-overlay" onclick="sc7Cart.close()"></div>
-<aside id="sc7-cart-drawer" class="sc7-drawer">
+<div id="sc7-cart-overlay" class="sc7-overlay" onclick="sc7Cart.close()" aria-hidden="true"></div>
+<aside id="sc7-cart-drawer" class="sc7-drawer" role="dialog" aria-modal="true" aria-labelledby="sc7-cart-title" aria-hidden="true">
   <div class="sc7-drawer-hdr">
     <div>
-      <div class="sc7-drawer-ttl">Daftar Inquiry</div>
+      <div class="sc7-drawer-ttl" id="sc7-cart-title">Daftar Inquiry</div>
       <div class="sc7-drawer-sub">Cek ketersediaan gear · respon via WhatsApp</div>
     </div>
-    <button class="sc7-drawer-close" onclick="sc7Cart.close()" aria-label="Tutup">×</button>
+    <button class="sc7-drawer-close" onclick="sc7Cart.close()" aria-label="Tutup daftar inquiry">×</button>
   </div>
   <div class="sc7-drawer-body">
     <div id="sc7-cart-items"></div>
