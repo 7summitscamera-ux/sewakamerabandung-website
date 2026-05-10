@@ -6,6 +6,15 @@
   const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
   const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
 
+  // Normalize image URL — auto-convert Google Drive viewer URLs ke direct image URL.
+  function normalizeImageUrl(url) {
+    if (!url || typeof url !== 'string') return url || '';
+    url = url.trim();
+    const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]{20,})/);
+    if (m && m[1]) return 'https://lh3.googleusercontent.com/d/' + m[1] + '=w2000';
+    return url;
+  }
+
   function applySettings(s) {
     if (!s) return;
     const r = document.documentElement.style;
@@ -37,20 +46,22 @@
 
     // Logos — swap any nav/footer logos
     if (s.logo_url) {
+      const u = normalizeImageUrl(s.logo_url);
       document.querySelectorAll('.nav-logo img, .footer-logo, .sb-logo img')
-        .forEach(img => { img.src = s.logo_url; });
+        .forEach(img => { img.src = u; });
     }
     if (s.favicon_url) {
       let f = document.querySelector('link[rel="icon"]');
       if (!f) { f = document.createElement('link'); f.rel = 'icon'; document.head.appendChild(f); }
-      f.href = s.favicon_url;
+      f.href = normalizeImageUrl(s.favicon_url);
     }
 
     // Hero on homepage
     if (s.hero_image_url) {
       const heroImg = document.querySelector('.hero-img');
       if (heroImg) {
-        heroImg.style.backgroundImage = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%),url('${s.hero_image_url}')`;
+        const u = normalizeImageUrl(s.hero_image_url);
+        heroImg.style.backgroundImage = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%),url('${u}')`;
       }
     }
     if (s.hero_headline) {
