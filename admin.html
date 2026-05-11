@@ -210,11 +210,15 @@ tr:hover td{background:#FAFBF7}
 .prod-compact th{padding:8px 12px}
 
 /* IMAGE GRID for product enrichment */
-.imgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
-.img-slot{aspect-ratio:1;background:var(--bg-2);border:1px dashed var(--bd-strong);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.img-slot img{width:100%;height:100%;object-fit:contain;background:#fff;padding:6px}
-.img-slot input{position:absolute;inset:0;opacity:0;border:none}
-.img-slot-rm{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);border:1px solid var(--bd);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--danger);display:flex;align-items:center;justify-content:center}
+.imgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.img-slot{background:var(--bg-2);border:1px solid var(--bd);border-radius:10px;display:flex;flex-direction:column;overflow:hidden}
+.img-slot-preview{aspect-ratio:1;background:var(--bg-2);border-bottom:1px dashed var(--bd-strong);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.img-slot-preview img{width:100%;height:100%;object-fit:contain;background:#fff;padding:6px}
+.img-slot-empty{text-align:center;color:var(--ink-4);font-size:12px}
+.img-slot-empty .ico{font-size:28px;opacity:.4;margin-bottom:4px}
+.img-slot input.img-slot-url{display:block;width:100%;border:none;border-top:0;padding:8px 10px;font-size:12px;background:#fff;color:var(--ink);outline:none}
+.img-slot input.img-slot-url:focus{background:#fffbe6}
+.img-slot-rm{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);border:1px solid var(--bd);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--danger);display:flex;align-items:center;justify-content:center;z-index:2}
 
 /* DETAIL ROWS (jsonb editors) */
 .kv-row{display:grid;grid-template-columns:1fr 1fr 36px;gap:8px;margin-bottom:8px}
@@ -2780,32 +2784,47 @@ function prodOpen(id){
           const k = n===1 ? 'image_url' : 'image_url_'+n;
           const v = e[k] || '';
           return `<div class="img-slot" data-slot="${n}">
-            ${v?`<img src="${escHtml(v)}"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button>`:'<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto '+n+'</div>'}
-            <input type="url" data-img="${n}" value="${escHtml(v)}" oninput="prodSetImg(${n})" placeholder="URL gambar...">
+            <div class="img-slot-preview" id="ed-prev-${n}">
+              ${v
+                ? `<img src="${escHtml(v)}" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-slot-empty\\'><div class=\\'ico\\'>⚠</div>URL invalid</div>'"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button>`
+                : `<div class="img-slot-empty"><div class="ico">＋</div>Foto ${n}</div>`}
+            </div>
+            <input class="img-slot-url" type="url" data-img="${n}" value="${escHtml(v)}" oninput="prodSetImg(${n})" placeholder="Paste URL foto ${n}...">
           </div>`;
         }).join('')}
       </div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="prodAddPhoto()">+ Tambah Foto</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="prodAddPhoto()">+ Tambah Foto (fokus slot kosong)</button>
     </div>
   `;
   openModal('modal-prod');
 }
 function prodSetImg(n){
-  const url = document.querySelector(`[data-img="${n}"]`).value;
-  const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);
-  if (url) slot.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none'"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button><input type="url" data-img="${n}" value="${escHtml(url)}" oninput="prodSetImg(${n})">`;
+  const inp = document.querySelector(`[data-img="${n}"]`);
+  const url = (inp?.value || '').trim();
+  const prev = document.getElementById(`ed-prev-${n}`);
+  if (!prev) return;
+  if (url) {
+    prev.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-slot-empty\\'><div class=\\'ico\\'>⚠</div>URL invalid</div>'"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button>`;
+  } else {
+    prev.innerHTML = `<div class="img-slot-empty"><div class="ico">＋</div>Foto ${n}</div>`;
+  }
 }
 function prodRmImg(n){
-  const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);
-  slot.innerHTML = `<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto ${n}</div><input type="url" data-img="${n}" value="" oninput="prodSetImg(${n})" placeholder="URL gambar...">`;
+  const inp = document.querySelector(`[data-img="${n}"]`);
+  if (inp) inp.value = '';
+  const prev = document.getElementById(`ed-prev-${n}`);
+  if (prev) prev.innerHTML = `<div class="img-slot-empty"><div class="ico">＋</div>Foto ${n}</div>`;
 }
 function prodAddPhoto(){
-  // Find first empty slot, focus its input
   for (let n=1;n<=6;n++){
     const inp = document.querySelector(`[data-img="${n}"]`);
-    if (inp && !inp.value){ inp.focus(); return; }
+    if (inp && !inp.value){
+      inp.focus();
+      inp.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
   }
-  toast('Maksimum 6 foto per produk','error');
+  toast('Semua 6 slot foto sudah terisi. Hapus salah satu dulu kalau mau ganti.','error');
 }
 function prodImgSearch(source){
   if (!_editProd){ return; }
