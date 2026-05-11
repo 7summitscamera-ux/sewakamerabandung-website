@@ -2763,6 +2763,18 @@ function prodOpen(id){
     <div class="form-group">
       <label>Foto Produk (sampai 6 foto)</label>
       <div class="hint" style="margin-bottom:8px">Drag-drop atau paste URL gambar. Foto pertama jadi thumbnail utama.</div>
+      <div style="margin-bottom:10px;padding:10px 12px;background:var(--bg-2);border-radius:8px">
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:6px">🔍 Cari foto produk di:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('google')" title="Google Images">Google Images</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('bing')" title="Bing Images">Bing Images</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('duckduckgo')" title="DuckDuckGo Images">DuckDuckGo</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('unsplash')" title="Unsplash">Unsplash</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('pexels')" title="Pexels">Pexels</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('pixabay')" title="Pixabay">Pixabay</button>
+        </div>
+        <div class="hint" style="margin-top:6px;font-size:11.5px">Klik tombol → buka tab baru → klik kanan gambar → <strong>Copy image address</strong> → paste ke slot foto di bawah.</div>
+      </div>
       <div class="imgs-grid" id="ed-imgs">
         ${[1,2,3,4,5,6].map(n => {
           const k = n===1 ? 'image_url' : 'image_url_'+n;
@@ -2794,6 +2806,26 @@ function prodAddPhoto(){
     if (inp && !inp.value){ inp.focus(); return; }
   }
   toast('Maksimum 6 foto per produk','error');
+}
+function prodImgSearch(source){
+  if (!_editProd){ return; }
+  const name = (_editProd.nama_produk || '').trim();
+  if (!name){
+    if (window.notify) notify.warn('Nama produk kosong','Tidak bisa generate query pencarian');
+    return;
+  }
+  const q = encodeURIComponent(name);
+  const urls = {
+    google:     `https://www.google.com/search?q=${q}&tbm=isch`,
+    bing:       `https://www.bing.com/images/search?q=${q}`,
+    duckduckgo: `https://duckduckgo.com/?q=${q}&iax=images&ia=images`,
+    unsplash:   `https://unsplash.com/s/photos/${q}`,
+    pexels:     `https://www.pexels.com/search/${q}/`,
+    pixabay:    `https://pixabay.com/images/search/${q}/`
+  };
+  const url = urls[source];
+  if (!url) return;
+  window.open(url, '_blank', 'noopener');
 }
 async function prodSave(){
   if (!_editProd) return;
