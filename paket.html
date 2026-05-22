@@ -24,8 +24,26 @@
   </div>
 </div>
 
+<style>
+.pkg-search-wrapper{position:relative;max-width:400px;margin:0 auto 32px}
+.pkg-search-input{width:100%;font-size:13px;padding:10px 12px 10px 36px;background:var(--surface);border:1px solid var(--bd-strong);border-radius:999px;outline:none;color:var(--ink);font-family:inherit}
+.pkg-search-input::placeholder{color:var(--ink-4)}
+.pkg-search-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(142,198,78,.18)}
+.pkg-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-4);pointer-events:none}
+.pkg-empty{text-align:center;padding:60px 24px;color:var(--ink-4)}
+.pkg-empty-ico{font-size:48px;margin-bottom:12px}
+.pkg-empty h3{font-size:18px;color:var(--ink);margin-bottom:8px;font-weight:600}
+.pkg-card{opacity:1;transition:opacity .2s,display .2s}
+.pkg-card.hidden{display:none!important}
+</style>
+
 <section class="sec">
   <div class="cont">
+    <div class="pkg-search-wrapper">
+      <input type="text" id="pkg-search" placeholder="Cari nama paket..." class="pkg-search-input" oninput="onPkgSearchInput()">
+      <svg class="pkg-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+
     <div class="pkg-tabs" id="pkg-tabs">
       <button class="pkg-tab active" onclick="switchPkg('all',this)">Semua Paket</button>
     </div>
@@ -48,17 +66,100 @@
 </section>
 
 <script>
+let _pkgSearchQuery = '';
+
 function switchPkg(slug, btn) {
   document.querySelectorAll('.pkg-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  document.querySelectorAll('#pkg-sections .pkg-section').forEach(s => {
-    if (slug === 'all' || s.dataset.cat === slug) {
-      s.style.display = 'block';
-    } else {
-      s.style.display = 'none';
+  renderPkgSearch();
+}
+
+function onPkgSearchInput() {
+  _pkgSearchQuery = (document.getElementById('pkg-search').value || '').toLowerCase().trim();
+  renderPkgSearch();
+}
+
+function renderPkgSearch() {
+  const activeTab = document.querySelector('.pkg-tab.active');
+  const activeSlug = activeTab ? activeTab.textContent.toLowerCase() === 'semua paket' ? 'all' : activeTab.getAttribute('onclick').match(/'([^']+)'/)?.[1] : 'all';
+
+  let hasResults = false;
+
+  document.querySelectorAll('#pkg-sections .pkg-section').forEach(section => {
+    const sectionSlug = section.dataset.cat;
+    const isSectionVisible = activeSlug === 'all' || sectionSlug === activeSlug;
+
+    if (!isSectionVisible) {
+      section.style.display = 'none';
+      return;
+    }
+
+    section.style.display = 'block';
+    let sectionHasResults = false;
+
+    // Search through pkg-card elements
+    section.querySelectorAll('.pkg-card').forEach(card => {
+      const pkgName = card.querySelector('.pkg-name')?.textContent || '';
+      const pkgTagline = card.querySelector('.pkg-tagline')?.textContent || '';
+
+      // Get all items inside the package
+      const pkgItems = Array.from(card.querySelectorAll('.pkg-items li'))
+        .map(li => li.textContent)
+        .join(' ');
+
+      // Combine all searchable content
+      const searchText = (pkgName + ' ' + pkgTagline + ' ' + pkgItems).toLowerCase();
+
+      if (!_pkgSearchQuery || searchText.includes(_pkgSearchQuery)) {
+        card.classList.remove('hidden');
+        sectionHasResults = true;
+        hasResults = true;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Show/hide empty message per section if no results
+    let emptyMsg = section.querySelector('.pkg-empty-msg');
+    if (!sectionHasResults && _pkgSearchQuery) {
+      if (!emptyMsg) {
+        emptyMsg = document.createElement('div');
+        emptyMsg.className = 'pkg-empty-msg';
+        emptyMsg.innerHTML = '<div class="pkg-empty"><div class="pkg-empty-ico">🔍</div><h3>Tidak ada paket yang cocok</h3><p>Coba kata kunci lain atau lihat semua paket.</p></div>';
+        section.appendChild(emptyMsg);
+      }
+      emptyMsg.style.display = 'block';
+    } else if (emptyMsg) {
+      emptyMsg.style.display = 'none';
     }
   });
+
+  // Show/hide global empty state
+  let globalEmpty = document.getElementById('pkg-global-empty');
+  if (!hasResults && _pkgSearchQuery) {
+    if (!globalEmpty) {
+      globalEmpty = document.createElement('div');
+      globalEmpty.id = 'pkg-global-empty';
+      globalEmpty.className = 'pkg-empty';
+      globalEmpty.innerHTML = '<div class="pkg-empty-ico">🔍</div><h3>Tidak ada paket yang cocok</h3><p>Coba kata kunci lain atau <a href="/katalog" style="color:var(--green-deep);text-decoration:underline">lihat sewa satuan</a>.</p>';
+      document.getElementById('pkg-sections').appendChild(globalEmpty);
+    }
+    globalEmpty.style.display = 'block';
+  } else if (globalEmpty) {
+    globalEmpty.style.display = 'none';
+  }
 }
+
+// Initialize search on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  const initialSearch = params.get('q') || '';
+  if (initialSearch) {
+    _pkgSearchQuery = initialSearch;
+    document.getElementById('pkg-search').value = initialSearch;
+    renderPkgSearch();
+  }
+});
 </script>
 
 <div id="footer-placeholder"></div>
