@@ -112,9 +112,13 @@
       });
     }
     if (s.booking_url) {
-      document.querySelectorAll('a[href*="app.sewakamerabandung.id"]').forEach(a => {
-        a.href = s.booking_url + (a.hash || '');
-      });
+      const bookingUrl = s.booking_url.trim();
+      // Only apply if it's a valid absolute URL (starts with http://, https://, or //)
+      if (/^(https?:)?\/\//.test(bookingUrl)) {
+        document.querySelectorAll('a[href*="app.sewakamerabandung.id"]').forEach(a => {
+          a.href = bookingUrl + (a.hash || '');
+        });
+      }
     }
   }
 
