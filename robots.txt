@@ -5,25 +5,33 @@ Allow: /
 # Allow major LLM/AI crawlers
 User-agent: GPTBot
 Allow: /
+
 User-agent: Google-Extended
 Allow: /
+
 User-agent: PerplexityBot
 Allow: /
+
 User-agent: ClaudeBot
 Allow: /
+
 User-agent: anthropic-ai
 Allow: /
+
 User-agent: CCBot
 Allow: /
+
 User-agent: Applebot-Extended
 Allow: /
+
 User-agent: Bytespider
 Allow: /
 
+# Block unwanted dirs
 Disallow: /admin.html
 Disallow: /admin
-Disallow: /login.html
-Disallow: /login
+
+# Block tracking params (keep filter params crawlable)
 Disallow: /*?utm_*
 Disallow: /*?fbclid=
 Disallow: /*?gclid=
