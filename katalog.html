@@ -49,7 +49,13 @@
 .btn-clear:hover{background:var(--bg-2);color:var(--ink);border-color:#9CA3AF}
 
 .kat-main{flex:1 1 0;min-width:0}
-.kat-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:14px;flex-wrap:wrap}
+.kat-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:14px;flex-wrap:wrap}
+.kat-search-wrapper{position:relative;flex:1;min-width:200px;max-width:400px}
+.kat-search-input{width:100%;font-size:13px;padding:10px 12px 10px 36px;background:var(--surface);border:1px solid var(--bd-strong);border-radius:999px;outline:none;color:var(--ink);font-family:inherit}
+.kat-search-input::placeholder{color:var(--ink-4)}
+.kat-search-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(142,198,78,.18)}
+.kat-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-4);pointer-events:none}
+.kat-count-bar{margin-bottom:16px}
 .kat-count{font-size:14px;color:var(--ink-3);font-weight:500}
 .kat-count strong{color:var(--ink);font-weight:700}
 .kat-sort{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-3)}
@@ -102,10 +108,14 @@
   .kat-overlay.open{opacity:1;pointer-events:auto}
   .mob-filters-btn{display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-size:13px;font-weight:600;background:var(--ink);color:#fff;padding:9px 16px;border:none;border-radius:999px;cursor:pointer}
 }
+@media(max-width:900px){
+  .kat-search-wrapper{max-width:100%;flex-basis:100%;order:-1;margin-bottom:8px}
+}
 @media(max-width:640px){
   .kgrid{grid-template-columns:repeat(2,1fr);gap:12px}
   .kcard-name{font-size:12.5px;min-height:32px}
   .kcard-price{font-size:13px}
+  .kat-search-input{font-size:12px;padding:8px 10px 8px 32px}
 }
 </style>
 <script type="application/ld+json">
@@ -164,7 +174,10 @@
 
   <main class="kat-main">
     <div class="kat-toolbar">
-      <div class="kat-count">Menampilkan <strong id="kat-count">—</strong> produk</div>
+      <div class="kat-search-wrapper">
+        <input type="text" id="kat-search" placeholder="Cari nama barang..." class="kat-search-input" oninput="onSearchInput()">
+        <svg class="kat-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
       <div style="display:flex;gap:10px;align-items:center">
         <button class="mob-filters-btn" onclick="toggleFilters(true)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="20" y2="12"/><line x1="10" y1="18" x2="20" y2="18"/></svg>
@@ -181,6 +194,9 @@
           </select>
         </div>
       </div>
+    </div>
+    <div class="kat-count-bar">
+      <div class="kat-count">Menampilkan <strong id="kat-count">—</strong> produk</div>
     </div>
 
     <div class="kgrid" id="kat-grid">
@@ -226,17 +242,24 @@ function slugify(s){return String(s||'').toLowerCase().normalize('NFD').replace(
 let _all = [];
 let _enrichMap = {};
 let _page = 1;
+let _searchQuery = '';
 const PAGE_SIZE = 24;
 
 // URL params
 const params = new URLSearchParams(location.search);
 const initialCat = (params.get('cat')||'').toUpperCase();
 const initialBrand = params.get('brand') || '';
+const initialSearch = params.get('q') || '';
 
 const filters = {
   categories: new Set(initialCat ? [initialCat] : []),
   brands: new Set(initialBrand ? [initialBrand] : []),
 };
+
+if (initialSearch) {
+  _searchQuery = initialSearch;
+  document.getElementById('kat-search').value = initialSearch;
+}
 
 // ============ LOAD ============
 async function load(){
@@ -306,14 +329,23 @@ function filterBrandList(){
 }
 function toggleCat(c, on){ on ? filters.categories.add(c) : filters.categories.delete(c); _page=1; renderKatalog(); syncUrl(); }
 function toggleBrand(b, on){ on ? filters.brands.add(b) : filters.brands.delete(b); _page=1; renderKatalog(); syncUrl(); }
+function onSearchInput(){
+  _searchQuery = (document.getElementById('kat-search').value||'').trim();
+  _page=1;
+  renderKatalog();
+  syncUrl();
+}
 function clearFilters(){
   filters.categories.clear(); filters.brands.clear();
   document.getElementById('price-min').value=''; document.getElementById('price-max').value='';
+  document.getElementById('kat-search').value='';
+  _searchQuery = '';
   document.querySelectorAll('#filter-cat input,#filter-brand input').forEach(i=>i.checked=false);
   _page=1; renderKatalog(); syncUrl();
 }
 function syncUrl(){
   const p = new URLSearchParams();
+  if (_searchQuery) p.append('q', _searchQuery);
   filters.categories.forEach(c => p.append('cat', c));
   filters.brands.forEach(b => p.append('brand', b));
   const q = p.toString();
@@ -324,11 +356,13 @@ function syncUrl(){
 function filtered(){
   const min = parseInt(document.getElementById('price-min').value)||0;
   const max = parseInt(document.getElementById('price-max').value)||Infinity;
+  const q = _searchQuery.toLowerCase();
   let arr = _all.filter(p => {
     if (filters.categories.size && !filters.categories.has(p.kategori_produk)) return false;
     if (filters.brands.size && !filters.brands.has(p._brand)) return false;
     const h = p.harga_sewa_per_hari||0;
     if (h < min || h > max) return false;
+    if (q && !(p.nama_produk||'').toLowerCase().includes(q)) return false;
     return true;
   });
   const sort = document.getElementById('kat-sort-by').value;
