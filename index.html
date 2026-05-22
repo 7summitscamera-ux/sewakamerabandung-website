@@ -518,7 +518,7 @@
 
 <div class="ann-bar">
   Promo aktif: sewa 3 hari bayar 2 hari — berlaku semua produk
-  <a href="https://app.sewakamerabandung.id">Booking sekarang →</a>
+  <a href="https://app.sewakamerabandung.id" target="_blank" rel="noopener">Booking sekarang →</a>
 </div>
 
 <nav id="navbar">
@@ -534,7 +534,7 @@
     </ul>
     <div class="nav-acts">
       <a href="https://wa.me/6281121114410"><button class="btn-g">WhatsApp</button></a>
-      <a href="https://app.sewakamerabandung.id"><button class="btn-p">Booking →</button></a>
+      <a href="https://app.sewakamerabandung.id" target="_blank" rel="noopener"><button class="btn-p">Booking →</button></a>
     </div>
   </div>
 </nav>
@@ -553,7 +553,7 @@
     </h1>
     <p class="hero-sub">767+ unit gear profesional — kamera cinema, lensa premium, lighting studio, dan drone. Untuk filmmaker, fotografer, dan content creator Bandung.</p>
     <div class="hero-ctas">
-      <a href="https://app.sewakamerabandung.id"><button class="btn-hero btn-hero-p">Mulai Booking <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></a>
+      <a href="https://app.sewakamerabandung.id" target="_blank" rel="noopener"><button class="btn-hero btn-hero-p">Mulai Booking <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></a>
       <a href="#produk"><button class="btn-hero btn-hero-s">Jelajahi Gear <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button></a>
     </div>
     <div class="hero-meta">
@@ -848,7 +848,7 @@
     <div class="bk-inner">
       <div><div class="bk-h2">Siap mulai<br>project kamu?</div><p class="bk-p">Cek ketersediaan gear, pilih tanggal, dan booking dalam hitungan detik. Tanpa deposit besar, tanpa syarat ribet. Promo 3 hari bayar 2 — masih aktif.</p></div>
       <div class="bk-acts">
-        <a href="https://app.sewakamerabandung.id"><button class="btn btn-orange btn-lg">Cek Tanggal & Booking →</button></a>
+        <a href="https://app.sewakamerabandung.id" target="_blank" rel="noopener"><button class="btn btn-orange btn-lg">Cek Tanggal & Booking →</button></a>
         <a href="https://wa.me/6281121114410"><button class="btn btn-soft">Tanya via WhatsApp dulu</button></a>
       </div>
     </div>
@@ -869,7 +869,7 @@
       </div>
       <div class="fcol"><h4>Gear</h4><ul><li><a href="katalog.html?cat=KAMERA">Kamera</a></li><li><a href="katalog.html?cat=LENSA">Lensa</a></li><li><a href="katalog.html?cat=LIGHTING">Lighting</a></li><li><a href="katalog.html?cat=VIDEO%20SUPPORT">Video Support</a></li><li><a href="katalog.html?cat=AUDIO%20SUPPORT">Audio</a></li></ul></div>
       <div class="fcol"><h4>Paket</h4><ul><li><a href="paket.html#event">Paket Event</a></li><li><a href="paket.html#wisuda">Paket Wisuda</a></li><li><a href="paket.html#sineas">Paket Sineas</a></li></ul></div>
-      <div class="fcol"><h4>Platform</h4><ul><li><a href="https://app.sewakamerabandung.id">Sistem Booking</a></li><li><a href="panduan.html">Panduan Gear</a></li><li><a href="faq.html">FAQ Lengkap</a></li><li><a href="promo.html">Promo Aktif</a></li></ul></div>
+      <div class="fcol"><h4>Platform</h4><ul><li><a href="https://app.sewakamerabandung.id" target="_blank" rel="noopener">Sistem Booking</a></li><li><a href="panduan.html">Panduan Gear</a></li><li><a href="faq.html">FAQ Lengkap</a></li><li><a href="promo.html">Promo Aktif</a></li></ul></div>
       <div class="fcol"><h4>Perusahaan</h4><ul><li><a href="tentang.html">Tentang Kami</a></li><li><a href="cisaranten.html">Cisaranten</a></li><li><a href="sriwijaya.html">Sriwijaya</a></li><li><a href="syarat.html">Syarat & Ketentuan</a></li></ul></div>
     </div>
     <div class="footer-btm">
@@ -973,7 +973,7 @@ async function loadHero() {
     const sub = document.querySelector('.hero-sub');
     const ann = document.querySelector('.ann-bar');
     if (sub && data.subheadline) sub.textContent = data.subheadline;
-    if (ann && data.announcement_text) ann.innerHTML = data.announcement_text + ' <a href="https://app.sewakamerabandung.id">Booking sekarang →</a>';
+    if (ann && data.announcement_text) ann.innerHTML = data.announcement_text + ' <a href="https://app.sewakamerabandung.id" target="_blank" rel="noopener">Booking sekarang →</a>';
   } catch(e) {}
 }
 async function loadFeaturedProducts(catFilter) {
