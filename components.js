@@ -3,7 +3,7 @@
 // Then in body: <div id="navbar-placeholder"></div> and <div id="footer-placeholder"></div>
 
 const BRAND = {
-  bookingUrl: 'https://booking.sewakamerabandung.id',
+  bookingUrl: 'https://app.sewakamerabandung.id',
   waNumber: '6281121114410',
   instagram: 'https://instagram.com/sewakamerabandung.id',
   youtube: 'https://www.youtube.com/@7summitscamera',
@@ -13,13 +13,14 @@ function injectNavbar() {
   const el = document.getElementById('navbar-placeholder');
   if (!el) return;
   el.outerHTML = `
-<div class="ann-bar">
+<a href="#main" class="skip-link">Lompat ke konten utama</a>
+<div class="ann-bar" role="region" aria-label="Promo aktif">
   Promo aktif: sewa 3 hari bayar 2 hari — berlaku semua produk
   <a href="${BRAND.bookingUrl}">Booking sekarang →</a>
 </div>
-<nav id="navbar">
+<nav id="navbar" aria-label="Navigasi utama">
   <div class="nav-inner">
-    <a href="/" class="nav-logo"><img src="/logo-7summits.png" alt="7summits Camera"></a>
+    <a href="/" class="nav-logo" aria-label="7summits Camera — Beranda"><img src="/logo-7summits.png" alt="7summits Camera"></a>
     <ul class="nav-links">
       <li><a href="/katalog.html">Katalog</a></li>
       <li><a href="/paket.html">Paket</a></li>
@@ -29,18 +30,19 @@ function injectNavbar() {
       <li><a href="/tentang.html">Tentang</a></li>
     </ul>
     <div class="nav-acts">
-      <a href="https://wa.me/${BRAND.waNumber}"><button class="btn-g">WhatsApp</button></a>
-      <a href="${BRAND.bookingUrl}"><button class="btn-p">Booking →</button></a>
+      <a href="https://wa.me/${BRAND.waNumber}" aria-label="Chat via WhatsApp"><button class="btn-g">WhatsApp</button></a>
+      <a href="${BRAND.bookingUrl}" aria-label="Buka sistem booking"><button class="btn-p">Booking →</button></a>
     </div>
   </div>
 </nav>`;
   window.addEventListener('scroll', () => {
     document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 20);
   });
-  const path = location.pathname;
+  const path = location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
   document.querySelectorAll('.nav-links a').forEach(a => {
-    const href = a.getAttribute('href');
-    if (href === path || (path === '/' && href === '/')) {
+    const href = a.getAttribute('href').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+    if (href === path) {
+      a.setAttribute('aria-current', 'page');
       a.classList.add('is-active');
     }
   });
@@ -50,16 +52,16 @@ function injectFooter() {
   const el = document.getElementById('footer-placeholder');
   if (!el) return;
   el.outerHTML = `
-<footer>
+<footer role="contentinfo">
   <div class="cont">
     <div class="footer-grid">
       <div>
         <img src="/logo-7summits.png" alt="7summits Camera" class="footer-logo">
         <p class="footer-desc">Platform sewa gear produksi visual profesional di Bandung. Partner kreatif untuk filmmaker, fotografer, dan content creator.</p>
-        <div class="footer-socs">
-          <a href="${BRAND.instagram}" target="_blank" class="footer-soc" aria-label="Instagram">📸</a>
-          <a href="${BRAND.youtube}" target="_blank" class="footer-soc" aria-label="YouTube">▶</a>
-          <a href="https://wa.me/${BRAND.waNumber}" class="footer-soc" aria-label="WhatsApp">💬</a>
+        <div class="footer-socs" role="list" aria-label="Sosial media">
+          <a href="${BRAND.instagram}" target="_blank" rel="noopener" class="footer-soc" aria-label="Instagram 7summits Camera"><span aria-hidden="true">📸</span></a>
+          <a href="${BRAND.youtube}" target="_blank" rel="noopener" class="footer-soc" aria-label="YouTube 7summits Camera"><span aria-hidden="true">▶</span></a>
+          <a href="https://wa.me/${BRAND.waNumber}" class="footer-soc" aria-label="Chat WhatsApp"><span aria-hidden="true">💬</span></a>
         </div>
       </div>
       <div class="fcol"><h4>Gear</h4><ul>
@@ -69,10 +71,12 @@ function injectFooter() {
         <li><a href="/katalog.html?cat=VIDEO%20SUPPORT">Video Support</a></li>
         <li><a href="/katalog.html?cat=AUDIO%20SUPPORT">Audio</a></li>
       </ul></div>
-      <div class="fcol"><h4>Paket</h4><ul>
-        <li><a href="/paket.html#event">Paket Event</a></li>
-        <li><a href="/paket.html#wisuda">Paket Wisuda</a></li>
-        <li><a href="/paket.html#sineas">Paket Sineas</a></li>
+      <div class="fcol"><h4>Layanan</h4><ul>
+        <li><a href="/layanan/wedding">Sewa Kamera Wedding</a></li>
+        <li><a href="/layanan/wisuda">Paket Wisuda Mahasiswa</a></li>
+        <li><a href="/layanan/content-creator">Content Creator Setup</a></li>
+        <li><a href="/layanan/sineas">Sineas Indie / TA Film</a></li>
+        <li><a href="/paket.html">Semua Paket</a></li>
       </ul></div>
       <div class="fcol"><h4>Platform</h4><ul>
         <li><a href="${BRAND.bookingUrl}">Sistem Booking</a></li>
@@ -110,7 +114,23 @@ function injectFooter() {
 </footer>`;
 }
 
+function setupSkipLink() {
+  const link = document.querySelector('.skip-link');
+  if (!link) return;
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.getElementById('main')
+      || document.querySelector('main, article, header.area-hero, header.art-hero, header.page-hero, body > section');
+    if (target) {
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: false });
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   injectNavbar();
   injectFooter();
+  setupSkipLink();
 });

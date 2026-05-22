@@ -25,20 +25,33 @@ const SRC = '.';
 const OUT = 'dist';
 
 const COPY_FILES = [
-  'design-system.css','article.css','area.css','components.js','cart.js','branding-loader.js',
+  'design-system.css','article.css','area.css','auth.css',
+  'components.js','cart.js','branding-loader.js','auth.js',
   'logo-7summits.png','logo-7summits-mark.png','vercel.json',
-  'robots.txt','sitemap.xml','migrations.sql'
+  'robots.txt','sitemap.xml','migrations.sql','auth-migration.sql','deploy-hook-migration.sql',
+  'locations-amenities-migration.sql','faq-categories-migration.sql','stats-brands-migration.sql',
+  'brand-slider-settings-migration.sql','packages-migration.sql','reviews-migration.sql'
 ];
 const COPY_HTML_AS_IS = [
-  'admin.html','paket.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html'
+  'admin.html','panduan.html','promo.html','syarat.html','privasi.html','tentang.html',
+  'glosarium.html','sewa-vs-beli.html','404.html','login.html'
   // faq, lokasi, sriwijaya, cisaranten get prerendered separately
 ];
-const COPY_DIRS = ['panduan','area'];
+const COPY_DIRS = ['panduan','area','layanan','vs'];
 
 // ============================================================================
 // HELPERS
 // ============================================================================
 const escHtml = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Normalize image URL — auto-convert Google Drive viewer URLs ke direct image URL.
+function normalizeImageUrl(url) {
+  if (!url || typeof url !== 'string') return url || '';
+  url = url.trim();
+  const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]{20,})/);
+  if (m && m[1]) return `https://lh3.googleusercontent.com/d/${m[1]}=w2000`;
+  return url;
+}
 const fmtRp = (n) => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
 function slugify(s) {
   return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
@@ -98,9 +111,39 @@ function injectAt(html, marker, replacement) {
 }
 
 function injectIntoElement(html, id, innerHtml) {
-  // Replace innerHTML of <div id="X">...</div>
-  const re = new RegExp(`(<(?:div|section|main)[^>]*\\bid=["']${id}["'][^>]*>)([\\s\\S]*?)(</(?:div|section|main)>)`);
-  return html.replace(re, `$1${innerHtml}$3`);
+  // Replace innerHTML of <div|section|main id="X">...</div> dengan balanced
+  // tag matching (handle nested elements). Lazy regex would corrupt jika ada
+  // child element dengan tag yang sama.
+  const openRe = new RegExp(`<(div|section|main)[^>]*\\bid=["']${id}["'][^>]*>`, 'i');
+  const m = html.match(openRe);
+  if (!m) return html;
+  const tag = m[1].toLowerCase();
+  const start = m.index + m[0].length;
+  const openTok = new RegExp(`<${tag}\\b`, 'gi');
+  const closeTok = new RegExp(`</${tag}\\s*>`, 'gi');
+  // Walk forward, count opens vs closes, find matching close
+  openTok.lastIndex = start;
+  closeTok.lastIndex = start;
+  let depth = 1;
+  let pos = start;
+  while (depth > 0) {
+    openTok.lastIndex = pos;
+    closeTok.lastIndex = pos;
+    const o = openTok.exec(html);
+    const c = closeTok.exec(html);
+    if (!c) return html; // malformed
+    if (o && o.index < c.index) {
+      depth++;
+      pos = o.index + o[0].length;
+    } else {
+      depth--;
+      if (depth === 0) {
+        return html.slice(0, start) + innerHtml + html.slice(c.index);
+      }
+      pos = c.index + c[0].length;
+    }
+  }
+  return html;
 }
 
 function setMeta(html, attrName, attrVal, content) {
@@ -184,21 +227,41 @@ function renderFaqItem(f, idx) {
 
 function renderLocationCard(loc, idx) {
   const tagPrefix = loc.tagline || `Lokasi ${idx + 1}`;
+  const days = loc.days_label || 'Senin – Minggu';
+  const open = loc.open_time || '09.00';
+  const close = loc.close_time || '20.00';
+  const amenities = Array.isArray(loc.amenities) && loc.amenities.length
+    ? loc.amenities
+    : [
+        { icon: '🛵', text: 'Tersedia antar via ojek online' },
+        { icon: '🅿', text: 'Parkir tersedia' },
+      ];
+  const amenitiesHtml = amenities
+    .map((a) => `      <div class="loc-row"><div class="loc-ico">${escHtml(a.icon || '·')}</div>${escHtml(a.text || '')}</div>`)
+    .join('\n');
   return `<div class="loc-card" itemscope itemtype="https://schema.org/LocalBusiness">
     <span class="loc-tag">${escHtml(tagPrefix)}</span>
     <div class="loc-name" itemprop="name">${escHtml(loc.branch_name)}</div>
     <div class="loc-addr" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-      <span itemprop="streetAddress">${escHtml((loc.address || '').replace(/,/g, '<br>'))}</span>
+      <span itemprop="streetAddress">${formatMultiline(loc.address || '')}</span>
     </div>
     <div class="loc-rows">
-      <div class="loc-row"><div class="loc-ico">🕘</div>${escHtml(loc.open_time || '09.00')} – ${escHtml(loc.close_time || '20.00')} WIB</div>
-      <div class="loc-row"><div class="loc-ico">🛵</div>Tersedia antar via ojek online</div>
+      <div class="loc-row"><div class="loc-ico">🕘</div>${escHtml(days)} · ${escHtml(open)} – ${escHtml(close)} WIB</div>
+${amenitiesHtml}
     </div>
     <div class="loc-acts">
       <a href="${escHtml(loc.whatsapp_url || '#')}"><button class="btn btn-wa" style="width:100%">WhatsApp</button></a>
       <a href="${escHtml(loc.maps_url || '#')}" target="_blank" rel="noopener"><button class="btn btn-maps" style="width:100%">Google Maps</button></a>
     </div>
   </div>`;
+}
+
+// Render multi-line text safely: escape HTML, lalu allow user-typed
+// <br>, newlines, atau koma sebagai pemisah baris.
+function formatMultiline(s) {
+  return escHtml(s)
+    .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
+    .replace(/\r?\n/g, '<br>');
 }
 
 // ============================================================================
@@ -232,10 +295,122 @@ async function prerenderIndex(html, { produk, enrichMap, faqs, locations, settin
 
   // 4. Site settings overrides
   if (settings) {
+    // 4a. Stats grid
+    if (Array.isArray(settings.stats) && settings.stats.length) {
+      const statsHtml = settings.stats
+        .filter((s) => s && (s.number || s.label))
+        .map((s) => {
+          const num = escHtml(s.number || '');
+          const suf = s.suffix ? `<span class="acc">${escHtml(s.suffix)}</span>` : '';
+          const lbl = escHtml(s.label || '');
+          return `      <div class="stat-blk"><div class="stat-num">${num}${suf}</div><div class="stat-lbl">${lbl}</div></div>`;
+        })
+        .join('\n');
+      if (statsHtml) html = injectIntoElement(html, 'stats-grid', statsHtml);
+    }
+
+    // 4b. Brand slider — convert ticker text → logo strip
+    if (Array.isArray(settings.brands) && settings.brands.length) {
+      const brands = settings.brands.filter((b) => b && b.name);
+      if (brands.length) {
+        // Duplicate untuk seamless loop animation
+        const renderItem = (b) => {
+          const logo = b.logo_url ? normalizeImageUrl(b.logo_url) : '';
+          if (logo) {
+            return `<div class="ticker-item brand-only"><img class="brand-logo" src="${escHtml(logo)}" alt="${escHtml(b.name)}" loading="lazy" onerror="this.outerHTML='<span style=&quot;font-size:12px;font-weight:600;color:var(--ink-3)&quot;>${escHtml(b.name)}</span>'"></div>`;
+          }
+          return `<div class="ticker-item"><span class="tick-dot"></span>${escHtml(b.name)}</div>`;
+        };
+        const tickerHtml = brands.map(renderItem).join('') + brands.map(renderItem).join('');
+        html = injectIntoElement(html, 'ticker-inner', tickerHtml);
+      }
+    }
+
+    // 4c. Brand slider visual settings — inject inline CSS overrides
+    {
+      const h    = parseInt(settings.brand_logo_height)    || 32;
+      const maxw = parseInt(settings.brand_logo_max_width) || 120;
+      const gap  = parseInt(settings.brand_gap)            || 56;
+      const dur  = parseInt(settings.brand_anim_duration)  || 38;
+      const op   = parseFloat(settings.brand_logo_opacity) || 0.78;
+      const grayscale = settings.brand_logo_style !== 'color';
+      const filterRule = grayscale
+        ? `filter:grayscale(100%) brightness(.45);opacity:${op}`
+        : `filter:none;opacity:${op}`;
+      const overrideCss = `<style id="brand-slider-overrides">
+.ticker-inner{animation-duration:${dur}s}
+.ticker-item{padding:0 ${Math.round(gap / 2)}px}
+.ticker-item.brand-only{padding:0 ${Math.round(gap / 2)}px}
+.ticker-item img.brand-logo{height:${h}px;max-width:${maxw}px;${filterRule}}
+.ticker-item:hover img.brand-logo{filter:none;opacity:1}
+</style>`;
+      html = injectBeforeClose(html, 'head', overrideCss);
+    }
+
+    // 4d. Reviews / testimonials (compact, no photo)
+    if (Array.isArray(settings.reviews) && settings.reviews.length) {
+      const accentBg = (a) => {
+        switch (a) {
+          case 'orange':     return 'linear-gradient(135deg,#F06824,#D55A1A)';
+          case 'green':      return 'linear-gradient(135deg,#8EC64E,#4F7B39)';
+          case 'silver':     return 'linear-gradient(135deg,#a8b5b5,#6b7676)';
+          case 'green-deep': default: return 'linear-gradient(135deg,#4F7B39,#2d4a23)';
+        }
+      };
+      const initials = (name) => String(name || '').trim().split(/\s+/).map((w) => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
+      const reviewCards = settings.reviews
+        .filter((r) => r && (r.name || r.text))
+        .map((r) => {
+          const stars = '★'.repeat(Math.max(0, Math.min(5, r.rating || 5)));
+          const date = r.date ? `${escHtml(r.date)} · ${escHtml(r.source || 'Google Review')}` : escHtml(r.source || 'Google Review');
+          return `<article class="rev-card">
+          <div class="rev-stars" aria-label="${r.rating || 5} dari 5 bintang">${stars}</div>
+          <p class="rev-txt">"${escHtml(r.text || '')}"</p>
+          <div class="rev-author">
+            <div class="rev-ava" style="background:${accentBg(r.accent)}" aria-hidden="true">${escHtml(initials(r.name))}</div>
+            <div class="rev-meta-wrap">
+              <div class="rev-name">${escHtml(r.name || '')}</div>
+              <div class="rev-src">${date}</div>
+            </div>
+          </div>
+        </article>`;
+        }).join('');
+      const googleUrl = settings.reviews_google_url || 'https://maps.google.com/?q=7SUMMITS+CAMERA+Bandung';
+      const ctaHtml = `<a href="${escHtml(googleUrl)}" target="_blank" rel="noopener" class="rev-more">
+          <span>Lihat semua review di Google Maps →</span>
+        </a>`;
+      html = injectIntoElement(html, 'reviews-container', reviewCards + '\n        ' + ctaHtml);
+
+      // Review schema (aggregateRating + Review array) for SEO
+      const ratings = settings.reviews.map((r) => r.rating || 5);
+      const avg = ratings.length ? (ratings.reduce((s, n) => s + n, 0) / ratings.length).toFixed(1) : '5';
+      const reviewLd = {
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        '@id': `${SITE_URL}#business`,
+        name: '7summits Camera Bandung',
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: avg,
+          reviewCount: ratings.length,
+          bestRating: '5',
+          worstRating: '1',
+        },
+        review: settings.reviews.slice(0, 10).map((r) => ({
+          '@type': 'Review',
+          author: { '@type': 'Person', name: r.name || 'Anonymous' },
+          reviewRating: { '@type': 'Rating', ratingValue: r.rating || 5, bestRating: '5' },
+          reviewBody: r.text || '',
+          datePublished: r.date || '',
+        })),
+      };
+      html = injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(reviewLd)}</script>`);
+    }
+
     if (settings.hero_image_url) {
       html = html.replace(
         /url\('https:\/\/images\.unsplash\.com\/[^']+'\)/,
-        `url('${settings.hero_image_url}')`
+        `url('${normalizeImageUrl(settings.hero_image_url)}')`
       );
     }
     if (settings.hero_headline) {
@@ -344,26 +519,175 @@ function renderKatalogCard(p, enrich) {
   </a>`;
 }
 
+// Category labels untuk public FAQ page tabs.
+// Slug → display label. Order = order tampil sebagai tabs.
+const FAQ_CATEGORIES = [
+  { slug: 'harga',  label: 'Harga & Paket' },
+  { slug: 'lokasi', label: 'Lokasi & Operasional' },
+  { slug: 'syarat', label: 'Syarat & Ketentuan' },
+  { slug: 'produk', label: 'Produk & Gear' },
+  { slug: 'proses', label: 'Proses Booking' },
+  { slug: 'umum',   label: 'Umum' },
+];
+
 async function prerenderFaqPage(html, faqs) {
   if (!faqs.length) return html;
-  // The faq.html has groups by category. Group active faqs by category.
+
+  // Group FAQs by category (active only)
+  const active = faqs.filter((f) => f.is_active !== false);
   const byCat = {};
-  faqs.forEach((f) => {
+  active.forEach((f) => {
     const c = f.category || 'umum';
     (byCat[c] = byCat[c] || []).push(f);
   });
-  // Note: The static faq.html has hardcoded groups. We don't replace those
-  // (they are content-rich already); instead we inject FAQPage JSON-LD only.
+
+  // Sort each category by sort_order
+  Object.keys(byCat).forEach((c) => {
+    byCat[c].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  });
+
+  // Build category tabs — only show categories that have active FAQs
+  const visibleCats = FAQ_CATEGORIES.filter((cat) => (byCat[cat.slug] || []).length > 0);
+  const tabsHtml = [
+    `<button class="faq-cat-btn active" onclick="filterFaq('all',this)">Semua</button>`,
+    ...visibleCats.map((cat) =>
+      `<button class="faq-cat-btn" onclick="filterFaq('${cat.slug}',this)">${escHtml(cat.label)}</button>`
+    ),
+  ].join('\n      ');
+  html = injectIntoElement(html, 'faq-cats', tabsHtml);
+
+  // Build groups
+  const groupsHtml = visibleCats.map((cat) => {
+    const items = byCat[cat.slug] || [];
+    const itemsHtml = items
+      .map((f) =>
+        `        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">${escHtml(f.question)}<div class="faq-q-icon">+</div></div><div class="faq-a"><div class="faq-a-inner">${f.answer || ''}</div></div></div>`
+      )
+      .join('\n');
+    return `    <div class="faq-group" data-cat="${escHtml(cat.slug)}">
+      <div class="faq-group-title">${escHtml(cat.label)}</div>
+      <div class="faq-list">
+${itemsHtml}
+      </div>
+    </div>`;
+  }).join('\n');
+  html = injectIntoElement(html, 'faq-groups', groupsHtml);
+
+  // FAQPage JSON-LD
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqs.map((f) => ({
+    mainEntity: active.map((f) => ({
       '@type': 'Question',
       name: f.question,
-      acceptedAnswer: { '@type': 'Answer', text: (f.answer || '').replace(/<[^>]+>/g, '') }
-    }))
+      acceptedAnswer: { '@type': 'Answer', text: (f.answer || '').replace(/<[^>]+>/g, '') },
+    })),
   };
   return injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(faqLd)}</script>`);
+}
+
+function renderLocationBigCard(loc, idx) {
+  const tagPrefix = loc.tagline || `Lokasi ${idx + 1}`;
+  const days = loc.days_label || 'Senin – Minggu';
+  const open = loc.open_time || '09.00';
+  const close = loc.close_time || '20.00';
+  const amenities = Array.isArray(loc.amenities) && loc.amenities.length
+    ? loc.amenities
+    : [
+        { icon: '🛵', text: 'Tersedia antar via ojek online' },
+        { icon: '🅿', text: 'Parkir tersedia' },
+      ];
+  const amenitiesHtml = amenities
+    .map((a) => `        <div class="loc-row"><div class="loc-ico">${escHtml(a.icon || '·')}</div>${escHtml(a.text || '')}</div>`)
+    .join('\n');
+  const slug = loc.slug || '';
+  const detailLink = slug ? `<a href="/lokasi/${escHtml(slug)}.html" class="btn-detail">Detail →</a>` : '';
+  return `<div class="loc-big-card">
+      <div class="loc-big-header">
+        <span class="loc-tag">${escHtml(tagPrefix)}</span>
+        <div class="loc-big-name">${escHtml(loc.branch_name || '')}</div>
+        <div class="loc-big-addr">${formatMultiline(loc.address || '')}</div>
+        <div class="loc-rows">
+          <div class="loc-row"><div class="loc-ico">🕘</div>${escHtml(days)} · ${escHtml(open)} – ${escHtml(close)} WIB</div>
+${amenitiesHtml}
+        </div>
+      </div>
+      <div class="loc-big-footer">
+        <a href="${escHtml(loc.whatsapp_url || '#')}" class="btn-wa">WhatsApp</a>
+        <a href="${escHtml(loc.maps_url || '#')}" target="_blank" rel="noopener" class="btn-maps">Maps</a>
+        ${detailLink}
+      </div>
+    </div>`;
+}
+
+async function prerenderPaketPage(html, packages) {
+  if (!packages.length) return html;
+  const active = packages.filter((p) => p.is_active !== false);
+  // Group by category preserving original order from data
+  const byCat = new Map();
+  active.forEach((p) => {
+    const slug = p.category || 'other';
+    if (!byCat.has(slug)) byCat.set(slug, { slug, label: p.category_label || slug, items: [] });
+    byCat.get(slug).items.push(p);
+  });
+  // Sort items within each category by sort_order
+  byCat.forEach((cat) => cat.items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+
+  const cats = [...byCat.values()];
+  const tabsHtml = [
+    `<button class="pkg-tab active" onclick="switchPkg('all',this)">Semua Paket</button>`,
+    ...cats.map((c) => `<button class="pkg-tab" onclick="switchPkg('${escHtml(c.slug)}',this)">${escHtml(c.label)}</button>`),
+  ].join('\n      ');
+  html = injectIntoElement(html, 'pkg-tabs', tabsHtml);
+
+  const sectionsHtml = cats.map((cat) => {
+    const cardsHtml = cat.items.map((p, i) => {
+      const isFeat = i === 0 && cat.items.length > 1;
+      const itemsLi = (p.items || []).map((it) => `<li>${escHtml(it)}</li>`).join('');
+      const taglineHtml = p.description ? `<div class="pkg-tagline">${escHtml(p.description)}</div>` : '';
+      const popBadge = isFeat ? '<div class="pkg-pop">Paling Populer</div>' : '';
+      const btnClass = isFeat ? 'btn-pkg feat' : 'btn-pkg';
+      const cardClass = isFeat ? 'pkg-card featured' : 'pkg-card';
+      const waMsg = encodeURIComponent(`Halo, saya mau tanya tentang ${p.name} (Rp ${Number(p.price).toLocaleString('id-ID')}/hari)`);
+      return `<div class="${cardClass}">
+          ${popBadge}
+          <div class="pkg-name">${escHtml(p.name)}</div>
+          ${taglineHtml}
+          <ul class="pkg-items">${itemsLi}</ul>
+          <div class="pkg-price">Rp ${Number(p.price).toLocaleString('id-ID')} <small>/ hari</small></div>
+          <a href="https://wa.me/6281121114410?text=${waMsg}"><button class="${btnClass}">Booking Paket Ini →</button></a>
+        </div>`;
+    }).join('\n');
+    return `<div class="pkg-section" data-cat="${escHtml(cat.slug)}">
+      <div class="sec-lbl">${escHtml(cat.label)}</div>
+      <h2 class="sec-h2" style="font-size:clamp(20px,2.5vw,32px);margin-bottom:32px">Paket ${escHtml(cat.label)}</h2>
+      <div class="pkg-grid">${cardsHtml}</div>
+    </div>`;
+  }).join('\n');
+  html = injectIntoElement(html, 'pkg-sections', sectionsHtml);
+
+  // ItemList schema for SEO
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Paket Sewa Kamera 7summits',
+    numberOfItems: active.length,
+    itemListElement: active.map((p, i) => ({
+      '@type': 'Product',
+      position: i + 1,
+      name: p.name,
+      description: p.description || `${p.category_label} bundling — ${(p.items || []).length} item`,
+      offers: {
+        '@type': 'Offer',
+        price: p.price,
+        priceCurrency: 'IDR',
+        priceSpecification: { '@type': 'UnitPriceSpecification', price: p.price, priceCurrency: 'IDR', unitText: 'per hari' },
+        availability: 'https://schema.org/InStock',
+      },
+    })),
+  };
+  html = injectBeforeClose(html, 'head', `<script type="application/ld+json">${JSON.stringify(ld)}</script>`);
+  return html;
 }
 
 async function prerenderLokasiPage(html, locations) {
@@ -379,7 +703,11 @@ async function prerenderLokasiPage(html, locations) {
     openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: l.open_time || '09:00', closes: l.close_time || '20:00' }],
     priceRange: 'Rp75.000 - Rp1.000.000'
   }));
-  return injectBeforeClose(html, 'head', businessLd.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`).join('\n'));
+  html = injectBeforeClose(html, 'head', businessLd.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`).join('\n'));
+  // Replace loc-overview-grid with dynamic cards
+  const cardsHtml = locations.map((l, i) => renderLocationBigCard(l, i)).join('\n');
+  html = injectIntoElement(html, 'loc-overview-grid', cardsHtml);
+  return html;
 }
 
 // Category-aware product FAQ generator. Picks 6-7 questions most relevant to
@@ -638,17 +966,18 @@ async function main() {
 
   // 3. Fetch all data in parallel
   console.log('  ↳ fetching Supabase...');
-  const [produk, enrichAll, faqs, locations, settingsArr] = await Promise.all([
+  const [produk, enrichAll, faqs, locations, settingsArr, packages] = await Promise.all([
     tryFetch(BOOKING, 'produk', 'select=id,nama_produk,kategori_produk,harga_sewa_per_hari,kelengkapan,stok_total,stok_dalam_perbaikan,cabang_id&is_deleted=eq.false&status=eq.active&limit=2000'),
     tryFetch(CMS, 'product_enrichments', 'select=*&limit=2000'),
     tryFetch(CMS, 'faqs', 'select=*&is_active=eq.true&order=sort_order.asc&limit=200'),
     tryFetch(CMS, 'locations', 'select=*&is_active=eq.true&order=sort_order.asc&limit=20'),
-    tryFetch(CMS, 'site_settings', 'select=*&id=eq.1&limit=1')
+    tryFetch(CMS, 'site_settings', 'select=*&id=eq.1&limit=1'),
+    tryFetch(CMS, 'packages', 'select=*&is_active=eq.true&order=sort_order.asc&limit=200')
   ]);
   const settings = Array.isArray(settingsArr) && settingsArr[0] ? settingsArr[0] : null;
   const enrichMap = {};
   enrichAll.forEach((e) => { enrichMap[e.booking_product_id] = e; });
-  console.log(`  ↳ produk=${produk.length} enrich=${enrichAll.length} faqs=${faqs.length} locations=${locations.length} settings=${settings ? '✓' : '✗'}`);
+  console.log(`  ↳ produk=${produk.length} enrich=${enrichAll.length} faqs=${faqs.length} locations=${locations.length} packages=${packages.length} settings=${settings ? '✓' : '✗'}`);
 
   // 4. Read templates
   const indexTpl = await fs.readFile(path.join(SRC, 'index.html'), 'utf8');
@@ -656,6 +985,7 @@ async function main() {
   const pdpTpl = await fs.readFile(path.join(SRC, 'pdp.html'), 'utf8');
   const faqTpl = await fs.readFile(path.join(SRC, 'faq.html'), 'utf8').catch(() => null);
   const lokasiTpl = await fs.readFile(path.join(SRC, 'lokasi.html'), 'utf8').catch(() => null);
+  const paketTpl = await fs.readFile(path.join(SRC, 'paket.html'), 'utf8').catch(() => null);
   const sriwijayaTpl = await fs.readFile(path.join(SRC, 'sriwijaya.html'), 'utf8').catch(() => null);
   const cisarantenTpl = await fs.readFile(path.join(SRC, 'cisaranten.html'), 'utf8').catch(() => null);
 
@@ -681,6 +1011,11 @@ async function main() {
     const out = await prerenderLokasiPage(lokasiTpl, locations);
     await fs.writeFile(path.join(OUT, 'lokasi.html'), out);
     console.log(`  ↳ wrote lokasi.html with LocalBusiness schema`);
+  }
+  if (paketTpl) {
+    const out = await prerenderPaketPage(paketTpl, packages);
+    await fs.writeFile(path.join(OUT, 'paket.html'), out);
+    console.log(`  ↳ wrote paket.html (${packages.length} packages)`);
   }
   if (sriwijayaTpl) await fs.writeFile(path.join(OUT, 'sriwijaya.html'), await prerenderLokasiPage(sriwijayaTpl, locations.filter((l) => /sriwij/i.test(l.branch_name || ''))));
   if (cisarantenTpl) await fs.writeFile(path.join(OUT, 'cisaranten.html'), await prerenderLokasiPage(cisarantenTpl, locations.filter((l) => /cisar/i.test(l.branch_name || ''))));
