@@ -16,7 +16,7 @@ function injectNavbar() {
 <a href="#main" class="skip-link">Lompat ke konten utama</a>
 <div class="ann-bar" role="region" aria-label="Promo aktif">
   Promo aktif: sewa 3 hari bayar 2 hari — berlaku semua produk
-  <a href="${BRAND.bookingUrl}">Booking sekarang →</a>
+  <a href="${BRAND.bookingUrl}" target="_blank" rel="noopener">Booking sekarang →</a>
 </div>
 <nav id="navbar" aria-label="Navigasi utama">
   <div class="nav-inner">
@@ -31,7 +31,7 @@ function injectNavbar() {
     </ul>
     <div class="nav-acts">
       <a href="https://wa.me/${BRAND.waNumber}" aria-label="Chat via WhatsApp"><button class="btn-g">WhatsApp</button></a>
-      <a href="${BRAND.bookingUrl}" aria-label="Buka sistem booking"><button class="btn-p">Booking →</button></a>
+      <a href="${BRAND.bookingUrl}" target="_blank" rel="noopener" aria-label="Buka sistem booking"><button class="btn-p">Booking →</button></a>
     </div>
   </div>
 </nav>`;
@@ -79,7 +79,7 @@ function injectFooter() {
         <li><a href="/paket.html">Semua Paket</a></li>
       </ul></div>
       <div class="fcol"><h4>Platform</h4><ul>
-        <li><a href="${BRAND.bookingUrl}">Sistem Booking</a></li>
+        <li><a href="${BRAND.bookingUrl}" target="_blank" rel="noopener">Sistem Booking</a></li>
         <li><a href="/panduan.html">Panduan Gear</a></li>
         <li><a href="/faq.html">FAQ Lengkap</a></li>
         <li><a href="/promo.html">Promo Aktif</a></li>
