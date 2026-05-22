@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halaman Tidak Ditemukan — 7summits Camera Bandung</title>
+<meta name="robots" content="noindex,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/design-system.css">
+<link rel="icon" type="image/png" href="/logo-7summits-mark.png">
+<style>
+.err-wrap{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;text-align:center;background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%)}
+.err-num{font-family:var(--font-display);font-size:clamp(96px,18vw,180px);font-weight:800;letter-spacing:-.06em;line-height:1;color:transparent;background:linear-gradient(135deg,var(--orange) 0%,var(--green-deep) 100%);-webkit-background-clip:text;background-clip:text;margin-bottom:8px}
+.err-title{font-family:var(--font-display);font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:-.03em;color:var(--ink);margin-bottom:14px}
+.err-sub{font-size:16px;color:var(--ink-3);max-width:520px;margin:0 auto 32px;line-height:1.65}
+.err-search{max-width:480px;margin:0 auto 36px;display:flex;gap:8px;width:100%}
+.err-search input{flex:1;background:var(--surface);border:1px solid var(--bd-strong);border-radius:999px;padding:13px 20px;font-family:inherit;font-size:14.5px;color:var(--ink);outline:none}
+.err-search input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(142,198,78,.18)}
+.err-search button{font-family:inherit;font-weight:600;font-size:13.5px;background:var(--ink);color:#fff;border:none;border-radius:999px;padding:0 22px;cursor:pointer;transition:var(--tr-fast)}
+.err-search button:hover{background:#000}
+.err-popular{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;max-width:760px;margin:0 auto}
+.err-pop-card{display:flex;align-items:center;gap:14px;padding:18px 20px;background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-3);text-decoration:none;color:inherit;transition:var(--tr-fast);text-align:left}
+.err-pop-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,18,23,.06);border-color:var(--bd-strong)}
+.err-pop-ico{width:38px;height:38px;border-radius:10px;background:var(--green-soft);border:1px solid var(--green-line);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.err-pop-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:2px}
+.err-pop-meta{font-size:12px;color:var(--ink-4);font-weight:500}
+.err-back{display:inline-flex;align-items:center;gap:6px;margin-top:32px;font-size:13.5px;font-weight:600;color:var(--ink-3);text-decoration:none;transition:var(--tr-fast)}
+.err-back:hover{color:var(--green-deep)}
+</style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<main class="err-wrap">
+  <div class="err-num">404</div>
+  <h1 class="err-title">Halaman tidak ditemukan</h1>
+  <p class="err-sub">Sepertinya halaman yang kamu cari sudah pindah atau gak ada. Coba search di bawah, atau langsung ke salah satu halaman populer kami.</p>
+
+  <form class="err-search" onsubmit="event.preventDefault();const q=this.q.value.trim();if(q)location.href='/katalog.html?search='+encodeURIComponent(q)">
+    <input type="search" name="q" placeholder="Cari gear (Sony A7IV, DJI Mini 4 Pro, dll)..." autocomplete="off">
+    <button type="submit">Cari</button>
+  </form>
+
+  <div class="err-popular">
+    <a href="/katalog.html" class="err-pop-card">
+      <div class="err-pop-ico">📷</div>
+      <div><div class="err-pop-name">Lihat Katalog Gear</div><div class="err-pop-meta">767+ unit · Sony · Canon · DJI</div></div>
+    </a>
+    <a href="/layanan/wedding" class="err-pop-card">
+      <div class="err-pop-ico">💍</div>
+      <div><div class="err-pop-name">Sewa Wedding</div><div class="err-pop-meta">Paket Pro Rp 1.5jt/hari</div></div>
+    </a>
+    <a href="/layanan/wisuda" class="err-pop-card">
+      <div class="err-pop-ico">🎓</div>
+      <div><div class="err-pop-name">Paket Wisuda</div><div class="err-pop-meta">Mahasiswa Rp 350rb/hari</div></div>
+    </a>
+    <a href="/layanan/content-creator" class="err-pop-card">
+      <div class="err-pop-ico">📱</div>
+      <div><div class="err-pop-name">Vlogger Setup</div><div class="err-pop-meta">A7CII + RS3 Mini Rp 850rb</div></div>
+    </a>
+    <a href="/panduan.html" class="err-pop-card">
+      <div class="err-pop-ico">📖</div>
+      <div><div class="err-pop-name">Panduan & Tips</div><div class="err-pop-meta">9 artikel pillar fotografi/video</div></div>
+    </a>
+    <a href="/lokasi.html" class="err-pop-card">
+      <div class="err-pop-ico">📍</div>
+      <div><div class="err-pop-name">Lokasi Cabang</div><div class="err-pop-meta">Cisaranten · Sriwijaya · Bandung</div></div>
+    </a>
+    <a href="/faq.html" class="err-pop-card">
+      <div class="err-pop-ico">❓</div>
+      <div><div class="err-pop-name">FAQ Sewa</div><div class="err-pop-meta">Syarat · proses · harga</div></div>
+    </a>
+    <a href="https://wa.me/6281121114410?text=Halo+admin%2C+saya+nyasar+ke+halaman+yang+gak+ada+di+website" class="err-pop-card">
+      <div class="err-pop-ico" style="background:#dcfce7;border-color:#86efac;color:#16a34a">💬</div>
+      <div><div class="err-pop-name">Tanya via WhatsApp</div><div class="err-pop-meta">Tim respon &lt; 30 menit</div></div>
+    </a>
+  </div>
+
+  <a href="/" class="err-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Kembali ke Home
+  </a>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/components.js"></script>
+<script src="/cart.js" defer></script>
+<script src="/branding-loader.js" defer></script>
+</body>
+</html>

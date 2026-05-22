@@ -1,0 +1,13 @@
+{
+  "name": "sewakamerabandung-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node prerender.mjs",
+    "build:dev": "PRERENDER_DEV=1 node prerender.mjs"
+  }
+}

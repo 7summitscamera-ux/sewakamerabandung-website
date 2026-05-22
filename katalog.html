@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Katalog Gear — 7summits Camera</title>
 <meta name="description" content="Katalog lengkap gear sewa di 7summits Camera Bandung — kamera, lensa, lighting, video support, audio. Filter by kategori, brand, dan harga.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Katalog Gear Sewa — 7summits Camera Bandung">
+<meta property="og:description" content="767+ unit gear profesional: kamera Sony/Canon/DJI, lensa, lighting Godox/Aputure, gimbal, audio. Filter & booking online.">
+<meta property="og:url" content="https://sewakamerabandung.id/katalog">
+<meta property="og:image" content="https://sewakamerabandung.id/logo-7summits-mark.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:locale" content="id_ID">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Katalog Gear Sewa — 7summits Camera Bandung">
+<meta name="twitter:description" content="767+ unit gear profesional: kamera Sony/Canon/DJI, lensa, lighting Godox/Aputure, gimbal, audio. Filter & booking online.">
+<meta name="twitter:image" content="https://sewakamerabandung.id/logo-7summits-mark.png">
 <link rel="canonical" href="https://sewakamerabandung.id/katalog">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,8 +28,8 @@
 .kat-hero h1{font-family:var(--font-display);font-size:clamp(32px,4vw,48px);font-weight:700;letter-spacing:-.035em;line-height:1.04;color:var(--ink);margin-bottom:10px}
 .kat-hero p{font-size:15px;color:var(--ink-3);max-width:620px}
 
-.kat-layout{display:grid;grid-template-columns:280px 1fr;gap:36px;padding:36px 0 80px;align-items:start}
-.kat-side{position:sticky;top:96px;background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-4);padding:22px;max-height:calc(100vh - 120px);overflow-y:auto}
+.kat-layout{display:flex;align-items:flex-start;gap:32px;padding:32px 0 80px}
+.kat-side{flex:0 0 270px;width:270px;position:sticky;top:96px;background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-4);padding:20px;max-height:calc(100vh - 120px);overflow-y:auto;box-sizing:border-box}
 .kat-side h3{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);margin:18px 0 10px}
 .kat-side h3:first-child{margin-top:0}
 .kat-side .filter-block{padding-bottom:18px;border-bottom:1px solid var(--bd);margin-bottom:18px}
@@ -36,7 +48,7 @@
 .btn-clear{font-family:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:transparent;border:1px solid var(--bd-strong);padding:7px 14px;border-radius:999px;cursor:pointer;transition:var(--tr-fast);width:100%;margin-top:8px}
 .btn-clear:hover{background:var(--bg-2);color:var(--ink);border-color:#9CA3AF}
 
-.kat-main{min-width:0}
+.kat-main{flex:1 1 0;min-width:0}
 .kat-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:14px;flex-wrap:wrap}
 .kat-count{font-size:14px;color:var(--ink-3);font-weight:500}
 .kat-count strong{color:var(--ink);font-weight:700}
@@ -81,9 +93,9 @@
 /* Mobile filter drawer toggle */
 .mob-filters-btn{display:none}
 
-@media(max-width:980px){
-  .kat-layout{grid-template-columns:1fr;gap:0}
-  .kat-side{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:88vw;max-height:100vh;border-radius:0;border:none;border-right:1px solid var(--bd);transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:1001;padding-top:74px;box-shadow:14px 0 40px rgba(15,18,23,.08)}
+@media(max-width:900px){
+  .kat-layout{display:block;gap:0}
+  .kat-side{flex:none;width:300px;max-width:88vw;position:fixed;top:0;left:0;bottom:0;max-height:100vh;border-radius:0;border:none;border-right:1px solid var(--bd);transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:1001;padding-top:74px;box-shadow:14px 0 40px rgba(15,18,23,.08)}
   .kat-side.open{transform:translateX(0)}
   .kat-side-close{position:absolute;top:16px;right:16px;background:var(--bg-2);border:1px solid var(--bd);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink-3);display:flex;align-items:center;justify-content:center}
   .kat-overlay{position:fixed;inset:0;background:rgba(14,18,23,.42);backdrop-filter:blur(4px);z-index:1000;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -96,6 +108,15 @@
   .kcard-price{font-size:13px}
 }
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"Home","item":"https://sewakamerabandung.id"},
+  {"@type":"ListItem","position":2,"name":"Katalog","item":"https://sewakamerabandung.id/katalog"}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"Katalog Gear Sewa 7summits Camera","description":"Katalog lengkap gear sewa di Bandung — kamera, lensa, lighting, video support, audio.","url":"https://sewakamerabandung.id/katalog","provider":{"@type":"LocalBusiness","name":"7summits Camera","url":"https://sewakamerabandung.id"}}
+</script>
 </head>
 <body>
 
@@ -219,6 +240,11 @@ const filters = {
 
 // ============ LOAD ============
 async function load(){
+  const grid = document.getElementById('kat-grid');
+  const isPrerendered = grid && grid.querySelector('.kcard');
+  // If pre-rendered (build-time) AND no URL filter, defer fetching to background
+  // and let users see the pre-rendered HTML immediately. Background fetch
+  // populates state arrays so filtering/sorting work after first interaction.
   try {
     const { data: rows } = await sbB.from('produk')
       .select('id,nama_produk,kategori_produk,harga_sewa_per_hari,stok_total,stok_dalam_perbaikan')
@@ -228,9 +254,27 @@ async function load(){
     _enrichMap = {};
     (en||[]).forEach(e => _enrichMap[e.booking_product_id] = e);
     buildFilterUI();
-    renderKatalog();
+    // Skip the initial render if pre-rendered + no filters active (prevents flicker)
+    const hasFilter = filters.categories.size || filters.brands.size;
+    if (!isPrerendered || hasFilter || _page > 1) renderKatalog();
+    else {
+      // Just sync the count + pagination control without touching the grid HTML
+      document.getElementById('kat-count').textContent = _all.length.toLocaleString('id-ID');
+      // Rebuild pagination ctrl so user can navigate beyond page 1
+      const total = Math.max(1, Math.ceil(_all.length / PAGE_SIZE));
+      const pag = document.getElementById('kat-pag');
+      if (total > 1) {
+        let h = `<button class="pag-btn" disabled>‹ Prev</button>`;
+        for (let i = 1; i <= Math.min(total, 7); i++) h += `<button class="pag-btn ${i===1?'active':''}" onclick="goPage(${i})">${i}</button>`;
+        if (total > 7) h += '<span style="padding:0 8px;align-self:center;color:var(--ink-4)">…</span>';
+        h += `<button class="pag-btn" onclick="goPage(2)">Next ›</button>`;
+        pag.innerHTML = h;
+      }
+    }
   } catch(e) {
-    document.getElementById('kat-grid').innerHTML = '<div class="kat-empty"><div class="kat-empty-ico">⚠</div><h3>Gagal memuat katalog</h3><p>'+escHtml(e.message)+'</p></div>';
+    if (!isPrerendered) {
+      document.getElementById('kat-grid').innerHTML = '<div class="kat-empty"><div class="kat-empty-ico">⚠</div><h3>Gagal memuat katalog</h3><p>'+escHtml(e.message)+'</p></div>';
+    }
   }
 }
 
@@ -345,11 +389,11 @@ function renderKatalog(){
         ${e.is_featured ? '<div class="kcard-feat">⭐ Featured</div>' : ''}
         ${!avail ? '<div class="kcard-out">Stok habis</div>' : ''}
         <div class="kcard-actions">
-          <button class="kcard-icon" title="Tambah ke daftar inquiry" onclick="event.stopPropagation();event.preventDefault();katAddCart(this,${cartPayload})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <button class="kcard-icon" title="Tambah ke daftar inquiry" aria-label="Tambah ${escHtml(e.nama_produk||'produk')} ke daftar inquiry" onclick="event.stopPropagation();event.preventDefault();katAddCart(this,${cartPayload})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
-          <button class="kcard-icon" title="Lihat detail" onclick="event.stopPropagation();event.preventDefault();location.href='/product/${slug}'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <button class="kcard-icon" title="Lihat detail" aria-label="Lihat detail ${escHtml(e.nama_produk||'produk')}" onclick="event.stopPropagation();event.preventDefault();location.href='/product/${slug}'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
       </div>
