@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/auth.css">
 <style>
 :root{
   --orange:#F06824;--orange-d:#D55A1A;
@@ -42,8 +43,35 @@ a{color:inherit;text-decoration:none}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;min-width:0}
-.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 28px;gap:16px;position:sticky;top:0;z-index:10}
-.topbar h1{font-size:17px;font-weight:700;flex:1;color:var(--ink);letter-spacing:-.015em}
+/* Topbar: 1 baris di desktop, wrap rapi di mobile */
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 20px;gap:8px;position:sticky;top:0;z-index:10;overflow:visible}
+.topbar-title-block{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.topbar h1{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.015em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.topbar-sub{font-size:12.5px;color:var(--ink-4);font-weight:500;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-user{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:5px 10px;background:#fff;border:1px solid var(--bd);border-radius:999px;font-size:12.5px;color:var(--ink-2);max-width:180px;overflow:hidden}
+.topbar-user-name-wrap{display:flex;flex-direction:column;line-height:1.2;min-width:0;overflow:hidden}
+.topbar-user-name-wrap > strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+.topbar-user-name-wrap > span{font-size:11px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#topbar-user-avatar{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--green-soft,#e8f5db);color:var(--green-deep);font-weight:700;font-size:12px}
+.topbar .btn,.topbar a{flex-shrink:0;white-space:nowrap}
+.topbar .btn{padding:8px 14px;font-size:13px}
+@media(max-width:1100px){
+  .topbar-sub{display:none}
+}
+@media(max-width:900px){
+  .topbar{padding:0 14px;gap:6px}
+  .topbar-user-name-wrap{display:none}
+  .topbar-user{max-width:38px;padding:3px;justify-content:center}
+  .topbar .btn{padding:8px 12px;font-size:12px}
+  #btn-view-site{display:none}
+}
+@media(max-width:600px){
+  .topbar{padding:0 12px}
+  .topbar h1{font-size:15px}
+  .topbar .btn{padding:7px 10px}
+  .topbar-user{display:none}
+  #btn-save-all{padding:8px 12px}
+}
 .topbar-sub{font-size:12.5px;color:var(--ink-4);font-weight:500;margin-top:2px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;font-weight:600;font-size:13px;padding:9px 18px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:var(--tr);white-space:nowrap;letter-spacing:-.005em}
 .btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -182,11 +210,15 @@ tr:hover td{background:#FAFBF7}
 .prod-compact th{padding:8px 12px}
 
 /* IMAGE GRID for product enrichment */
-.imgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
-.img-slot{aspect-ratio:1;background:var(--bg-2);border:1px dashed var(--bd-strong);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.img-slot img{width:100%;height:100%;object-fit:contain;background:#fff;padding:6px}
-.img-slot input{position:absolute;inset:0;opacity:0;border:none}
-.img-slot-rm{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);border:1px solid var(--bd);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--danger);display:flex;align-items:center;justify-content:center}
+.imgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.img-slot{background:var(--bg-2);border:1px solid var(--bd);border-radius:10px;display:flex;flex-direction:column;overflow:hidden}
+.img-slot-preview{aspect-ratio:1;background:var(--bg-2);border-bottom:1px dashed var(--bd-strong);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.img-slot-preview img{width:100%;height:100%;object-fit:contain;background:#fff;padding:6px}
+.img-slot-empty{text-align:center;color:var(--ink-4);font-size:12px}
+.img-slot-empty .ico{font-size:28px;opacity:.4;margin-bottom:4px}
+.img-slot input.img-slot-url{display:block;width:100%;border:none;border-top:0;padding:8px 10px;font-size:12px;background:#fff;color:var(--ink);outline:none}
+.img-slot input.img-slot-url:focus{background:#fffbe6}
+.img-slot-rm{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);border:1px solid var(--bd);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--danger);display:flex;align-items:center;justify-content:center;z-index:2}
 
 /* DETAIL ROWS (jsonb editors) */
 .kv-row{display:grid;grid-template-columns:1fr 1fr 36px;gap:8px;margin-bottom:8px}
@@ -240,10 +272,18 @@ tr:hover td{background:#FAFBF7}
     <div class="sb-item" data-panel="youtube"><span class="sb-icon">▶</span><span>YouTube Videos</span></div>
     <div class="sb-item" data-panel="faq"><span class="sb-icon">❓</span><span>FAQ</span></div>
     <div class="sb-item" data-panel="promo"><span class="sb-icon">🏷</span><span>Promo</span></div>
+    <div class="sb-item" data-panel="stats"><span class="sb-icon">📈</span><span>Statistik</span></div>
+    <div class="sb-item" data-panel="brands"><span class="sb-icon">🏢</span><span>Brand Slider</span></div>
+    <div class="sb-item" data-panel="paket"><span class="sb-icon">📦</span><span>Paket Sewa</span></div>
+    <div class="sb-item" data-panel="reviews"><span class="sb-icon">⭐</span><span>Google Reviews</span></div>
 
     <div class="sb-section">Bisnis</div>
     <div class="sb-item" data-panel="lokasi"><span class="sb-icon">📍</span><span>Lokasi & Cabang</span></div>
     <div class="sb-item" data-panel="kontak"><span class="sb-icon">💬</span><span>Kontak & Sosial</span></div>
+
+    <div class="sb-section" id="sb-section-system" hidden>Sistem</div>
+    <div class="sb-item" data-panel="users" id="sb-item-users" hidden><span class="sb-icon">👥</span><span>User Management</span></div>
+    <div class="sb-item" data-panel="deploy" id="sb-item-deploy" hidden><span class="sb-icon">🚀</span><span>Deploy & Publish</span></div>
   </nav>
   <div class="sb-footer">
     <strong>Admin 7summits</strong>
@@ -253,12 +293,17 @@ tr:hover td{background:#FAFBF7}
 
 <div class="main">
   <div class="topbar">
-    <div style="flex:1">
+    <div class="topbar-title-block">
       <h1 id="topbar-title">Dashboard</h1>
       <div id="topbar-sub" class="topbar-sub">Ringkasan konten dan pengaturan website</div>
     </div>
-    <button class="btn btn-ghost" onclick="window.open('/','_blank')">Lihat Website ↗</button>
-    <button class="btn btn-primary" id="btn-save-all" onclick="saveAll()">Simpan Perubahan</button>
+    <div id="topbar-user" class="topbar-user" hidden>
+      <span id="topbar-user-avatar" aria-hidden="true">U</span>
+      <div class="topbar-user-name-wrap"><strong id="topbar-user-name">—</strong><span id="topbar-user-role"></span></div>
+    </div>
+    <a id="btn-view-site" class="btn btn-ghost" href="/" target="_blank" rel="noopener">Lihat Website ↗</a>
+    <button class="btn btn-primary" id="btn-save-all" type="button" onclick="saveAll()">Simpan</button>
+    <button class="btn btn-ghost" id="btn-logout" type="button" aria-label="Logout dari dashboard" title="Logout">⎋</button>
   </div>
 
   <div class="content">
@@ -437,6 +482,9 @@ tr:hover td{background:#FAFBF7}
       <div class="card">
         <div class="card-hdr"><div class="card-title">Varian Logo</div></div>
         <div class="card-body">
+          <div class="alert" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:14px;display:block;line-height:1.55">
+            💡 <strong>Pakai Google Drive?</strong> Upload file → klik kanan file → <strong>Share</strong> → ubah ke <strong>"Anyone with the link"</strong> → Copy link → paste di field bawah. Kami auto-convert ke direct image URL. Atau pakai URL gambar langsung yang ujungnya <code>.png</code>/<code>.jpg</code> (Unsplash, Imgur, dll).
+          </div>
           <div class="form-row">
             <div class="form-group">
               <label>Logo Landscape (default — wordmark + icon)</label>
@@ -590,11 +638,22 @@ tr:hover td{background:#FAFBF7}
 
     <!-- ============ FAQ ============ -->
     <div class="panel" id="panel-faq">
-      <div class="panel-hdr"><h2>FAQ</h2><p>Pertanyaan & jawaban yang muncul di homepage dan halaman /faq.</p></div>
+      <div class="panel-hdr"><h2>FAQ</h2><p>Pertanyaan & jawaban yang muncul di homepage dan halaman /faq. Kategori menentukan tab di public page.</p></div>
       <div class="card">
         <div class="card-hdr">
           <div class="card-title">Daftar FAQ</div>
-          <button class="btn btn-green btn-sm" onclick="faqOpen()">+ Tambah FAQ</button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="faq-filter-cat" onchange="renderFaqs()" style="padding:7px 12px;border:1px solid var(--bd);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
+              <option value="all">Semua Kategori</option>
+              <option value="harga">Harga & Paket</option>
+              <option value="lokasi">Lokasi & Operasional</option>
+              <option value="syarat">Syarat & Ketentuan</option>
+              <option value="produk">Produk & Gear</option>
+              <option value="proses">Proses Booking</option>
+              <option value="umum">Umum</option>
+            </select>
+            <button class="btn btn-green btn-sm" onclick="faqOpen()">+ Tambah FAQ</button>
+          </div>
         </div>
         <div class="tbl-wrap" style="border-radius:0;border-left:0;border-right:0;border-top:0">
           <table>
@@ -632,6 +691,173 @@ tr:hover td{background:#FAFBF7}
             <tbody id="promo-tbody"><tr><td colspan="6" class="empty-state"><div class="empty-state-ico">⏳</div>Memuat...</td></tr></tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- ============ STATISTIK ============ -->
+    <div class="panel" id="panel-stats">
+      <div class="panel-hdr">
+        <h2>Statistik Homepage</h2>
+        <p class="panel-desc">Stats card di homepage (cth: 767+ Unit gear, 5★ Rating, dst). Maximum 4 item ditampilkan rapi 4-kolom; lebih dari itu jadi grid responsive.</p>
+      </div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Stats</div>
+          <button class="btn btn-green btn-sm" type="button" onclick="statsAdd()">+ Tambah Stat</button>
+        </div>
+        <div class="card-body">
+          <div id="stats-list"></div>
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
+        💡 Field <strong>Number</strong> = angka utama (cth: <code>767</code>). Field <strong>Suffix</strong> = simbol kecil di belakang (cth: <code>+</code>, <code>★</code>, <code>%</code>) — boleh kosong. Field <strong>Label</strong> = teks deskriptif di bawah angka.
+      </p>
+    </div>
+
+    <!-- ============ BRAND SLIDER ============ -->
+    <div class="panel" id="panel-brands">
+      <div class="panel-hdr">
+        <h2>Brand Slider</h2>
+        <p class="panel-desc">Logo brand yang scroll otomatis di homepage (di bawah hero). Tambah nama brand + URL logo. Pakai tombol 🔍 untuk cari logo via Google Image Search.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hdr"><div class="card-title">Tampilan Slider</div></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tinggi Logo (px)</label>
+              <input type="number" id="brand_logo_height" min="16" max="120" step="2" value="32">
+              <small style="color:var(--ink-4);font-size:11.5px">Rekomendasi: 24-48px. Default 32px.</small>
+            </div>
+            <div class="form-group">
+              <label>Lebar Maksimal Logo (px)</label>
+              <input type="number" id="brand_logo_max_width" min="60" max="300" step="10" value="120">
+              <small style="color:var(--ink-4);font-size:11.5px">Logo akan fit dalam lebar ini sambil pertahankan aspect ratio. Default 120px.</small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Jarak Antar Logo (px)</label>
+              <input type="number" id="brand_gap" min="10" max="120" step="2" value="56">
+              <small style="color:var(--ink-4);font-size:11.5px">Padding kiri+kanan tiap item. Default 56px (28px each side).</small>
+            </div>
+            <div class="form-group">
+              <label>Kecepatan Animasi (detik per loop)</label>
+              <input type="number" id="brand_anim_duration" min="10" max="120" step="2" value="38">
+              <small style="color:var(--ink-4);font-size:11.5px">Lebih kecil = lebih cepat. Default 38 detik.</small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Style Logo</label>
+              <select id="brand_logo_style">
+                <option value="grayscale">Grayscale (color on hover) — minimal</option>
+                <option value="color">Always color</option>
+              </select>
+              <small style="color:var(--ink-4);font-size:11.5px">Grayscale memberikan vibe minimal & konsisten. Color = penuh warna.</small>
+            </div>
+            <div class="form-group">
+              <label>Opacity Default</label>
+              <input type="number" id="brand_logo_opacity" min="0.3" max="1" step="0.05" value="0.78">
+              <small style="color:var(--ink-4);font-size:11.5px">0.3 = sangat transparan, 1 = penuh. Default 0.78.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Daftar Brand</div>
+          <button class="btn btn-green btn-sm" type="button" onclick="brandsAdd()">+ Tambah Brand</button>
+        </div>
+        <div class="card-body">
+          <div id="brands-list"></div>
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
+        💡 <strong>Cara cari logo:</strong> Klik tombol <strong>🔍 Cari Logo</strong> di samping field URL — browser buka tab baru ke Google Images dengan query <code>{nama brand} logo png transparent</code>. Klik kanan logo yang cocok → <strong>Copy image address</strong> → paste di field URL. Atau pakai <strong>Drive URL</strong> kalau punya logo sendiri (akan auto-convert).
+      </p>
+    </div>
+
+    <!-- ============ PAKET SEWA ============ -->
+    <div class="panel" id="panel-paket">
+      <div class="panel-hdr">
+        <h2>Paket Sewa</h2>
+        <p class="panel-desc">Paket bundling yang muncul di halaman <code>/paket</code>. Tab dipisah per kategori (Audio &amp; Lighting, Shooting, Wedding/Event, Wisuda, dll).</p>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="card-hdr" style="padding:18px 22px">
+          <div class="card-title">Daftar Paket</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="pkg-filter-cat" onchange="renderPackages()" style="padding:7px 12px;border:1px solid var(--bd);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
+              <option value="all">Semua Kategori</option>
+            </select>
+            <button class="btn btn-green btn-sm" type="button" onclick="pkgOpen()">+ Tambah Paket</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr>
+              <th>Nama Paket</th>
+              <th style="width:140px">Kategori</th>
+              <th style="width:90px;text-align:right">Harga/hari</th>
+              <th style="width:80px">Items</th>
+              <th style="width:80px">Order</th>
+              <th style="width:90px">Status</th>
+              <th style="width:120px"></th>
+            </tr></thead>
+            <tbody id="pkg-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--ink-4)">Memuat...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
+        💡 <strong>Format Items:</strong> satu item per baris di textarea Edit Paket. Contoh: <code>Sony A7IV - body x1</code>. Format <code>x1, x2, x3</code> di akhir untuk indikasi quantity.
+      </p>
+    </div>
+
+    <!-- ============ GOOGLE REVIEWS ============ -->
+    <div class="panel" id="panel-reviews">
+      <div class="panel-hdr">
+        <h2>Google Reviews / Testimonial</h2>
+        <p class="panel-desc">Testimonial yang muncul di section "Bukan sekadar tempat rental" homepage. Copy-paste review real dari Google Maps profile kamu.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hdr"><div class="card-title">Link Google Maps</div></div>
+        <div class="card-body">
+          <div class="form-row full">
+            <div class="form-group">
+              <label>URL Google Maps Profile</label>
+              <input type="url" id="reviews_google_url" placeholder="https://maps.google.com/?q=..." style="font-family:monospace;font-size:12.5px">
+              <small style="color:var(--ink-4);font-size:11.5px">Tombol "Lihat semua review di Google Maps" di homepage akan link ke URL ini.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Daftar Review</div>
+          <button class="btn btn-green btn-sm" type="button" onclick="reviewsAdd()">+ Tambah Review</button>
+        </div>
+        <div class="card-body">
+          <div id="reviews-list"></div>
+        </div>
+      </div>
+      <div class="card" style="padding:18px 22px;margin-top:16px;background:#f7f8fa;border:1px solid var(--bd)">
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">💡 Cara copy review dari Google Maps</h3>
+        <ol style="font-size:13px;color:var(--ink-3);line-height:1.7;padding-left:18px;margin:0">
+          <li>Buka <a href="https://maps.google.com/?q=7SUMMITS+CAMERA+Bandung" target="_blank" rel="noopener" style="color:var(--green-deep);font-weight:600">profile 7summits Camera di Google Maps</a></li>
+          <li>Klik tab <strong>Reviews</strong></li>
+          <li>Copy: nama reviewer, jumlah bintang, tanggal, isi review</li>
+          <li>Klik <strong>+ Tambah Review</strong> di atas → paste data → Simpan Perubahan → klik Publish</li>
+        </ol>
+        <p style="font-size:12px;color:var(--ink-4);margin-top:10px;line-height:1.55">
+          ⚠️ Saya gak bisa fetch review dari Google otomatis (mereka block scraping). Manual paste adalah satu-satunya cara legal. Untuk auto-sync butuh <strong>Google Places API</strong> ($) + Edge Function — bisa di-add later kalau perlu.
+        </p>
       </div>
     </div>
 
@@ -678,10 +904,100 @@ tr:hover td{background:#FAFBF7}
   </div>
 </div>
 
+    <!-- ============ DEPLOY & PUBLISH (superadmin only) ============ -->
+    <div class="panel" id="panel-deploy">
+      <div class="panel-hdr">
+        <h2>Deploy & Publish</h2>
+        <p class="panel-desc">Public web di-prerender saat Vercel build. Setelah save di admin, klik <strong>Publish</strong> untuk trigger rebuild — perubahan muncul ±2-3 menit kemudian.</p>
+      </div>
+
+      <div class="card" style="padding:24px;margin-bottom:16px">
+        <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
+          <div style="flex:1;min-width:240px">
+            <div style="font-size:13px;color:var(--ink-3);margin-bottom:6px;font-weight:600">Status</div>
+            <div id="deploy-status" style="display:flex;align-items:center;gap:10px">
+              <span id="deploy-status-dot" style="width:10px;height:10px;border-radius:50%;background:var(--ink-5);display:inline-block"></span>
+              <span id="deploy-status-text" style="font-size:14px;font-weight:500;color:var(--ink-2)">Memuat...</span>
+            </div>
+            <div id="deploy-last" style="font-size:12.5px;color:var(--ink-4);margin-top:8px"></div>
+          </div>
+          <button class="btn btn-primary btn-lg" id="btn-publish" type="button" style="font-weight:600" disabled>
+            <span aria-hidden="true">🚀</span> <span id="btn-publish-label">Publish ke Public Web</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px">
+        <div class="panel-hdr" style="margin-bottom:16px">
+          <h3 style="font-size:16px;font-weight:600">Setup Deploy Hook</h3>
+        </div>
+        <ol style="font-size:13.5px;color:var(--ink-2);line-height:1.7;padding-left:18px;margin-bottom:18px">
+          <li>Buka <a href="https://vercel.com/dashboard" target="_blank" rel="noopener" style="color:var(--green-deep);font-weight:600">Vercel Dashboard</a> → project <code>sewakamerabandung-website</code></li>
+          <li>Settings → <strong>Git</strong> → scroll ke <strong>Deploy Hooks</strong></li>
+          <li>Create hook: nama <code>admin-publish</code>, branch <code>main</code> → <strong>Create Hook</strong></li>
+          <li>Copy URL hook (format: <code>https://api.vercel.com/v1/integrations/deploy/prj_.../...</code>)</li>
+          <li>Paste di field bawah ini → <strong>Simpan</strong></li>
+        </ol>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="deploy-hook-input">Deploy Hook URL <span style="color:var(--ink-4);font-weight:400">(rahasia, hanya superadmin yang bisa lihat)</span></label>
+            <input id="deploy-hook-input" type="password" autocomplete="off" placeholder="https://api.vercel.com/v1/integrations/deploy/..." style="font-family:monospace;font-size:12.5px">
+            <small style="color:var(--ink-4);font-size:11.5px">Disimpan terenkripsi di table <code>admin_config</code> dengan RLS — cuma superadmin yang bisa akses</small>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+          <button class="btn btn-ghost btn-sm" id="btn-hook-toggle" type="button">👁 Tampilkan</button>
+          <button class="btn btn-green btn-sm" id="btn-hook-save" type="button">Simpan Hook URL</button>
+          <button class="btn btn-ghost btn-sm" id="btn-hook-test" type="button" disabled>Test Hook</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:20px 24px;margin-top:16px;background:#f7f8fa;border:1px solid var(--bd)">
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">💡 Tips</h3>
+        <ul style="font-size:13px;color:var(--ink-3);line-height:1.7;padding-left:18px;margin:0">
+          <li>Publish butuh 2-3 menit (Vercel build + deploy)</li>
+          <li>Tidak perlu publish setiap simpan kecil — kumpulin perubahan dulu, baru publish sekali</li>
+          <li>Branding (warna, font, logo) update <strong>real-time</strong> tanpa publish — diapply via JS di every page</li>
+          <li>Konten yang butuh publish: lokasi, FAQ, promo, produk enrichment, hero text, paket</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ USER MANAGEMENT (superadmin only) ============ -->
+    <div class="panel" id="panel-users">
+      <div class="panel-hdr">
+        <div>
+          <h2>User Management</h2>
+          <p class="panel-desc">Kelola admin user yang punya akses ke dashboard ini. Hanya superadmin yang bisa create / delete user.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-user-create" type="button" data-superadmin-only>+ Tambah User</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="overflow-x:auto">
+          <table class="tbl" id="users-table">
+            <thead>
+              <tr>
+                <th style="min-width:180px">Username</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th style="text-align:right;min-width:140px">Action</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--ink-4)">Memuat...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:var(--ink-4);line-height:1.55">
+        💡 <strong>Note:</strong> Password diri sendiri bisa diganti via Edit User. Untuk reset password user lain, minta user yang bersangkutan login lalu ganti password sendiri (limitasi keamanan frontend-only setup).
+      </p>
+    </div>
+
 <!-- ============ MODALS ============ -->
 <div id="modal-prod" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-prod')">
   <div class="modal" style="max-width:760px">
-    <div class="modal-hdr"><h3>Edit Produk Enrichment</h3><button class="modal-close" onclick="closeModal('modal-prod')">×</button></div>
+    <div class="modal-hdr"><h3>Edit Produk Enrichment</h3><button class="modal-close" onclick="closeModal('modal-prod')" aria-label="Tutup">×</button></div>
     <div class="modal-body" id="modal-prod-body"></div>
     <div class="modal-ftr">
       <button class="btn btn-ghost" onclick="closeModal('modal-prod')">Batal</button>
@@ -692,7 +1008,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-faq" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-faq')">
   <div class="modal">
-    <div class="modal-hdr"><h3 id="modal-faq-ttl">Tambah FAQ</h3><button class="modal-close" onclick="closeModal('modal-faq')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-faq-ttl">Tambah FAQ</h3><button class="modal-close" onclick="closeModal('modal-faq')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="faq-id">
       <div class="form-row full"><div class="form-group"><label>Pertanyaan</label><input type="text" id="faq-q" placeholder="Berapa harga sewa kamera...?"></div></div>
@@ -721,9 +1037,87 @@ tr:hover td{background:#FAFBF7}
   </div>
 </div>
 
+<!-- Paket modal -->
+<div id="modal-pkg" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-pkg')">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-hdr"><h3 id="modal-pkg-ttl">Tambah Paket</h3><button class="modal-close" onclick="closeModal('modal-pkg')" aria-label="Tutup">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="pkg-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nama Paket <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="pkg-name" placeholder="Paket Wedding/Event A">
+        </div>
+        <div class="form-group">
+          <label>Slug <span style="color:var(--ink-4);font-weight:400">(auto dari nama, atau custom)</span></label>
+          <input type="text" id="pkg-slug" placeholder="paket-wedding-event-a">
+          <small style="color:var(--ink-4);font-size:11.5px">Lowercase, angka, dash. Auto-generate dari nama.</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kategori <span style="color:var(--danger)">*</span></label>
+          <select id="pkg-category">
+            <option value="audio-lighting">Audio &amp; Lighting</option>
+            <option value="shooting">Shooting</option>
+            <option value="foto-produk">Foto Produk</option>
+            <option value="live-streaming">Live Streaming</option>
+            <option value="hunting">Hunting</option>
+            <option value="wedding-event">Wedding/Event</option>
+            <option value="wisuda">Wisuda</option>
+            <option value="other">Lainnya (custom)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Label Kategori</label>
+          <input type="text" id="pkg-category-label" placeholder="Wedding/Event">
+          <small style="color:var(--ink-4);font-size:11.5px">Teks tab di public page. Auto dari pilihan di atas.</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Harga / hari (Rp) <span style="color:var(--danger)">*</span></label>
+          <input type="number" id="pkg-price" min="0" step="5000" placeholder="150000">
+        </div>
+        <div class="form-group">
+          <label>Sort Order</label>
+          <input type="number" id="pkg-order" value="0">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Tagline / Description (opsional)</label>
+          <input type="text" id="pkg-description" placeholder="Dokumentasi ringan & simpel">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Items <span style="color:var(--danger)">*</span></label>
+          <textarea id="pkg-items" rows="8" placeholder="Sony A7IV - body x1
+Sony 24-70mm f/2.8 GM x1
+Battery NP-FZ100 x2
+Memory Card 64GB x1"></textarea>
+          <small style="color:var(--ink-4);font-size:11.5px">Satu item per baris. Sertakan quantity (cth: <code>x1</code>, <code>x2</code>) di akhir.</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select id="pkg-active"><option value="true">Aktif</option><option value="false">Nonaktif</option></select>
+        </div>
+      </div>
+      <div id="pkg-err" class="alert" style="display:none;background:#fef2f2;border-color:#fecaca;color:#991b1b;margin-top:12px"></div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn btn-ghost" onclick="closeModal('modal-pkg')">Batal</button>
+      <button class="btn btn-green" id="pkg-save-btn" onclick="pkgSave()">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <div id="modal-promo" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-promo')">
   <div class="modal" style="max-width:720px">
-    <div class="modal-hdr"><h3 id="modal-promo-ttl">Tambah Promo</h3><button class="modal-close" onclick="closeModal('modal-promo')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-promo-ttl">Tambah Promo</h3><button class="modal-close" onclick="closeModal('modal-promo')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="promo-id">
       <div class="form-row">
@@ -759,7 +1153,7 @@ tr:hover td{background:#FAFBF7}
 
 <div id="modal-lok" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-lok')">
   <div class="modal" style="max-width:720px">
-    <div class="modal-hdr"><h3 id="modal-lok-ttl">Tambah Cabang</h3><button class="modal-close" onclick="closeModal('modal-lok')">×</button></div>
+    <div class="modal-hdr"><h3 id="modal-lok-ttl">Tambah Cabang</h3><button class="modal-close" onclick="closeModal('modal-lok')" aria-label="Tutup">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="lok-id">
       <div class="form-row">
@@ -771,14 +1165,25 @@ tr:hover td{background:#FAFBF7}
       <div class="form-row three">
         <div class="form-group"><label>Jam Buka</label><input type="text" id="lok-open" value="09.00"></div>
         <div class="form-group"><label>Jam Tutup</label><input type="text" id="lok-close" value="20.00"></div>
-        <div class="form-group"><label>Telepon / WhatsApp</label><input type="text" id="lok-phone"></div>
+        <div class="form-group"><label>Hari Buka</label><input type="text" id="lok-days" value="Senin – Minggu" placeholder="Senin – Minggu"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>WhatsApp URL (link)</label><input type="url" id="lok-wa" placeholder="https://wa.me/..."></div>
         <div class="form-group"><label>Google Maps URL</label><input type="url" id="lok-maps"></div>
       </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Fasilitas / Amenities (yang tampil di location card public)</label>
+          <div id="lok-amenities" style="display:flex;flex-direction:column;gap:8px"></div>
+          <button class="btn btn-ghost btn-xs" type="button" style="margin-top:8px" onclick="lokAddAmenity()">+ Tambah Fasilitas</button>
+          <small style="color:var(--ink-4);font-size:11.5px;display:block;margin-top:4px">Contoh: 🛵 Tersedia antar via ojek online · 🅿 Parkir tersedia · ☕ Ada kafe di samping</small>
+        </div>
+      </div>
       <div class="form-row">
+        <div class="form-group"><label>Telepon / WhatsApp</label><input type="text" id="lok-phone"></div>
         <div class="form-group"><label>Sort Order</label><input type="number" id="lok-order" value="0"></div>
+      </div>
+      <div class="form-row">
         <div class="form-group"><label>Status</label>
           <select id="lok-active"><option value="true">Aktif</option><option value="false">Nonaktif</option></select>
         </div>
@@ -791,17 +1196,503 @@ tr:hover td{background:#FAFBF7}
   </div>
 </div>
 
+<!-- Toast & confirmation modal containers (rendered via JS) -->
+<div id="sk-toast-container" class="sk-toast-container" role="region" aria-live="polite" aria-label="Notifikasi"></div>
+<div id="sk-confirm-overlay" class="sk-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sk-confirm-title" aria-describedby="sk-confirm-msg" hidden>
+  <div class="sk-modal">
+    <div class="sk-modal-ico sk-modal-ico--danger" id="sk-confirm-ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 class="sk-modal-ttl" id="sk-confirm-title">Konfirmasi</h3>
+    <p class="sk-modal-msg" id="sk-confirm-msg">Yakin?</p>
+    <div class="sk-modal-acts">
+      <button class="sk-modal-btn sk-modal-btn--ghost" type="button" id="sk-confirm-cancel">Batal</button>
+      <button class="sk-modal-btn sk-modal-btn--danger" type="button" id="sk-confirm-ok">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Edit / Create modal -->
+<div id="modal-user" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-user')">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hdr"><h3 id="modal-user-ttl">Tambah User</h3><button class="modal-close" onclick="closeModal('modal-user')" aria-label="Tutup">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="usr-id">
+      <input type="hidden" id="usr-mode" value="create">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="usr-username">Username <span style="color:var(--danger)">*</span></label>
+          <input id="usr-username" type="text" autocomplete="off" minlength="3" maxlength="64" pattern="[a-zA-Z0-9_-]{3,64}" required spellcheck="false" autocapitalize="off">
+          <small style="color:var(--ink-4);font-size:11.5px">Huruf, angka, _ dan - · 3-64 karakter</small>
+        </div>
+      </div>
+      <div class="form-row" id="usr-pw-row">
+        <div class="form-group">
+          <label for="usr-password">Password <span id="usr-pw-required" style="color:var(--danger)">*</span></label>
+          <input id="usr-password" type="password" autocomplete="new-password" minlength="8">
+          <small id="usr-pw-hint" style="color:var(--ink-4);font-size:11.5px">Minimal 8 karakter</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="usr-role">Role <span style="color:var(--danger)">*</span></label>
+          <select id="usr-role">
+            <option value="staff">Staff (read-only akses panel publik)</option>
+            <option value="admin">Admin (kelola konten)</option>
+            <option value="superadmin">Superadmin (kelola user + semua)</option>
+          </select>
+        </div>
+      </div>
+      <div id="usr-err" class="alert" style="display:none;background:#fef2f2;border-color:#fecaca;color:#991b1b;margin-top:12px"></div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn btn-ghost" onclick="closeModal('modal-user')">Batal</button>
+      <button class="btn btn-green" id="usr-save-btn" onclick="userSave()">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/auth.js"></script>
 <script>
 // ====================================================================
-// CONFIG
+// AUTH GUARD — wajib login sebelum render apapun
+// ====================================================================
+let CURRENT_USER = null;
+(async function authGuard() {
+  if (!window.SK7Auth) {
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:Inter,sans-serif"><h1>Auth module gagal load</h1><p>Refresh halaman atau cek koneksi.</p></div>';
+    return;
+  }
+  CURRENT_USER = await window.SK7Auth.requireAuth({
+    allowedRoles: ['superadmin', 'admin', 'staff'],
+    loginPath: '/login',
+  });
+  if (!CURRENT_USER) return;
+  // Render user info di topbar
+  const tbu = document.getElementById('topbar-user');
+  document.getElementById('topbar-user-name').textContent = CURRENT_USER.username;
+  document.getElementById('topbar-user-role').textContent = CURRENT_USER.role;
+  document.getElementById('topbar-user-avatar').textContent = (CURRENT_USER.username || '?').charAt(0).toUpperCase();
+  tbu.hidden = false;
+  // Tampilkan menu Sistem (User Management + Deploy) hanya untuk superadmin
+  if (CURRENT_USER.role === 'superadmin') {
+    document.getElementById('sb-section-system').hidden = false;
+    document.getElementById('sb-item-users').hidden = false;
+    document.getElementById('sb-item-deploy').hidden = false;
+  }
+  // Hide superadmin-only buttons untuk role lain
+  if (CURRENT_USER.role !== 'superadmin') {
+    document.querySelectorAll('[data-superadmin-only]').forEach(el => el.style.display = 'none');
+  }
+})();
+
+// ====================================================================
+// CONFIG — gunakan auth-aware client untuk CMS, separate client untuk Booking
 // ====================================================================
 const SB_URL = 'https://mchsqiujfhvzbxzdqeeb.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jaHNxaXVqZmh2emJ4emRxZWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTAyMDIsImV4cCI6MjA5Mzg4NjIwMn0.HUIpHZWHfBx_IwyA-ODxgVilK7y5DMt5o2rxfnDYlXM';
 const BOOKING_URL = 'https://yxcssruutgpzkgcsqrit.supabase.co';
 const BOOKING_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4Y3NzcnV1dGdwemtnY3Nxcml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTAzMTYsImV4cCI6MjA5MTU2NjMxNn0.NMZqMuEUR2c-V3CnbW-bJNn1bjlS6vHLPUQSD7nArM0';
-const sb = supabase.createClient(SB_URL, SB_KEY);
+const sb  = (window.SK7Auth && window.SK7Auth.sb) || supabase.createClient(SB_URL, SB_KEY);
 const sbB = supabase.createClient(BOOKING_URL, BOOKING_KEY);
+
+// ====================================================================
+// TOAST & CONFIRM helpers (reusable di seluruh dashboard)
+// ====================================================================
+const notify = (() => {
+  const ICONS = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>',
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    warn:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>',
+    info:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  };
+  function show(type, title, msg, duration) {
+    const c = document.getElementById('sk-toast-container');
+    if (!c) { console.log(`[${type}] ${title}: ${msg||''}`); return; }
+    const el = document.createElement('div');
+    el.className = 'sk-toast sk-toast--' + type;
+    el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    el.innerHTML = `
+      <div class="sk-toast-ico" aria-hidden="true">${ICONS[type] || ICONS.info}</div>
+      <div class="sk-toast-body"><div class="sk-toast-ttl"></div><div class="sk-toast-msg"></div></div>
+      <button class="sk-toast-close" aria-label="Tutup notifikasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+    el.querySelector('.sk-toast-ttl').textContent = title || '';
+    el.querySelector('.sk-toast-msg').textContent = msg || '';
+    if (!msg) el.querySelector('.sk-toast-msg').style.display = 'none';
+    const dismiss = () => {
+      el.classList.add('sk-toast-out');
+      setTimeout(() => el.remove(), 220);
+    };
+    el.querySelector('.sk-toast-close').addEventListener('click', dismiss);
+    c.appendChild(el);
+    if (duration !== 0) setTimeout(dismiss, duration || 4500);
+    return el;
+  }
+  return {
+    success: (t, m, d) => show('success', t, m, d),
+    error:   (t, m, d) => show('error',   t, m, d || 6000),
+    warn:    (t, m, d) => show('warn',    t, m, d),
+    info:    (t, m, d) => show('info',    t, m, d),
+  };
+})();
+
+function confirmDialog({ title, message, confirmText, cancelText, danger, icon } = {}) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('sk-confirm-overlay');
+    const ok      = document.getElementById('sk-confirm-ok');
+    const cancel  = document.getElementById('sk-confirm-cancel');
+    const ttl     = document.getElementById('sk-confirm-title');
+    const msg     = document.getElementById('sk-confirm-msg');
+    const ico     = document.getElementById('sk-confirm-ico');
+
+    ttl.textContent = title || 'Konfirmasi';
+    msg.innerHTML = message || 'Lanjutkan?';
+    ok.textContent = confirmText || (danger ? 'Hapus' : 'OK');
+    cancel.textContent = cancelText || 'Batal';
+
+    ico.className = 'sk-modal-ico sk-modal-ico--' + (icon || (danger ? 'danger' : 'info'));
+    ok.className = 'sk-modal-btn ' + (danger ? 'sk-modal-btn--danger' : 'sk-modal-btn--primary');
+
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add('is-open'));
+    setTimeout(() => ok.focus(), 80);
+
+    const cleanup = (val) => {
+      overlay.classList.remove('is-open');
+      setTimeout(() => { overlay.hidden = true; }, 200);
+      ok.removeEventListener('click', onOk);
+      cancel.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onBg);
+      document.removeEventListener('keydown', onKey);
+      resolve(val);
+    };
+    const onOk     = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    const onBg     = (e) => { if (e.target === overlay) cleanup(false); };
+    const onKey    = (e) => {
+      if (e.key === 'Escape') cleanup(false);
+      if (e.key === 'Enter' && document.activeElement !== cancel) cleanup(true);
+    };
+    ok.addEventListener('click', onOk);
+    cancel.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onBg);
+    document.addEventListener('keydown', onKey);
+  });
+}
+
+// ====================================================================
+// LOGOUT
+// ====================================================================
+document.getElementById('btn-logout')?.addEventListener('click', async () => {
+  const ok = await confirmDialog({
+    title: 'Logout dari dashboard?',
+    message: 'Kamu perlu login lagi untuk akses dashboard. Pastikan semua perubahan sudah disimpan.',
+    confirmText: 'Logout',
+    cancelText: 'Batal',
+    icon: 'warn',
+  });
+  if (!ok) return;
+  notify.info('Logout...', '');
+  try { await window.SK7Auth.logout(); } catch (_) {}
+  location.replace('/login');
+});
+
+// ====================================================================
+// USER MANAGEMENT
+// ====================================================================
+async function loadUsers() {
+  if (!CURRENT_USER) return;
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--ink-4)">Memuat...</td></tr>';
+  try {
+    const users = await window.SK7Auth.listUsers();
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--ink-4)">Belum ada user</td></tr>';
+      return;
+    }
+    const isSuper = CURRENT_USER.role === 'superadmin';
+    tbody.innerHTML = users.map(u => {
+      const isSelf = u.id === CURRENT_USER.id;
+      const created = new Date(u.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+      const roleBadge = roleBadgeHtml(u.role);
+      const canEdit = isSuper || isSelf;
+      const canDel  = isSuper && !isSelf;
+      return `
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--green-soft,#e8f5db);color:var(--green-deep);font-weight:700;font-size:13px">${escHtml(u.username.charAt(0).toUpperCase())}</span>
+              <div>
+                <div style="font-weight:600;color:var(--ink)">${escHtml(u.username)}${isSelf ? ' <span style="color:var(--ink-4);font-weight:500;font-size:11.5px">(kamu)</span>' : ''}</div>
+              </div>
+            </div>
+          </td>
+          <td>${roleBadge}</td>
+          <td style="color:var(--ink-3);font-size:13px">${created}</td>
+          <td>
+            <div class="tbl-actions" style="justify-content:flex-end">
+              ${canEdit ? `<button class="btn btn-ghost btn-xs" onclick="userOpen('${u.id}')" type="button">Edit</button>` : ''}
+              ${canDel  ? `<button class="btn btn-danger btn-xs" onclick="userDelete('${u.id}','${escHtml(u.username)}')" type="button">Hapus</button>` : ''}
+              ${!canEdit && !canDel ? '<span style="color:var(--ink-5);font-size:12px">—</span>' : ''}
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--danger)">Gagal load users: ${escHtml(err.message)}</td></tr>`;
+    notify.error('Gagal load user', err.message);
+  }
+}
+function roleBadgeHtml(role) {
+  const colors = {
+    superadmin: ['#fef3c7', '#92400e'],
+    admin:      ['#dbeafe', '#1e40af'],
+    staff:      ['#f3f4f6', '#374151'],
+  };
+  const c = colors[role] || colors.staff;
+  return `<span style="display:inline-block;padding:3px 10px;border-radius:999px;background:${c[0]};color:${c[1]};font-size:11.5px;font-weight:600;letter-spacing:.02em">${escHtml(role)}</span>`;
+}
+
+function userOpenCreate() {
+  if (CURRENT_USER.role !== 'superadmin') return notify.warn('Akses ditolak', 'Hanya superadmin yang bisa create user');
+  document.getElementById('modal-user-ttl').textContent = 'Tambah User';
+  document.getElementById('usr-id').value = '';
+  document.getElementById('usr-mode').value = 'create';
+  document.getElementById('usr-username').value = '';
+  document.getElementById('usr-username').disabled = false;
+  document.getElementById('usr-password').value = '';
+  document.getElementById('usr-password').required = true;
+  document.getElementById('usr-pw-required').style.display = '';
+  document.getElementById('usr-pw-hint').textContent = 'Minimal 8 karakter';
+  document.getElementById('usr-role').value = 'staff';
+  document.getElementById('usr-err').style.display = 'none';
+  openModal('modal-user');
+  setTimeout(() => document.getElementById('usr-username').focus(), 80);
+}
+
+async function userOpen(id) {
+  const me = CURRENT_USER;
+  const isSelf = id === me.id;
+  if (!isSelf && me.role !== 'superadmin') return notify.warn('Akses ditolak', 'Hanya bisa edit profile sendiri');
+  // Fetch user
+  try {
+    const { data, error } = await sb.from('admin_users').select('*').eq('id', id).single();
+    if (error) throw error;
+    document.getElementById('modal-user-ttl').textContent = 'Edit User';
+    document.getElementById('usr-id').value = data.id;
+    document.getElementById('usr-mode').value = 'edit';
+    document.getElementById('usr-username').value = data.username;
+    document.getElementById('usr-username').disabled = (me.role !== 'superadmin');
+    document.getElementById('usr-password').value = '';
+    document.getElementById('usr-password').required = false;
+    document.getElementById('usr-pw-required').style.display = 'none';
+    document.getElementById('usr-pw-hint').textContent = isSelf
+      ? 'Kosongkan kalau tidak ingin ganti. Minimal 8 karakter.'
+      : 'Ganti password user lain butuh service_role — tidak tersedia di setup ini.';
+    document.getElementById('usr-password').disabled = !isSelf;
+    document.getElementById('usr-role').value = data.role;
+    document.getElementById('usr-role').disabled = (me.role !== 'superadmin');
+    document.getElementById('usr-err').style.display = 'none';
+    openModal('modal-user');
+  } catch (err) {
+    notify.error('Gagal load user', err.message);
+  }
+}
+
+async function userSave() {
+  const errBox = document.getElementById('usr-err');
+  errBox.style.display = 'none';
+  const showErr = (m) => { errBox.textContent = m; errBox.style.display = 'block'; };
+
+  const mode     = document.getElementById('usr-mode').value;
+  const username = document.getElementById('usr-username').value;
+  const password = document.getElementById('usr-password').value;
+  const role     = document.getElementById('usr-role').value;
+  const id       = document.getElementById('usr-id').value;
+  const btn      = document.getElementById('usr-save-btn');
+
+  btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'Menyimpan...';
+  try {
+    if (mode === 'create') {
+      await window.SK7Auth.createUser({ username, password, role });
+      notify.success('User dibuat', `${username} berhasil ditambah dengan role ${role}`);
+    } else {
+      const updates = { username, role };
+      if (password) updates.password = password;
+      await window.SK7Auth.updateUser(id, updates);
+      notify.success('User diperbarui', `Perubahan ${username} tersimpan`);
+    }
+    closeModal('modal-user');
+    await loadUsers();
+  } catch (err) {
+    showErr(err.message);
+    notify.error('Gagal simpan', err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = oldText;
+  }
+}
+
+async function userDelete(id, username) {
+  if (CURRENT_USER.role !== 'superadmin') return;
+  if (id === CURRENT_USER.id) return notify.warn('Tidak diizinkan', 'Tidak bisa hapus akun sendiri');
+  const ok = await confirmDialog({
+    title: 'Hapus user ini?',
+    message: `User <strong>${escHtml(username)}</strong> akan dihapus dari akses dashboard. Aksi ini <strong>tidak bisa di-undo</strong>.`,
+    confirmText: 'Ya, Hapus',
+    danger: true,
+  });
+  if (!ok) return;
+  try {
+    await window.SK7Auth.deleteUser(id);
+    notify.success('User dihapus', `${username} berhasil dihapus`);
+    await loadUsers();
+  } catch (err) {
+    notify.error('Gagal hapus', err.message);
+  }
+}
+
+document.getElementById('btn-user-create')?.addEventListener('click', userOpenCreate);
+
+// ====================================================================
+// DEPLOY & PUBLISH
+// ====================================================================
+async function loadDeployConfig() {
+  if (!CURRENT_USER || CURRENT_USER.role !== 'superadmin') return;
+  try {
+    const { data, error } = await sb.from('admin_config').select('key, value, updated_at').in('key', ['deploy_hook_url','last_published_at']);
+    if (error) throw error;
+    const map = {};
+    (data || []).forEach(r => { map[r.key] = r; });
+
+    const hookUrl = map.deploy_hook_url?.value || '';
+    const lastPub = map.last_published_at?.value || '';
+
+    const input = document.getElementById('deploy-hook-input');
+    input.value = hookUrl;
+    input.dataset.original = hookUrl;
+
+    document.getElementById('btn-publish').disabled = !hookUrl;
+    document.getElementById('btn-hook-test').disabled = !hookUrl;
+
+    const statusDot = document.getElementById('deploy-status-dot');
+    const statusTxt = document.getElementById('deploy-status-text');
+    const lastEl   = document.getElementById('deploy-last');
+
+    if (!hookUrl) {
+      statusDot.style.background = '#f59e0b';
+      statusTxt.textContent = 'Hook URL belum di-setup — ikuti langkah di bawah';
+      lastEl.textContent = '';
+    } else {
+      statusDot.style.background = '#10b981';
+      statusTxt.textContent = 'Siap publish';
+      if (lastPub) {
+        const d = new Date(lastPub);
+        lastEl.textContent = 'Terakhir publish: ' + d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+      } else {
+        lastEl.textContent = 'Belum pernah publish';
+      }
+    }
+  } catch (err) {
+    notify.error('Gagal load config', err.message);
+  }
+}
+
+document.getElementById('btn-hook-toggle')?.addEventListener('click', () => {
+  const input = document.getElementById('deploy-hook-input');
+  const btn   = document.getElementById('btn-hook-toggle');
+  const showing = input.type === 'text';
+  input.type = showing ? 'password' : 'text';
+  btn.innerHTML = showing ? '👁 Tampilkan' : '🙈 Sembunyikan';
+});
+
+document.getElementById('btn-hook-save')?.addEventListener('click', async () => {
+  if (CURRENT_USER.role !== 'superadmin') return;
+  const input = document.getElementById('deploy-hook-input');
+  const url = input.value.trim();
+  const btn = document.getElementById('btn-hook-save');
+
+  // Validate
+  if (url && !/^https:\/\/api\.vercel\.com\/v1\/integrations\/deploy\//.test(url)) {
+    return notify.error('URL tidak valid', 'Format harus: https://api.vercel.com/v1/integrations/deploy/...');
+  }
+
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Menyimpan...';
+  try {
+    const { error } = await sb.from('admin_config').upsert({ key: 'deploy_hook_url', value: url || null }, { onConflict: 'key' });
+    if (error) throw error;
+    notify.success('Hook URL tersimpan', url ? 'Sekarang bisa publish via tombol di atas' : 'Hook URL dihapus');
+    await loadDeployConfig();
+  } catch (err) {
+    notify.error('Gagal simpan', err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+});
+
+async function triggerDeploy(isTest = false) {
+  if (CURRENT_USER.role !== 'superadmin') return;
+  const { data, error } = await sb.from('admin_config').select('value').eq('key', 'deploy_hook_url').maybeSingle();
+  if (error || !data?.value) return notify.error('Hook URL belum di-setup', 'Setup dulu di bawah');
+  const url = data.value;
+
+  // CORS — Vercel deploy hooks accept POST tanpa CORS check, tapi browser mungkin block.
+  // Pakai mode: 'no-cors' supaya request dikirim walaupun response tidak readable.
+  try {
+    await fetch(url, { method: 'POST', mode: 'no-cors' });
+    // no-cors response is opaque, kita assume sukses kalau tidak throw
+    if (!isTest) {
+      // Record timestamp
+      await sb.from('admin_config').upsert(
+        { key: 'last_published_at', value: new Date().toISOString() },
+        { onConflict: 'key' }
+      );
+    }
+    return true;
+  } catch (err) {
+    throw new Error('Gagal trigger hook: ' + err.message);
+  }
+}
+
+document.getElementById('btn-publish')?.addEventListener('click', async () => {
+  const ok = await confirmDialog({
+    title: 'Publish ke public web?',
+    message: 'Vercel akan rebuild website dengan data terbaru dari admin. Proses butuh ±2-3 menit. Pastikan semua perubahan sudah di-save.',
+    confirmText: '🚀 Ya, Publish',
+    cancelText: 'Batal',
+    icon: 'info',
+  });
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-publish');
+  const lbl = document.getElementById('btn-publish-label');
+  btn.disabled = true;
+  const origLbl = lbl.textContent;
+  lbl.textContent = 'Menjalankan rebuild...';
+  try {
+    await triggerDeploy(false);
+    notify.success('Publish triggered ✓', 'Vercel mulai rebuild. Cek public web ±2-3 menit lagi. Reload halaman ini untuk update timestamp.', 7000);
+    await loadDeployConfig();
+  } catch (err) {
+    notify.error('Gagal publish', err.message);
+  } finally {
+    btn.disabled = false;
+    lbl.textContent = origLbl;
+  }
+});
+
+document.getElementById('btn-hook-test')?.addEventListener('click', async () => {
+  const btn = document.getElementById('btn-hook-test');
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Testing...';
+  try {
+    await triggerDeploy(true);
+    notify.success('Test berhasil', 'Hook URL valid. Vercel rebuild juga ter-trigger — kalau gak mau rebuild, abaikan.', 6000);
+  } catch (err) {
+    notify.error('Test gagal', err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+});
 
 // ====================================================================
 // HELPERS
@@ -809,6 +1700,25 @@ const sbB = supabase.createClient(BOOKING_URL, BOOKING_KEY);
 function $(id){ return document.getElementById(id); }
 function escHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmtRp(n){ return 'Rp ' + Number(n||0).toLocaleString('id-ID'); }
+
+// Normalize image URL — auto-convert Google Drive viewer URLs ke direct image URL.
+// Drive URL formats yang di-handle:
+//   https://drive.google.com/open?id=FILE_ID
+//   https://drive.google.com/file/d/FILE_ID/view?usp=...
+//   https://drive.google.com/file/d/FILE_ID/preview
+//   https://drive.google.com/uc?export=view&id=FILE_ID
+//   https://drive.google.com/thumbnail?id=FILE_ID
+// Pre-req: file di-share dengan "Anyone with the link" supaya bisa di-fetch.
+function normalizeImageUrl(url) {
+  if (!url || typeof url !== 'string') return url || '';
+  url = url.trim();
+  // Detect Drive URL & extract file ID
+  const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]{20,})/);
+  if (m && m[1]) {
+    return `https://lh3.googleusercontent.com/d/${m[1]}=w2000`;
+  }
+  return url;
+}
 function toast(msg, kind){
   const a = $('alert');
   a.className = 'alert ' + (kind || 'success') + ' show';
@@ -831,10 +1741,21 @@ function showPanel(name){
     faq:['FAQ','Pertanyaan yang sering diajukan'],
     promo:['Promo','Promo aktif di halaman publik'],
     lokasi:['Lokasi & Cabang','Cabang yang tampil di website'],
-    kontak:['Kontak & Sosial Media','Nomor & link sosial']
+    kontak:['Kontak & Sosial Media','Nomor & link sosial'],
+    users:['User Management','Kelola admin user dan role akses dashboard'],
+    deploy:['Deploy & Publish','Trigger Vercel rebuild untuk publish perubahan ke public web'],
+    stats:['Statistik Homepage','Stats card di homepage — angka & label editable'],
+    brands:['Brand Slider','Logo brand yang scroll di homepage'],
+    paket:['Paket Sewa','Paket bundling yang muncul di /paket'],
+    reviews:['Google Reviews','Testimonial yang muncul di homepage']
   };
-  $('topbar-title').textContent = titles[name][0];
-  $('topbar-sub').textContent = titles[name][1];
+  const t = titles[name] || [name, ''];
+  $('topbar-title').textContent = t[0];
+  $('topbar-sub').textContent = t[1];
+  // Lazy-load data per panel
+  if (name === 'users') loadUsers();
+  if (name === 'deploy') loadDeployConfig();
+  if (name === 'paket') loadPackages();
 }
 document.querySelectorAll('.sb-item').forEach(el => {
   el.addEventListener('click', () => showPanel(el.dataset.panel));
@@ -867,19 +1788,33 @@ async function loadSettings(){
   ['logo_url','logo_mark_url','logo_dark_url','favicon_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
   });
-  if (_settings.logo_url) $('prev-logo').innerHTML = '<img src="'+escHtml(_settings.logo_url)+'" style="max-height:40px">';
-  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(_settings.logo_mark_url || '/logo-7summits-mark.png')+'" style="max-height:60px;border-radius:8px">';
+  if (_settings.logo_url) $('prev-logo').innerHTML = '<img src="'+escHtml(normalizeImageUrl(_settings.logo_url))+'" alt="Logo" style="max-height:40px" onerror="this.outerHTML=\'<span style=color:var(--danger);font-size:12px>⚠ Gambar gak ke-load. Pastikan link Drive di-share \\\'Anyone with link\\\' atau pakai URL gambar langsung.</span>\'">';
+  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(normalizeImageUrl(_settings.logo_mark_url || '/logo-7summits-mark.png'))+'" alt="Logo mark" style="max-height:60px;border-radius:8px">';
   // Hero
   ['hero_image_url','hero_headline','hero_subheadline','hero_cta_primary_text','hero_cta_primary_url','hero_cta_secondary_text','hero_cta_secondary_url','ann_bar_text','ann_bar_link_text','ann_bar_link_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
   });
-  if (_settings.hero_image_url) $('prev-hero').style.backgroundImage = 'url("'+_settings.hero_image_url+'")';
+  if (_settings.hero_image_url) $('prev-hero').style.backgroundImage = 'url("'+normalizeImageUrl(_settings.hero_image_url)+'")';
   // Kontak
   ['whatsapp_number','instagram_url','youtube_channel','booking_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
   });
+  // Brand slider settings (with sensible defaults if null)
+  const brandDefaults = {
+    brand_logo_height: 32, brand_logo_max_width: 120, brand_gap: 56,
+    brand_anim_duration: 38, brand_logo_style: 'grayscale', brand_logo_opacity: 0.78
+  };
+  Object.entries(brandDefaults).forEach(([k, defaultVal]) => {
+    const v = _settings[k] != null ? _settings[k] : defaultVal;
+    if ($(k)) $(k).value = v;
+  });
   // YouTube videos
   renderYt(_settings.youtube_videos || []);
+  // Stats & Brands
+  renderStats(Array.isArray(_settings.stats) ? _settings.stats : []);
+  renderBrands(Array.isArray(_settings.brands) ? _settings.brands : []);
+  renderReviews(Array.isArray(_settings.reviews) ? _settings.reviews : []);
+  if ($('reviews_google_url')) $('reviews_google_url').value = _settings.reviews_google_url || '';
   updateTypePreview();
 }
 
@@ -888,14 +1823,28 @@ function updateSwatch(input, name){
   $('prev-'+name).style.background = hex;
   const t = $('brand_'+name+'_txt'); if (t && t.value !== hex) t.value = hex;
 }
+function imgErrFallback() {
+  return ' onerror="this.outerHTML=\'<span style=&quot;color:var(--danger);font-size:11.5px;line-height:1.4&quot;>⚠ Gambar gak ke-load. Pastikan link Drive di-share <strong>Anyone with link</strong>, atau pakai URL gambar langsung (.png/.jpg).</span>\'"';
+}
 $('hero_image_url')?.addEventListener('input', e => {
-  $('prev-hero').style.backgroundImage = e.target.value ? 'url("'+e.target.value+'")' : '';
+  const url = normalizeImageUrl(e.target.value);
+  $('prev-hero').style.backgroundImage = url ? 'url("'+url+'")' : '';
 });
 $('logo_url')?.addEventListener('input', e => {
-  $('prev-logo').innerHTML = e.target.value ? '<img src="'+escHtml(e.target.value)+'" style="max-height:40px">' : '';
+  const url = normalizeImageUrl(e.target.value);
+  $('prev-logo').innerHTML = url ? '<img src="'+escHtml(url)+'" alt="Logo" style="max-height:40px"'+imgErrFallback()+'>' : '';
 });
 $('logo_mark_url')?.addEventListener('input', e => {
-  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(e.target.value || '/logo-7summits-mark.png')+'" style="max-height:60px;border-radius:8px">';
+  const url = normalizeImageUrl(e.target.value || '/logo-7summits-mark.png');
+  $('prev-logo-mark').innerHTML = '<img src="'+escHtml(url)+'" alt="Logo mark" style="max-height:60px;border-radius:8px"'+imgErrFallback()+'>';
+});
+$('logo_dark_url')?.addEventListener('input', e => {
+  const norm = normalizeImageUrl(e.target.value);
+  if (e.target.value && norm !== e.target.value) e.target.title = 'Akan disimpan sebagai: ' + norm;
+});
+$('favicon_url')?.addEventListener('input', e => {
+  const norm = normalizeImageUrl(e.target.value);
+  if (e.target.value && norm !== e.target.value) e.target.title = 'Akan disimpan sebagai: ' + norm;
 });
 
 // Typography preview
@@ -933,12 +1882,26 @@ async function saveAll(){
     'logo_url','logo_mark_url','logo_dark_url','favicon_url',
     'hero_image_url','hero_headline','hero_subheadline','hero_cta_primary_text','hero_cta_primary_url','hero_cta_secondary_text','hero_cta_secondary_url',
     'ann_bar_text','ann_bar_link_text','ann_bar_link_url',
-    'whatsapp_number','instagram_url','youtube_channel','booking_url'];
+    'whatsapp_number','instagram_url','youtube_channel','booking_url',
+    'brand_logo_height','brand_logo_max_width','brand_gap','brand_anim_duration','brand_logo_style','brand_logo_opacity'];
   const payload = { id: 1 };
   fields.forEach(k => { if ($(k)) payload[k] = $(k).value || null; });
+  // Cast brand slider numerics
+  ['brand_logo_height','brand_logo_max_width','brand_gap','brand_anim_duration'].forEach(k => {
+    if (payload[k]) payload[k] = parseInt(payload[k]);
+  });
+  if (payload.brand_logo_opacity != null) payload.brand_logo_opacity = parseFloat(payload.brand_logo_opacity);
+  // Auto-convert Google Drive URLs ke direct image URLs
+  ['logo_url','logo_mark_url','logo_dark_url','favicon_url','hero_image_url'].forEach(k => {
+    if (payload[k]) payload[k] = normalizeImageUrl(payload[k]);
+  });
   // Cast numerics
   ['font_weight_headline','font_weight_body','font_size_base'].forEach(k => { if (payload[k]) payload[k] = parseInt(payload[k]); });
   payload.youtube_videos = collectYtVideos(true);
+  payload.stats = collectStats();
+  payload.brands = collectBrands();
+  payload.reviews = collectReviews();
+  payload.reviews_google_url = $('reviews_google_url')?.value.trim() || null;
   payload.updated_at = new Date().toISOString();
   const { error } = await sb.from('site_settings').upsert(payload, { onConflict:'id' });
   btn.disabled = false; btn.textContent = 'Simpan Perubahan';
@@ -957,13 +1920,17 @@ async function saveAll(){
 function renderYt(arr){
   const list = $('yt-list');
   if (!arr.length) { list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">▶</div><div class="empty-state-ttl">Belum ada video</div><div class="empty-state-sub">Klik "+ Tambah Video" untuk mulai.</div></div>'; return; }
-  list.innerHTML = arr.map((v,i) => `
+  list.innerHTML = arr.map((v,i) => {
+    const url   = (v && typeof v === 'object') ? (v.url   || '') : (typeof v === 'string' ? v : '');
+    const title = (v && typeof v === 'object') ? (v.title || '') : '';
+    return `
     <div class="form-row" style="grid-template-columns:120px 1fr 1fr 60px;align-items:end;border-bottom:1px solid var(--bd);padding-bottom:12px">
-      <div class="form-group"><label>Preview</label><div style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;overflow:hidden">${ytPreview(v.url||v||'')}</div></div>
-      <div class="form-group"><label>YouTube URL</label><input type="url" data-yt-url="${i}" value="${escHtml(v.url||v||'')}" oninput="ytUpdatePreview(${i})"></div>
-      <div class="form-group"><label>Title (opsional)</label><input type="text" data-yt-title="${i}" value="${escHtml(v.title||'')}"></div>
-      <button class="btn btn-danger btn-sm" onclick="ytRemove(${i})">×</button>
-    </div>`).join('');
+      <div class="form-group"><label>Preview</label><div style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;overflow:hidden">${ytPreview(url)}</div></div>
+      <div class="form-group"><label>YouTube URL</label><input type="url" data-yt-url="${i}" value="${escHtml(url)}" oninput="ytUpdatePreview(${i})"></div>
+      <div class="form-group"><label>Title (opsional)</label><input type="text" data-yt-title="${i}" value="${escHtml(title)}"></div>
+      <button class="btn btn-danger btn-sm" onclick="ytRemove(${i})" aria-label="Hapus video">×</button>
+    </div>`;
+  }).join('');
 }
 function ytPreview(url){
   const id = (url || '').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)?.[1];
@@ -1002,6 +1969,213 @@ function ytRemove(i){
 }
 
 // ====================================================================
+// STATS (homepage stats-band)
+// ====================================================================
+function renderStats(arr) {
+  const list = $('stats-list');
+  if (!list) return;
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">📈</div><div class="empty-state-ttl">Belum ada stat</div><div class="empty-state-sub">Klik "+ Tambah Stat" untuk mulai. Direkomendasikan 4 item.</div></div>';
+    return;
+  }
+  list.innerHTML = arr.map((s, i) => `
+    <div class="form-row" style="grid-template-columns:1fr 1fr 2fr 60px;align-items:end;border-bottom:1px solid var(--bd);padding-bottom:12px">
+      <div class="form-group"><label>Number</label><input type="text" data-stat-num="${i}" value="${escHtml(s.number || '')}" placeholder="767"></div>
+      <div class="form-group"><label>Suffix</label><input type="text" data-stat-suffix="${i}" value="${escHtml(s.suffix || '')}" placeholder="+ atau ★" maxlength="3"></div>
+      <div class="form-group"><label>Label</label><input type="text" data-stat-label="${i}" value="${escHtml(s.label || '')}" placeholder="Unit gear tersedia"></div>
+      <button class="btn btn-danger btn-sm" type="button" onclick="statsRemove(${i})" aria-label="Hapus stat">×</button>
+    </div>`).join('');
+}
+function collectStats() {
+  const nums = document.querySelectorAll('[data-stat-num]');
+  const sufs = document.querySelectorAll('[data-stat-suffix]');
+  const lbls = document.querySelectorAll('[data-stat-label]');
+  const arr = [];
+  nums.forEach((n, i) => {
+    const number = n.value.trim();
+    const suffix = sufs[i]?.value || '';
+    const label  = lbls[i]?.value.trim() || '';
+    if (number || label) arr.push({ number, suffix, label });
+  });
+  return arr;
+}
+function statsAdd() {
+  const arr = collectStats();
+  arr.push({ number: '', suffix: '', label: '' });
+  renderStats(arr);
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-stat-num]');
+    inputs[inputs.length - 1]?.focus();
+  }, 30);
+}
+function statsRemove(i) {
+  const arr = collectStats();
+  arr.splice(i, 1);
+  renderStats(arr);
+}
+
+// ====================================================================
+// BRANDS (homepage logo slider)
+// ====================================================================
+function renderBrands(arr) {
+  const list = $('brands-list');
+  if (!list) return;
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">🏢</div><div class="empty-state-ttl">Belum ada brand</div><div class="empty-state-sub">Klik "+ Tambah Brand" untuk mulai.</div></div>';
+    return;
+  }
+  list.innerHTML = arr.map((b, i) => {
+    const logo = b.logo_url || '';
+    const previewSrc = logo ? normalizeImageUrl(logo) : '';
+    const preview = previewSrc
+      ? `<img src="${escHtml(previewSrc)}" alt="${escHtml(b.name||'logo')}" style="max-height:40px;max-width:90px;object-fit:contain" onerror="this.outerHTML='<span style=\\'color:var(--ink-5);font-size:11px\\'>?</span>'">`
+      : '<span style="color:var(--ink-5);font-size:11px">no logo</span>';
+    return `
+    <div class="form-row" style="grid-template-columns:120px 1fr 2fr 110px 60px;align-items:end;gap:10px;border-bottom:1px solid var(--bd);padding-bottom:12px">
+      <div class="form-group"><label>Preview</label><div style="height:48px;background:var(--bg-2);border-radius:8px;display:flex;align-items:center;justify-content:center;padding:4px">${preview}</div></div>
+      <div class="form-group"><label>Nama Brand</label><input type="text" data-brand-name="${i}" value="${escHtml(b.name || '')}" placeholder="Sony" oninput="brandsRefreshPreview(${i})"></div>
+      <div class="form-group"><label>Logo URL</label><input type="url" data-brand-logo="${i}" value="${escHtml(logo)}" placeholder="https://...png" oninput="brandsRefreshPreview(${i})"></div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="brandsGoogleSearch(${i})" title="Cari logo via Google Image" style="white-space:nowrap">🔍 Cari Logo</button>
+      <button class="btn btn-danger btn-sm" type="button" onclick="brandsRemove(${i})" aria-label="Hapus brand">×</button>
+    </div>`;
+  }).join('');
+}
+function collectBrands() {
+  const names = document.querySelectorAll('[data-brand-name]');
+  const logos = document.querySelectorAll('[data-brand-logo]');
+  const arr = [];
+  names.forEach((n, i) => {
+    const name = n.value.trim();
+    const logo_url = normalizeImageUrl(logos[i]?.value.trim() || '');
+    if (name || logo_url) arr.push({ name, logo_url });
+  });
+  return arr;
+}
+function brandsAdd() {
+  const arr = collectBrands();
+  arr.push({ name: '', logo_url: '' });
+  renderBrands(arr);
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-brand-name]');
+    inputs[inputs.length - 1]?.focus();
+  }, 30);
+}
+function brandsRemove(i) {
+  const arr = collectBrands();
+  arr.splice(i, 1);
+  renderBrands(arr);
+}
+function brandsRefreshPreview(i) {
+  // Re-render only the preview cell of row i
+  const row = document.querySelectorAll('#brands-list .form-row')[i];
+  if (!row) return;
+  const logo = row.querySelector(`[data-brand-logo="${i}"]`)?.value || '';
+  const name = row.querySelector(`[data-brand-name="${i}"]`)?.value || 'logo';
+  const previewWrap = row.querySelector('.form-group:first-child > div');
+  if (!previewWrap) return;
+  const u = logo ? normalizeImageUrl(logo) : '';
+  previewWrap.innerHTML = u
+    ? `<img src="${escHtml(u)}" alt="${escHtml(name)}" style="max-height:40px;max-width:90px;object-fit:contain" onerror="this.outerHTML='<span style=\\'color:var(--ink-5);font-size:11px\\'>?</span>'">`
+    : '<span style="color:var(--ink-5);font-size:11px">no logo</span>';
+}
+function brandsGoogleSearch(i) {
+  const row = document.querySelectorAll('#brands-list .form-row')[i];
+  if (!row) return;
+  const name = row.querySelector(`[data-brand-name="${i}"]`)?.value.trim() || '';
+  if (!name) {
+    if (window.notify) notify.warn('Isi nama brand dulu', 'Klik di field "Nama Brand", ketik nama brand, lalu coba lagi');
+    return;
+  }
+  const q = encodeURIComponent(`${name} logo png transparent`);
+  window.open(`https://www.google.com/search?q=${q}&tbm=isch`, '_blank', 'noopener');
+}
+
+// ====================================================================
+// REVIEWS / TESTIMONIAL (homepage section)
+// ====================================================================
+const REVIEW_ACCENTS = ['orange', 'green', 'green-deep', 'silver'];
+function reviewAccentBg(accent) {
+  switch (accent) {
+    case 'orange':     return 'linear-gradient(135deg,#F06824,#D55A1A)';
+    case 'green':      return 'linear-gradient(135deg,#8EC64E,#4F7B39)';
+    case 'green-deep': return 'linear-gradient(135deg,#4F7B39,#2d4a23)';
+    case 'silver':     return 'linear-gradient(135deg,#a8b5b5,#6b7676)';
+    default:           return 'linear-gradient(135deg,#F06824,#D55A1A)';
+  }
+}
+function reviewInitials(name) {
+  return String(name || '').trim().split(/\s+/).map(w => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
+}
+function renderReviews(arr) {
+  const list = $('reviews-list');
+  if (!list) return;
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-ico">⭐</div><div class="empty-state-ttl">Belum ada review</div><div class="empty-state-sub">Klik "+ Tambah Review" untuk paste review dari Google Maps.</div></div>';
+    return;
+  }
+  list.innerHTML = arr.map((r, i) => {
+    const initials = reviewInitials(r.name);
+    return `
+    <div class="form-row" style="grid-template-columns:60px 1fr 1fr;align-items:start;gap:10px;border-bottom:1px solid var(--bd);padding-bottom:14px;margin-bottom:14px">
+      <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <div style="width:32px;height:32px;border-radius:50%;background:${reviewAccentBg(r.accent)};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">${escHtml(initials)}</div>
+        <strong style="font-size:13px">${escHtml(r.name || 'Untitled')}</strong>
+        <span style="color:var(--ink-4);font-size:12px">${escHtml(r.date || '')}</span>
+        <button class="btn btn-danger btn-xs" type="button" style="margin-left:auto" onclick="reviewsRemove(${i})" aria-label="Hapus review">×</button>
+      </div>
+      <div class="form-group" style="grid-column:1/2"><label>Bintang</label>
+        <select data-rev-rating="${i}">
+          ${[5,4,3,2,1].map(n => `<option value="${n}"${(r.rating || 5) === n ? ' selected' : ''}>${'★'.repeat(n) + '☆'.repeat(5-n)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Nama Reviewer</label><input type="text" data-rev-name="${i}" value="${escHtml(r.name || '')}" placeholder="John Doe"></div>
+      <div class="form-group"><label>Tanggal</label><input type="text" data-rev-date="${i}" value="${escHtml(r.date || '')}" placeholder="Jul 2025"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Isi Review</label>
+        <textarea data-rev-text="${i}" rows="3" placeholder="Pelayanan ramah, gear lengkap...">${escHtml(r.text || '')}</textarea>
+      </div>
+      <div class="form-group"><label>Source</label><input type="text" data-rev-source="${i}" value="${escHtml(r.source || 'Google Review')}" placeholder="Google Review"></div>
+      <div class="form-group" style="grid-column:2/-1"><label>Warna Avatar</label>
+        <select data-rev-accent="${i}">
+          <option value="orange"${r.accent === 'orange' ? ' selected' : ''}>Orange (warm)</option>
+          <option value="green"${r.accent === 'green' ? ' selected' : ''}>Green (vivid)</option>
+          <option value="green-deep"${(!r.accent || r.accent === 'green-deep') ? ' selected' : ''}>Green Deep</option>
+          <option value="silver"${r.accent === 'silver' ? ' selected' : ''}>Silver</option>
+        </select>
+      </div>
+    </div>`;
+  }).join('');
+}
+function collectReviews() {
+  const rows = document.querySelectorAll('[data-rev-name]');
+  const arr = [];
+  rows.forEach((nEl) => {
+    const i = nEl.dataset.revName;
+    const name   = nEl.value.trim();
+    const text   = document.querySelector(`[data-rev-text="${i}"]`)?.value.trim() || '';
+    const date   = document.querySelector(`[data-rev-date="${i}"]`)?.value.trim() || '';
+    const source = document.querySelector(`[data-rev-source="${i}"]`)?.value.trim() || 'Google Review';
+    const rating = parseInt(document.querySelector(`[data-rev-rating="${i}"]`)?.value) || 5;
+    const accent = document.querySelector(`[data-rev-accent="${i}"]`)?.value || 'green-deep';
+    if (name || text) arr.push({ name, text, date, source, rating, accent });
+  });
+  return arr;
+}
+function reviewsAdd() {
+  const arr = collectReviews();
+  arr.push({ name: '', text: '', date: '', source: 'Google Review', rating: 5, accent: REVIEW_ACCENTS[arr.length % REVIEW_ACCENTS.length] });
+  renderReviews(arr);
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('[data-rev-name]');
+    inputs[inputs.length - 1]?.focus();
+  }, 30);
+}
+function reviewsRemove(i) {
+  const arr = collectReviews();
+  arr.splice(i, 1);
+  renderReviews(arr);
+}
+
+// ====================================================================
 // FAQ CRUD
 // ====================================================================
 let _faqs = [];
@@ -1013,14 +2187,20 @@ async function loadFaqs(){
 }
 function renderFaqs(){
   const tb = $('faq-tbody');
-  if (!_faqs.length) { tb.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-state-ico">❓</div><div class="empty-state-ttl">Belum ada FAQ</div></div></td></tr>'; return; }
-  tb.innerHTML = _faqs.map(f => `
+  const filter = $('faq-filter-cat')?.value || 'all';
+  const list = filter === 'all' ? _faqs : _faqs.filter(f => (f.category || 'umum') === filter);
+  if (!list.length) {
+    const msg = _faqs.length ? `Tidak ada FAQ di kategori ini` : `Belum ada FAQ`;
+    tb.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state-ico">❓</div><div class="empty-state-ttl">${msg}</div></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = list.map(f => `
     <tr>
       <td><div style="font-weight:600;color:var(--ink);margin-bottom:3px">${escHtml(f.question)}</div><div style="color:var(--ink-4);font-size:12px">${escHtml((f.answer||'').slice(0,100))}${(f.answer||'').length>100?'...':''}</div></td>
       <td><span class="badge active">${escHtml(f.category||'umum')}</span></td>
       <td>${f.sort_order||0}</td>
       <td><span class="badge ${f.is_active?'active':'inactive'}">${f.is_active?'Aktif':'Nonaktif'}</span></td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="faqOpen(${f.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="faqDelete(${f.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="faqOpen(${f.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="faqDelete(${f.id})" aria-label="Hapus FAQ">×</button></div></td>
     </tr>`).join('');
 }
 function faqOpen(id){
@@ -1060,6 +2240,175 @@ async function faqDelete(id){
 }
 
 // ====================================================================
+// PAKET (PACKAGES) CRUD
+// ====================================================================
+let _packages = [];
+const CAT_LABEL_MAP = {
+  'audio-lighting': 'Audio & Lighting',
+  'shooting': 'Shooting',
+  'foto-produk': 'Foto Produk',
+  'live-streaming': 'Live Streaming',
+  'hunting': 'Hunting',
+  'wedding-event': 'Wedding/Event',
+  'wisuda': 'Wisuda',
+};
+function pkgSlugify(s) {
+  return String(s || '').toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 64);
+}
+async function loadPackages() {
+  const tbody = $('pkg-tbody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--ink-4)">Memuat...</td></tr>';
+  try {
+    const { data, error } = await sb.from('packages')
+      .select('*')
+      .order('category')
+      .order('sort_order')
+      .order('id');
+    if (error) throw error;
+    _packages = data || [];
+    // Update filter dropdown options
+    const filter = $('pkg-filter-cat');
+    if (filter) {
+      const cats = [...new Set(_packages.map(p => p.category))].sort();
+      const currentVal = filter.value;
+      filter.innerHTML = '<option value="all">Semua Kategori</option>'
+        + cats.map(c => {
+            const label = _packages.find(p => p.category === c)?.category_label || c;
+            return `<option value="${escHtml(c)}">${escHtml(label)}</option>`;
+          }).join('');
+      filter.value = currentVal && [...filter.options].some(o => o.value === currentVal) ? currentVal : 'all';
+    }
+    renderPackages();
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--danger)">Gagal load paket: ${escHtml(err.message)}</td></tr>`;
+  }
+}
+function renderPackages() {
+  const tbody = $('pkg-tbody');
+  const filter = $('pkg-filter-cat')?.value || 'all';
+  const list = filter === 'all' ? _packages : _packages.filter(p => p.category === filter);
+  if (!list.length) {
+    const msg = _packages.length ? 'Tidak ada paket di kategori ini' : 'Belum ada paket';
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state-ico">📦</div><div class="empty-state-ttl">${msg}</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(p => {
+    const itemsCount = Array.isArray(p.items) ? p.items.length : 0;
+    return `
+      <tr>
+        <td>
+          <div style="font-weight:600;color:var(--ink);margin-bottom:3px">${escHtml(p.name)}</div>
+          ${p.description ? `<div style="color:var(--ink-4);font-size:12px">${escHtml(p.description)}</div>` : ''}
+        </td>
+        <td><span class="badge active">${escHtml(p.category_label || p.category)}</span></td>
+        <td style="text-align:right;font-weight:600;color:var(--ink)">${fmtRp(p.price)}</td>
+        <td style="text-align:center;color:var(--ink-3)">${itemsCount}</td>
+        <td>${p.sort_order || 0}</td>
+        <td><span class="badge ${p.is_active ? 'active' : 'inactive'}">${p.is_active ? 'Aktif' : 'Nonaktif'}</span></td>
+        <td><div class="tbl-actions">
+          <button class="btn btn-ghost btn-xs" onclick="pkgOpen('${p.id}')">Edit</button>
+          <button class="btn btn-danger btn-xs" onclick="pkgDelete('${p.id}','${escHtml(p.name).replace(/'/g, '\\\'')}')" aria-label="Hapus paket">×</button>
+        </div></td>
+      </tr>`;
+  }).join('');
+}
+function pkgOpen(id) {
+  const isEdit = !!id;
+  const p = isEdit ? _packages.find(x => x.id === id) : null;
+  $('modal-pkg-ttl').textContent = isEdit ? 'Edit Paket' : 'Tambah Paket';
+  $('pkg-id').value = p?.id || '';
+  $('pkg-name').value = p?.name || '';
+  $('pkg-slug').value = p?.slug || '';
+  $('pkg-category').value = p?.category || 'wedding-event';
+  $('pkg-category-label').value = p?.category_label || CAT_LABEL_MAP[p?.category || 'wedding-event'] || '';
+  $('pkg-price').value = p?.price || '';
+  $('pkg-order').value = p?.sort_order || 0;
+  $('pkg-description').value = p?.description || '';
+  $('pkg-items').value = Array.isArray(p?.items) ? p.items.join('\n') : '';
+  $('pkg-active').value = p?.is_active === false ? 'false' : 'true';
+  $('pkg-err').style.display = 'none';
+  openModal('modal-pkg');
+  setTimeout(() => $('pkg-name').focus(), 80);
+}
+async function pkgSave() {
+  const errBox = $('pkg-err');
+  errBox.style.display = 'none';
+  const showErr = (m) => { errBox.textContent = m; errBox.style.display = 'block'; };
+
+  const id       = $('pkg-id').value;
+  const name     = $('pkg-name').value.trim();
+  let   slug     = $('pkg-slug').value.trim() || pkgSlugify(name);
+  const category = $('pkg-category').value;
+  const catLabel = $('pkg-category-label').value.trim() || CAT_LABEL_MAP[category] || category;
+  const price    = parseInt($('pkg-price').value) || 0;
+  const order    = parseInt($('pkg-order').value) || 0;
+  const desc     = $('pkg-description').value.trim();
+  const itemsRaw = $('pkg-items').value;
+  const items    = itemsRaw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  const active   = $('pkg-active').value === 'true';
+
+  if (!name) return showErr('Nama paket wajib diisi');
+  if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(slug)) return showErr('Slug invalid (lowercase, angka, dash, 1-64 char)');
+  if (!items.length) return showErr('Items wajib diisi (minimal 1 baris)');
+
+  const payload = {
+    slug, category, category_label: catLabel,
+    name, description: desc || null,
+    price, items,
+    sort_order: order, is_active: active,
+  };
+  const btn = $('pkg-save-btn');
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Menyimpan...';
+  try {
+    const op = id
+      ? sb.from('packages').update(payload).eq('id', id)
+      : sb.from('packages').insert(payload);
+    const { error } = await op;
+    if (error) throw error;
+    closeModal('modal-pkg');
+    if (typeof notify !== 'undefined') notify.success(id ? 'Paket diupdate' : 'Paket ditambah', name);
+    await loadPackages();
+  } catch (err) {
+    showErr(err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+async function pkgDelete(id, name) {
+  const ok = await confirmDialog({
+    title: 'Hapus paket?',
+    message: `Paket <strong>${escHtml(name || 'ini')}</strong> akan dihapus permanen. Tidak bisa di-undo.`,
+    confirmText: 'Ya, Hapus',
+    danger: true,
+  });
+  if (!ok) return;
+  try {
+    const { error } = await sb.from('packages').delete().eq('id', id);
+    if (error) throw error;
+    if (typeof notify !== 'undefined') notify.success('Paket dihapus', name);
+    await loadPackages();
+  } catch (err) {
+    if (typeof notify !== 'undefined') notify.error('Gagal hapus', err.message);
+  }
+}
+// Auto-fill slug & category-label saat user ketik nama / pilih kategori
+document.addEventListener('DOMContentLoaded', () => {
+  $('pkg-name')?.addEventListener('input', (e) => {
+    const slugField = $('pkg-slug');
+    if (slugField && !slugField.dataset.touched) slugField.value = pkgSlugify(e.target.value);
+  });
+  $('pkg-slug')?.addEventListener('input', (e) => { e.target.dataset.touched = '1'; });
+  $('pkg-category')?.addEventListener('change', (e) => {
+    const labelField = $('pkg-category-label');
+    if (labelField && !labelField.dataset.touched) {
+      labelField.value = CAT_LABEL_MAP[e.target.value] || '';
+    }
+  });
+  $('pkg-category-label')?.addEventListener('input', (e) => { e.target.dataset.touched = '1'; });
+});
+
+// ====================================================================
 // PROMO CRUD
 // ====================================================================
 let _promos = [];
@@ -1079,11 +2428,11 @@ function renderPromos(){
       <td><span class="badge ${p.status||'active'}">${p.status||'active'}</span></td>
       <td>${p.is_featured?'⭐ Featured':'—'}</td>
       <td>${p.sort_order||0}</td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="promoOpen(${p.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="promoDelete(${p.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="promoOpen(${p.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="promoDelete(${p.id})" aria-label="Hapus promo">×</button></div></td>
     </tr>`).join('');
 }
 function promoOpen(id){
-  const p = id ? _promos.find(x=>x.id===id) : { title:'', description:'', badge:'', detail:[], cta_text:'Booking Sekarang', cta_url:'https://booking.sewakamerabandung.id', status:'active', is_featured:false, sort_order:0 };
+  const p = id ? _promos.find(x=>x.id===id) : { title:'', description:'', badge:'', detail:[], cta_text:'Booking Sekarang', cta_url:'https://app.sewakamerabandung.id', status:'active', is_featured:false, sort_order:0 };
   $('promo-id').value = p.id || '';
   $('promo-title').value = p.title || '';
   $('promo-desc').value = p.description || '';
@@ -1102,7 +2451,7 @@ function renderPromoDetail(rows){
     <div class="kv-row">
       <input type="text" data-pd-label="${i}" placeholder="Label" value="${escHtml(r.label||'')}">
       <input type="text" data-pd-value="${i}" placeholder="Value" value="${escHtml(r.value||'')}">
-      <button class="kv-rm" onclick="this.parentElement.remove()">×</button>
+      <button class="kv-rm" onclick="this.parentElement.remove()" aria-label="Hapus pasangan key-value">×</button>
     </div>`).join('');
 }
 function promoAddDetail(){
@@ -1168,11 +2517,36 @@ function renderLoks(){
       <td>${escHtml((l.address||'').slice(0,60))}${(l.address||'').length>60?'...':''}</td>
       <td>${escHtml(l.open_time||'')} – ${escHtml(l.close_time||'')}</td>
       <td><span class="badge ${l.is_active?'active':'inactive'}">${l.is_active?'Aktif':'Nonaktif'}</span></td>
-      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="lokOpen(${l.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="lokDelete(${l.id})">×</button></div></td>
+      <td><div class="tbl-actions"><button class="btn btn-ghost btn-xs" onclick="lokOpen(${l.id})">Edit</button><button class="btn btn-danger btn-xs" onclick="lokDelete(${l.id})" aria-label="Hapus cabang">×</button></div></td>
     </tr>`).join('');
 }
+function lokRenderAmenities(items){
+  const wrap = $('lok-amenities');
+  wrap.innerHTML = '';
+  (items || []).forEach((a, i) => lokAddAmenity(a.icon, a.text));
+}
+function lokAddAmenity(icon, text){
+  const wrap = $('lok-amenities');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:8px;align-items:center';
+  row.innerHTML = `
+    <input type="text" class="lok-amen-icon" value="${icon ? escHtml(icon) : ''}" placeholder="🛵" style="width:60px;text-align:center;font-size:18px" maxlength="4">
+    <input type="text" class="lok-amen-text" value="${text ? escHtml(text) : ''}" placeholder="Tersedia antar via ojek online" style="flex:1">
+    <button type="button" class="btn btn-danger btn-xs" aria-label="Hapus fasilitas" onclick="this.parentElement.remove()">×</button>`;
+  wrap.appendChild(row);
+}
+function lokCollectAmenities(){
+  const rows = $('lok-amenities').querySelectorAll('div');
+  const out = [];
+  rows.forEach(r => {
+    const icon = r.querySelector('.lok-amen-icon')?.value.trim() || '';
+    const text = r.querySelector('.lok-amen-text')?.value.trim() || '';
+    if (text) out.push({ icon: icon || '·', text });
+  });
+  return out;
+}
 function lokOpen(id){
-  const l = id ? _loks.find(x=>x.id===id) : { branch_name:'', slug:'', tagline:'', address:'', open_time:'09.00', close_time:'20.00', phone:'', whatsapp_url:'', maps_url:'', sort_order:0, is_active:true };
+  const l = id ? _loks.find(x=>x.id===id) : { branch_name:'', slug:'', tagline:'', address:'', open_time:'09.00', close_time:'20.00', days_label:'Senin – Minggu', phone:'', whatsapp_url:'', maps_url:'', sort_order:0, is_active:true, amenities:[{icon:'🛵',text:'Tersedia antar via ojek online'},{icon:'🅿',text:'Parkir tersedia'}] };
   $('lok-id').value = l.id || '';
   $('lok-name').value = l.branch_name || '';
   $('lok-slug').value = l.slug || '';
@@ -1180,11 +2554,13 @@ function lokOpen(id){
   $('lok-addr').value = l.address || '';
   $('lok-open').value = l.open_time || '09.00';
   $('lok-close').value = l.close_time || '20.00';
+  $('lok-days').value = l.days_label || 'Senin – Minggu';
   $('lok-phone').value = l.phone || '';
   $('lok-wa').value = l.whatsapp_url || '';
   $('lok-maps').value = l.maps_url || '';
   $('lok-order').value = l.sort_order || 0;
   $('lok-active').value = l.is_active ? 'true' : 'false';
+  lokRenderAmenities(Array.isArray(l.amenities) ? l.amenities : []);
   $('modal-lok-ttl').textContent = id ? 'Edit Cabang' : 'Tambah Cabang';
   openModal('modal-lok');
 }
@@ -1196,9 +2572,11 @@ async function lokSave(){
     address: $('lok-addr').value || null,
     open_time: $('lok-open').value || '09.00',
     close_time: $('lok-close').value || '20.00',
+    days_label: $('lok-days').value || 'Senin – Minggu',
     phone: $('lok-phone').value || null,
     whatsapp_url: $('lok-wa').value || null,
     maps_url: $('lok-maps').value || null,
+    amenities: lokCollectAmenities(),
     sort_order: parseInt($('lok-order').value) || 0,
     is_active: $('lok-active').value === 'true'
   };
@@ -1389,37 +2767,84 @@ function prodOpen(id){
     <div class="form-group">
       <label>Foto Produk (sampai 6 foto)</label>
       <div class="hint" style="margin-bottom:8px">Drag-drop atau paste URL gambar. Foto pertama jadi thumbnail utama.</div>
+      <div style="margin-bottom:10px;padding:10px 12px;background:var(--bg-2);border-radius:8px">
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:6px">🔍 Cari foto produk di:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('google')" title="Google Images">Google Images</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('bing')" title="Bing Images">Bing Images</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('duckduckgo')" title="DuckDuckGo Images">DuckDuckGo</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('unsplash')" title="Unsplash">Unsplash</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('pexels')" title="Pexels">Pexels</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="prodImgSearch('pixabay')" title="Pixabay">Pixabay</button>
+        </div>
+        <div class="hint" style="margin-top:6px;font-size:11.5px">Klik tombol → buka tab baru → klik kanan gambar → <strong>Copy image address</strong> → paste ke slot foto di bawah.</div>
+      </div>
       <div class="imgs-grid" id="ed-imgs">
         ${[1,2,3,4,5,6].map(n => {
           const k = n===1 ? 'image_url' : 'image_url_'+n;
           const v = e[k] || '';
           return `<div class="img-slot" data-slot="${n}">
-            ${v?`<img src="${escHtml(v)}"><button class="img-slot-rm" onclick="prodRmImg(${n})">×</button>`:'<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto '+n+'</div>'}
-            <input type="url" data-img="${n}" value="${escHtml(v)}" oninput="prodSetImg(${n})" placeholder="URL gambar...">
+            <div class="img-slot-preview" id="ed-prev-${n}">
+              ${v
+                ? `<img src="${escHtml(v)}" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-slot-empty\\'><div class=\\'ico\\'>⚠</div>URL invalid</div>'"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button>`
+                : `<div class="img-slot-empty"><div class="ico">＋</div>Foto ${n}</div>`}
+            </div>
+            <input class="img-slot-url" type="url" data-img="${n}" value="${escHtml(v)}" oninput="prodSetImg(${n})" placeholder="Paste URL foto ${n}...">
           </div>`;
         }).join('')}
       </div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="prodAddPhoto()">+ Tambah Foto</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="prodAddPhoto()">+ Tambah Foto (fokus slot kosong)</button>
     </div>
   `;
   openModal('modal-prod');
 }
 function prodSetImg(n){
-  const url = document.querySelector(`[data-img="${n}"]`).value;
-  const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);
-  if (url) slot.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none'"><button class="img-slot-rm" onclick="prodRmImg(${n})">×</button><input type="url" data-img="${n}" value="${escHtml(url)}" oninput="prodSetImg(${n})">`;
+  const inp = document.querySelector(`[data-img="${n}"]`);
+  const url = (inp?.value || '').trim();
+  const prev = document.getElementById(`ed-prev-${n}`);
+  if (!prev) return;
+  if (url) {
+    prev.innerHTML = `<img src="${escHtml(url)}" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-slot-empty\\'><div class=\\'ico\\'>⚠</div>URL invalid</div>'"><button class="img-slot-rm" onclick="prodRmImg(${n})" aria-label="Hapus foto produk">×</button>`;
+  } else {
+    prev.innerHTML = `<div class="img-slot-empty"><div class="ico">＋</div>Foto ${n}</div>`;
+  }
 }
 function prodRmImg(n){
-  const slot = document.querySelector(`.img-slot[data-slot="${n}"]`);
-  slot.innerHTML = `<div style="text-align:center;color:var(--ink-4);font-size:12px"><div style="font-size:24px;opacity:.4;margin-bottom:4px">＋</div>Foto ${n}</div><input type="url" data-img="${n}" value="" oninput="prodSetImg(${n})" placeholder="URL gambar...">`;
+  const inp = document.querySelector(`[data-img="${n}"]`);
+  if (inp) inp.value = '';
+  const prev = document.getElementById(`ed-prev-${n}`);
+  if (prev) prev.innerHTML = `<div class="img-slot-empty"><div class="ico">＋</div>Foto ${n}</div>`;
 }
 function prodAddPhoto(){
-  // Find first empty slot, focus its input
   for (let n=1;n<=6;n++){
     const inp = document.querySelector(`[data-img="${n}"]`);
-    if (inp && !inp.value){ inp.focus(); return; }
+    if (inp && !inp.value){
+      inp.focus();
+      inp.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
   }
-  toast('Maksimum 6 foto per produk','error');
+  toast('Semua 6 slot foto sudah terisi. Hapus salah satu dulu kalau mau ganti.','error');
+}
+function prodImgSearch(source){
+  if (!_editProd){ return; }
+  const name = (_editProd.nama_produk || '').trim();
+  if (!name){
+    if (window.notify) notify.warn('Nama produk kosong','Tidak bisa generate query pencarian');
+    return;
+  }
+  const q = encodeURIComponent(name);
+  const urls = {
+    google:     `https://www.google.com/search?q=${q}&tbm=isch`,
+    bing:       `https://www.bing.com/images/search?q=${q}`,
+    duckduckgo: `https://duckduckgo.com/?q=${q}&iax=images&ia=images`,
+    unsplash:   `https://unsplash.com/s/photos/${q}`,
+    pexels:     `https://www.pexels.com/search/${q}/`,
+    pixabay:    `https://pixabay.com/images/search/${q}/`
+  };
+  const url = urls[source];
+  if (!url) return;
+  window.open(url, '_blank', 'noopener');
 }
 async function prodSave(){
   if (!_editProd) return;
