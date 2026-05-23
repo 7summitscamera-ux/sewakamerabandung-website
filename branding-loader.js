@@ -214,11 +214,23 @@
             if (opacity < 1) el.style.setProperty('opacity', opacity.toString(), 'important');
           }
 
-          // Apply text color to heading and subheading elements
-          const textSelectors = ['.page-h1', '.page-sub', '.kat-h1', '.kat-sub', '.sec-h2', '.sec-lbl', '.bk-h2', '.bk-p', '.breadcrumb', 'h1', 'h2', 'p', '.page-hero-cnt *'];
-          textSelectors.forEach(textSel => {
-            el.querySelectorAll(textSel).forEach(textEl => {
-              textEl.style.setProperty('color', textColor, 'important');
+          // Apply heading and subheading colors separately
+          const headingColor = config.heading_color || '#ffffff';
+          const subheadingColor = config.subheading_color || '#ffffff';
+
+          // Heading selectors (h1, page title, etc.)
+          const headingSelectors = ['.page-h1', '.kat-h1', '.sec-h2', '.bk-h2', 'h1', 'h2'];
+          headingSelectors.forEach(sel => {
+            el.querySelectorAll(sel).forEach(textEl => {
+              textEl.style.setProperty('color', headingColor, 'important');
+            });
+          });
+
+          // Subheading selectors (description, subtitle, breadcrumb, etc.)
+          const subheadingSelectors = ['.page-sub', '.kat-sub', '.sec-lbl', '.bk-p', '.breadcrumb', '.page-hero-cnt > p'];
+          subheadingSelectors.forEach(sel => {
+            el.querySelectorAll(sel).forEach(textEl => {
+              textEl.style.setProperty('color', subheadingColor, 'important');
             });
           });
         });
