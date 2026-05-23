@@ -190,6 +190,7 @@
         elements.forEach(el => {
           const url = normalizeImageUrl(config.image_url);
           const opacity = config.opacity != null ? config.opacity : 1.0;
+          const textColor = config.text_color || '#ffffff';
 
           if (config.page === 'katalog') {
             // kat-hero: use background-image with linear-gradient
@@ -212,6 +213,14 @@
             el.style.setProperty('background-position', 'center', 'important');
             if (opacity < 1) el.style.setProperty('opacity', opacity.toString(), 'important');
           }
+
+          // Apply text color to heading and subheading elements
+          const textSelectors = ['.page-h1', '.page-sub', '.kat-h1', '.kat-sub', '.sec-h2', '.sec-lbl', '.bk-h2', '.bk-p', '.breadcrumb', 'h1', 'h2', 'p', '.page-hero-cnt *'];
+          textSelectors.forEach(textSel => {
+            el.querySelectorAll(textSel).forEach(textEl => {
+              textEl.style.setProperty('color', textColor, 'important');
+            });
+          });
         });
       });
     }
