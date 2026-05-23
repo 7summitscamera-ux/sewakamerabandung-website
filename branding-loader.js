@@ -190,6 +190,7 @@
         elements.forEach(el => {
           const url = normalizeImageUrl(config.image_url);
           const opacity = config.opacity != null ? config.opacity : 1.0;
+          const textColor = config.text_color || '#ffffff';
 
           if (config.page === 'katalog') {
             // kat-hero: use background-image with linear-gradient
@@ -212,6 +213,26 @@
             el.style.setProperty('background-position', 'center', 'important');
             if (opacity < 1) el.style.setProperty('opacity', opacity.toString(), 'important');
           }
+
+          // Apply heading and subheading colors separately
+          const headingColor = config.heading_color || '#ffffff';
+          const subheadingColor = config.subheading_color || '#ffffff';
+
+          // Heading selectors (h1, page title, etc.)
+          const headingSelectors = ['.page-h1', '.kat-h1', '.sec-h2', '.bk-h2', 'h1', 'h2'];
+          headingSelectors.forEach(sel => {
+            el.querySelectorAll(sel).forEach(textEl => {
+              textEl.style.setProperty('color', headingColor, 'important');
+            });
+          });
+
+          // Subheading selectors (description, subtitle, breadcrumb, etc.)
+          const subheadingSelectors = ['.page-sub', '.kat-sub', '.sec-lbl', '.bk-p', '.breadcrumb', '.page-hero-cnt > p'];
+          subheadingSelectors.forEach(sel => {
+            el.querySelectorAll(sel).forEach(textEl => {
+              textEl.style.setProperty('color', subheadingColor, 'important');
+            });
+          });
         });
       });
     }
