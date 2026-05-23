@@ -627,8 +627,21 @@ tr:hover td{background:#FAFBF7}
               <span class="hint">0 = transparan penuh, 1 = tidak transparan</span>
             </div>
             <div class="form-group">
+              <label>Warna Tulisan</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="sec-header-text-color" value="#ffffff" style="width:50px;height:38px;border:1px solid var(--bd);border-radius:6px;cursor:pointer">
+                <input type="text" id="sec-header-text-color-hex" placeholder="#ffffff" style="flex:1;padding:8px;border:1px solid var(--bd);border-radius:6px;font-family:monospace;font-size:12px">
+              </div>
+              <span class="hint">Warna tulisan heading & subheading (default: putih)</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
               <label>Preview</label>
-              <div id="sec-header-preview" style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;border:1px solid var(--bd);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:var(--ink-4);font-size:13px">Preview belum tersedia</div>
+              <div id="sec-header-preview" style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;border:1px solid var(--bd);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:var(--ink-4);font-size:13px;flex-direction:column;gap:8px">
+                <span id="sec-header-preview-text" style="font-size:18px;font-weight:600;color:#ffffff">Preview Heading</span>
+                <span id="sec-header-preview-sub" style="font-size:12px;color:#ffffff;opacity:0.9">Preview Subheading</span>
+              </div>
             </div>
           </div>
           <div class="form-row">
@@ -1978,15 +1991,32 @@ $('sec-header-opacity')?.addEventListener('input', e => {
   $('opacity-value').textContent = e.target.value;
   updateSectionHeaderPreview();
 });
-['sec-header-page','sec-header-image'].forEach(k => {
+['sec-header-page','sec-header-image','sec-header-text-color'].forEach(k => {
   $(k)?.addEventListener('change', updateSectionHeaderPreview);
   $(k)?.addEventListener('input', updateSectionHeaderPreview);
+});
+$('sec-header-text-color')?.addEventListener('input', e => {
+  const hex = e.target.value;
+  const hexInput = $('sec-header-text-color-hex');
+  if (hexInput) hexInput.value = hex;
+  updateSectionHeaderPreview();
+});
+$('sec-header-text-color-hex')?.addEventListener('input', e => {
+  const hex = e.target.value;
+  if (/^#[0-9A-F]{6}$/i.test(hex)) {
+    $('sec-header-text-color').value = hex;
+    updateSectionHeaderPreview();
+  }
 });
 function updateSectionHeaderPreview(){
   const page = $('sec-header-page').value;
   const url = normalizeImageUrl($('sec-header-image').value);
   const opacity = $('sec-header-opacity').value;
+  const textColor = $('sec-header-text-color')?.value || '#ffffff';
   const preview = $('sec-header-preview');
+  const previewText = $('sec-header-preview-text');
+  const previewSub = $('sec-header-preview-sub');
+
   if (!page || !url) {
     preview.textContent = 'Pilih halaman dan masukkan URL gambar';
     preview.style.backgroundImage = '';
@@ -1994,7 +2024,8 @@ function updateSectionHeaderPreview(){
   }
   preview.style.backgroundImage = `url("${url}")`;
   preview.style.opacity = opacity;
-  preview.textContent = '';
+  if (previewText) previewText.style.color = textColor;
+  if (previewSub) previewSub.style.color = textColor;
 }
 function renderSectionHeaders(arr){
   const list = $('sec-headers-list');
@@ -2019,6 +2050,9 @@ function editSectionHeader(idx){
   $('sec-header-image').value = item.image_url || '';
   $('sec-header-opacity').value = item.opacity || 1.0;
   $('opacity-value').textContent = item.opacity || 1.0;
+  const textColor = item.text_color || '#ffffff';
+  $('sec-header-text-color').value = textColor;
+  $('sec-header-text-color-hex').value = textColor;
   $('btn-sec-header-remove').style.display = 'inline-flex';
   $('btn-sec-header-remove').dataset.editIdx = idx;
   updateSectionHeaderPreview();
@@ -2028,17 +2062,18 @@ function addSectionHeader(){
   const page = $('sec-header-page').value;
   const image_url = normalizeImageUrl($('sec-header-image').value);
   const opacity = parseFloat($('sec-header-opacity').value) || 1.0;
+  const text_color = $('sec-header-text-color').value || '#ffffff';
   if (!page || !image_url) { toast('Pilih halaman dan masukkan URL gambar', 'error'); return; }
   let headers = Array.isArray(_settings.section_headers) ? [..._settings.section_headers] : [];
   const idx = $('btn-sec-header-remove').dataset.editIdx;
   if (idx !== undefined) {
-    headers[parseInt(idx)] = {page, image_url, opacity};
+    headers[parseInt(idx)] = {page, image_url, opacity, text_color};
     $('btn-sec-header-remove').style.display = 'none';
     delete $('btn-sec-header-remove').dataset.editIdx;
   } else {
     const exists = headers.findIndex(h => h.page === page);
-    if (exists !== -1) headers[exists] = {page, image_url, opacity};
-    else headers.push({page, image_url, opacity});
+    if (exists !== -1) headers[exists] = {page, image_url, opacity, text_color};
+    else headers.push({page, image_url, opacity, text_color});
   }
   _settings.section_headers = headers;
   renderSectionHeaders(headers);
@@ -2046,6 +2081,8 @@ function addSectionHeader(){
   $('sec-header-image').value = '';
   $('sec-header-opacity').value = 1.0;
   $('opacity-value').textContent = 1.0;
+  $('sec-header-text-color').value = '#ffffff';
+  $('sec-header-text-color-hex').value = '#ffffff';
   updateSectionHeaderPreview();
   toast('Section header ditambahkan!');
 }
