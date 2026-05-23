@@ -15,6 +15,61 @@
     return url;
   }
 
+  function initHeroCarousel(heroImg, images, duration, transition) {
+    let currentIndex = 0;
+    const normalizedImages = images.map(u => normalizeImageUrl(u));
+
+    // Add carousel CSS styles
+    if (!document.querySelector('#hero-carousel-styles')) {
+      const style = document.createElement('style');
+      style.id = 'hero-carousel-styles';
+      style.textContent = `
+        .hero-img {
+          transition: all ${transition === 'fade' ? '1s ease-in-out' : transition === 'slide' ? '1s ease-in-out' : '0.8s cubic-bezier(0.4,0,0.2,1)'} !important;
+        }
+        .hero-img.carousel-fade { opacity: 1; }
+        .hero-img.carousel-fade.next { opacity: 0; }
+        .hero-img.carousel-zoom { transform: scale(1); }
+        .hero-img.carousel-zoom.next { transform: scale(1.05); }
+        .hero-img.carousel-slide { transform: translateX(0); }
+        .hero-img.carousel-slide.next { transform: translateX(100%); }
+      `;
+      document.head.appendChild(style);
+    }
+
+    function setImage(index) {
+      if (normalizedImages.length === 0) return;
+      const url = normalizedImages[index % normalizedImages.length];
+      const gradient = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%)`;
+
+      if (transition === 'fade') {
+        heroImg.classList.remove('carousel-fade', 'next');
+        heroImg.offsetHeight; // Trigger reflow
+        heroImg.classList.add('carousel-fade');
+        heroImg.style.backgroundImage = `${gradient},url('${url}')`;
+      } else if (transition === 'slide') {
+        heroImg.classList.remove('carousel-slide', 'next');
+        heroImg.offsetHeight; // Trigger reflow
+        heroImg.style.backgroundImage = `${gradient},url('${url}')`;
+        heroImg.classList.add('carousel-slide');
+      } else if (transition === 'zoom') {
+        heroImg.classList.remove('carousel-zoom', 'next');
+        heroImg.offsetHeight; // Trigger reflow
+        heroImg.style.backgroundImage = `${gradient},url('${url}')`;
+        heroImg.classList.add('carousel-zoom');
+      }
+    }
+
+    // Set initial image
+    setImage(0);
+
+    // Rotate images
+    setInterval(() => {
+      currentIndex++;
+      setImage(currentIndex);
+    }, duration);
+  }
+
   function applySettings(s) {
     if (!s) return;
     const r = document.documentElement.style;
@@ -56,10 +111,14 @@
       f.href = normalizeImageUrl(s.favicon_url);
     }
 
-    // Hero on homepage
-    if (s.hero_image_url) {
-      const heroImg = document.querySelector('.hero-img');
-      if (heroImg) {
+    // Hero on homepage — with carousel support
+    const heroImg = document.querySelector('.hero-img');
+    if (heroImg) {
+      // Check if carousel is enabled and has images
+      if (s.hero_carousel_enabled && Array.isArray(s.hero_carousel_images) && s.hero_carousel_images.length >= 2) {
+        initHeroCarousel(heroImg, s.hero_carousel_images, s.hero_carousel_duration || 5000, s.hero_carousel_transition || 'fade');
+      } else if (s.hero_image_url) {
+        // Fallback to single image
         const u = normalizeImageUrl(s.hero_image_url);
         heroImg.style.backgroundImage = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%),url('${u}')`;
       }

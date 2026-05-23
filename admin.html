@@ -555,6 +555,46 @@ tr:hover td{background:#FAFBF7}
         </div>
       </div>
       <div class="card">
+        <div class="card-hdr"><div class="card-title">Hero Carousel (Rotasi Gambar Otomatis)</div></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label><input type="checkbox" id="hero_carousel_enabled"> Aktifkan carousel</label>
+              <span class="hint">Jika diaktifkan, hero akan berganti gambar otomatis setiap beberapa detik. Nonaktifkan untuk gunakan single image di atas.</span>
+            </div>
+          </div>
+          <div id="carousel-settings" style="display:none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Duration per gambar (ms)</label>
+                <input type="number" id="hero_carousel_duration" min="1000" step="500" value="5000">
+                <span class="hint">Berapa lama setiap gambar ditampilkan (dalam milidetik). 5000 = 5 detik.</span>
+              </div>
+              <div class="form-group">
+                <label>Tipe Transisi</label>
+                <select id="hero_carousel_transition">
+                  <option value="fade">Fade (Gradual transition)</option>
+                  <option value="slide">Slide (Geser dari kanan ke kiri)</option>
+                  <option value="zoom">Zoom (Zoom in transisi)</option>
+                </select>
+                <span class="hint">Pilih efek transisi antar gambar.</span>
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Gambar Carousel (satu URL per baris)</label>
+                <textarea id="hero_carousel_images" placeholder="https://images.unsplash.com/photo1?..&#10;https://images.unsplash.com/photo2?...&#10;https://images.unsplash.com/photo3?..." style="font-family:monospace;font-size:12px;min-height:120px"></textarea>
+                <span class="hint">Masukkan URL gambar, satu per baris. Minimal 2 gambar. Format: HTTPS URL lengkap ke gambar landscape (2400×1350+).</span>
+              </div>
+            </div>
+            <div id="carousel-preview" style="margin-top:16px;">
+              <h4 style="margin-bottom:12px;font-size:13px;font-weight:600">Preview Carousel</h4>
+              <div id="carousel-preview-container" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
         <div class="card-hdr"><div class="card-title">Announcement Bar (atas)</div></div>
         <div class="card-body">
           <div class="form-row full">
@@ -1795,6 +1835,18 @@ async function loadSettings(){
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
   });
   if (_settings.hero_image_url) $('prev-hero').style.backgroundImage = 'url("'+normalizeImageUrl(_settings.hero_image_url)+'")';
+  // Hero Carousel
+  if ($('hero_carousel_enabled')) {
+    $('hero_carousel_enabled').checked = _settings.hero_carousel_enabled || false;
+    $('carousel-settings').style.display = $('hero_carousel_enabled').checked ? 'block' : 'none';
+  }
+  if ($('hero_carousel_duration')) $('hero_carousel_duration').value = _settings.hero_carousel_duration || 5000;
+  if ($('hero_carousel_transition')) $('hero_carousel_transition').value = _settings.hero_carousel_transition || 'fade';
+  if ($('hero_carousel_images')) {
+    const imgs = Array.isArray(_settings.hero_carousel_images) ? _settings.hero_carousel_images : [];
+    $('hero_carousel_images').value = imgs.join('\n');
+  }
+  renderCarouselPreview();
   // Kontak
   ['whatsapp_number','instagram_url','youtube_channel','booking_url'].forEach(k => {
     const v = _settings[k] || ''; if ($(k)) $(k).value = v;
@@ -1847,6 +1899,34 @@ $('favicon_url')?.addEventListener('input', e => {
   if (e.target.value && norm !== e.target.value) e.target.title = 'Akan disimpan sebagai: ' + norm;
 });
 
+// Hero Carousel
+$('hero_carousel_enabled')?.addEventListener('change', e => {
+  $('carousel-settings').style.display = e.target.checked ? 'block' : 'none';
+});
+['hero_carousel_images','hero_carousel_duration','hero_carousel_transition'].forEach(k => {
+  $(k)?.addEventListener('input', renderCarouselPreview);
+  $(k)?.addEventListener('change', renderCarouselPreview);
+});
+function renderCarouselPreview(){
+  const textarea = $('hero_carousel_images');
+  if (!textarea) return;
+  const urls = textarea.value.split('\n').filter(u => u.trim().startsWith('http')).slice(0, 6);
+  const container = $('carousel-preview-container');
+  if (!container) return;
+  container.innerHTML = '';
+  if (urls.length < 2) {
+    container.innerHTML = '<p style="grid-column:1/-1;color:var(--ink-4);font-size:12px">Tambahkan minimal 2 URL gambar</p>';
+    return;
+  }
+  urls.forEach((url, idx) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:1px solid var(--bd);background:var(--bg-2)';
+    div.innerHTML = `<img src="${escHtml(normalizeImageUrl(url))}" alt="Carousel ${idx+1}" style="width:100%;height:100%;object-fit:cover;display:block"${imgErrFallback()}>
+      <span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600">${idx+1}</span>`;
+    container.appendChild(div);
+  });
+}
+
 // Typography preview
 ['font_family','font_weight_headline','font_weight_body','font_size_base','headline_letter_spacing'].forEach(k => {
   $(k)?.addEventListener('change', updateTypePreview);
@@ -1881,6 +1961,7 @@ async function saveAll(){
     'font_family','font_family_url','font_weight_headline','font_weight_body','font_size_base','headline_letter_spacing',
     'logo_url','logo_mark_url','logo_dark_url','favicon_url',
     'hero_image_url','hero_headline','hero_subheadline','hero_cta_primary_text','hero_cta_primary_url','hero_cta_secondary_text','hero_cta_secondary_url',
+    'hero_carousel_enabled','hero_carousel_duration','hero_carousel_transition',
     'ann_bar_text','ann_bar_link_text','ann_bar_link_url',
     'whatsapp_number','instagram_url','youtube_channel','booking_url',
     'brand_logo_height','brand_logo_max_width','brand_gap','brand_anim_duration','brand_logo_style','brand_logo_opacity'];
@@ -1897,11 +1978,20 @@ async function saveAll(){
   });
   // Cast numerics
   ['font_weight_headline','font_weight_body','font_size_base'].forEach(k => { if (payload[k]) payload[k] = parseInt(payload[k]); });
+  if (payload.hero_carousel_duration) payload.hero_carousel_duration = parseInt(payload.hero_carousel_duration);
   payload.youtube_videos = collectYtVideos(true);
   payload.stats = collectStats();
   payload.brands = collectBrands();
   payload.reviews = collectReviews();
   payload.reviews_google_url = $('reviews_google_url')?.value.trim() || null;
+  // Process carousel images
+  if ($('hero_carousel_images')) {
+    const imgs = $('hero_carousel_images').value.split('\n')
+      .filter(u => u.trim().startsWith('http'))
+      .map(u => normalizeImageUrl(u.trim()))
+      .slice(0, 6);
+    payload.hero_carousel_images = imgs.length >= 2 ? imgs : [];
+  }
   payload.updated_at = new Date().toISOString();
   const { error } = await sb.from('site_settings').upsert(payload, { onConflict:'id' });
   btn.disabled = false; btn.textContent = 'Simpan Perubahan';
