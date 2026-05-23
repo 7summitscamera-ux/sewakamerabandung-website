@@ -136,9 +136,30 @@
       const sub = document.querySelector('.hero-sub');
       if (sub) sub.textContent = s.hero_subheadline;
     }
-    if (s.hero_cta_primary_text) {
-      const btn = document.querySelector('.hero-ctas .btn-hero-p, .hero-ctas a:first-child button');
-      if (btn) btn.firstChild && (btn.firstChild.textContent = s.hero_cta_primary_text + ' ');
+    if (s.hero_cta_primary_text || s.hero_cta_primary_url) {
+      const primaryLink = document.querySelector('.hero-ctas a:first-child');
+      if (primaryLink) {
+        if (s.hero_cta_primary_text) {
+          const btn = primaryLink.querySelector('button');
+          if (btn && btn.firstChild) btn.firstChild.textContent = s.hero_cta_primary_text + ' ';
+        }
+        if (s.hero_cta_primary_url) {
+          primaryLink.href = s.hero_cta_primary_url;
+        }
+      }
+    }
+
+    if (s.hero_cta_secondary_text || s.hero_cta_secondary_url) {
+      const secondaryLink = document.querySelector('.hero-ctas a:last-child');
+      if (secondaryLink) {
+        if (s.hero_cta_secondary_text) {
+          const btn = secondaryLink.querySelector('button');
+          if (btn && btn.firstChild) btn.firstChild.textContent = s.hero_cta_secondary_text + ' ';
+        }
+        if (s.hero_cta_secondary_url) {
+          secondaryLink.href = s.hero_cta_secondary_url;
+        }
+      }
     }
 
     // Announcement bar
