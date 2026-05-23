@@ -194,21 +194,23 @@
           if (config.page === 'katalog') {
             // kat-hero: use background-image with linear-gradient
             const gradient = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%)`;
-            el.style.backgroundImage = `${gradient},url('${url}')`;
+            el.style.setProperty('background-image', `${gradient},url('${url}')`, 'important');
+            el.style.setProperty('background-size', 'cover', 'important');
+            el.style.setProperty('background-position', 'center', 'important');
           } else if (config.page.includes('section')) {
-            // Homepage sections: use pseudo-element approach via opacity on image
-            el.style.backgroundImage = `url('${url}')`;
-            el.style.backgroundSize = 'cover';
-            el.style.backgroundPosition = 'center';
-            el.style.backgroundAttachment = 'fixed';
-            // Apply opacity via pseudo-element color overlay
-            if (!el.style.position || el.style.position === 'static') el.style.position = 'relative';
-            if (opacity < 1) el.style.opacity = opacity;
+            // Homepage sections: apply background with proper layering
+            el.style.setProperty('background-image', `linear-gradient(180deg,rgba(14,18,23,.4) 0%,rgba(14,18,23,.2) 40%,rgba(14,18,23,.7) 100%),url('${url}')`, 'important');
+            el.style.setProperty('background-size', 'cover', 'important');
+            el.style.setProperty('background-position', 'center', 'important');
+            el.style.setProperty('background-attachment', 'fixed', 'important');
+            if (opacity < 1) el.style.setProperty('opacity', opacity.toString(), 'important');
           } else {
             // page-hero: layer background with gradient overlay
             const gradient = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%)`;
-            el.style.backgroundImage = `${gradient},url('${url}')`;
-            if (opacity < 1) el.style.opacity = opacity;
+            el.style.setProperty('background-image', `${gradient},url('${url}')`, 'important');
+            el.style.setProperty('background-size', 'cover', 'important');
+            el.style.setProperty('background-position', 'center', 'important');
+            if (opacity < 1) el.style.setProperty('opacity', opacity.toString(), 'important');
           }
         });
       });
