@@ -180,13 +180,14 @@
       }
     }
 
-    // Section header backgrounds
+    // Section header backgrounds and text colors
     if (Array.isArray(s.section_headers) && s.section_headers.length) {
       s.section_headers.forEach(config => {
         if (!config.page || !config.image_url) return;
         const selector = getHeaderSelector(config.page);
         if (!selector) return;
         const elements = document.querySelectorAll(selector);
+        const textColor = config.text_color || '#ffffff';
         elements.forEach(el => {
           const url = normalizeImageUrl(config.image_url);
           const opacity = config.opacity != null ? config.opacity : 1.0;
@@ -197,6 +198,10 @@
             el.style.setProperty('background-image', `${gradient},url('${url}')`, 'important');
             el.style.setProperty('background-size', 'cover', 'important');
             el.style.setProperty('background-position', 'center', 'important');
+            // Apply text color to h1 and p tags
+            el.querySelectorAll('h1, .page-h1, p, .page-sub').forEach(text => {
+              text.style.setProperty('color', textColor, 'important');
+            });
           } else if (config.page.includes('section')) {
             // Homepage sections: apply background with proper layering
             el.style.setProperty('background-image', `linear-gradient(180deg,rgba(14,18,23,.4) 0%,rgba(14,18,23,.2) 40%,rgba(14,18,23,.7) 100%),url('${url}')`, 'important');
@@ -204,6 +209,10 @@
             el.style.setProperty('background-position', 'center', 'important');
             el.style.setProperty('background-attachment', 'fixed', 'important');
             if (opacity < 1) el.style.setProperty('opacity', opacity.toString(), 'important');
+            // Apply text color to headings
+            el.querySelectorAll('h2, .sec-h2, h1, .page-h1, p, .sec-lbl, .bk-h2, .bk-p').forEach(text => {
+              text.style.setProperty('color', textColor, 'important');
+            });
           } else {
             // page-hero: layer background with gradient overlay
             const gradient = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%)`;
@@ -211,6 +220,10 @@
             el.style.setProperty('background-size', 'cover', 'important');
             el.style.setProperty('background-position', 'center', 'important');
             if (opacity < 1) el.style.setProperty('opacity', opacity.toString(), 'important');
+            // Apply text color to h1 and p tags
+            el.querySelectorAll('h1, .page-h1, p, .page-sub, .breadcrumb').forEach(text => {
+              text.style.setProperty('color', textColor, 'important');
+            });
           }
         });
       });
