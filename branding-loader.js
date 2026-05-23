@@ -179,6 +179,55 @@
         });
       }
     }
+
+    // Section header backgrounds
+    if (Array.isArray(s.section_headers) && s.section_headers.length) {
+      s.section_headers.forEach(config => {
+        if (!config.page || !config.image_url) return;
+        const selector = getHeaderSelector(config.page);
+        if (!selector) return;
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+          const url = normalizeImageUrl(config.image_url);
+          const opacity = config.opacity != null ? config.opacity : 1.0;
+
+          if (config.page === 'katalog') {
+            // kat-hero: use background-image with linear-gradient
+            const gradient = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%)`;
+            el.style.backgroundImage = `${gradient},url('${url}')`;
+          } else if (config.page.includes('section')) {
+            // Homepage sections: use pseudo-element approach via opacity on image
+            el.style.backgroundImage = `url('${url}')`;
+            el.style.backgroundSize = 'cover';
+            el.style.backgroundPosition = 'center';
+            el.style.backgroundAttachment = 'fixed';
+            // Apply opacity via pseudo-element color overlay
+            if (!el.style.position || el.style.position === 'static') el.style.position = 'relative';
+            if (opacity < 1) el.style.opacity = opacity;
+          } else {
+            // page-hero: layer background with gradient overlay
+            const gradient = `linear-gradient(180deg,rgba(14,18,23,.55) 0%,rgba(14,18,23,.30) 40%,rgba(14,18,23,.85) 100%)`;
+            el.style.backgroundImage = `${gradient},url('${url}')`;
+            if (opacity < 1) el.style.opacity = opacity;
+          }
+        });
+      });
+    }
+  }
+
+  function getHeaderSelector(page) {
+    const selectors = {
+      'katalog': '.kat-hero',
+      'paket': '[data-page-section="paket"]',
+      'panduan': '[data-page-section="panduan"]',
+      'faq': '[data-page-section="faq"]',
+      'lokasi': '[data-page-section="lokasi"]',
+      'tentang': '[data-page-section="tentang"]',
+      'stats': '[data-page-section="stats"]',
+      'lokasi_section': '[data-page-section="lokasi_section"]',
+      'booking_band': '[data-page-section="booking_band"]'
+    };
+    return selectors[page];
   }
 
   function extractYouTubeId(url) {

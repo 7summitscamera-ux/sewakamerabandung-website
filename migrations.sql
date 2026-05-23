@@ -74,6 +74,7 @@ do $$ begin
   alter table public.site_settings add column if not exists hero_carousel_images jsonb default '[]'::jsonb;
   alter table public.site_settings add column if not exists hero_carousel_duration integer default 5000;
   alter table public.site_settings add column if not exists hero_carousel_transition text default 'fade';
+  alter table public.site_settings add column if not exists section_headers jsonb default '[]'::jsonb;
 exception when duplicate_column then null; end $$;
 
 -- ---------------------------------------------------------------------
