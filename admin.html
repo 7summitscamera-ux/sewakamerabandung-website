@@ -595,6 +595,50 @@ tr:hover td{background:#FAFBF7}
         </div>
       </div>
       <div class="card">
+        <div class="card-hdr"><div class="card-title">Section Header Backgrounds</div></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Pilih Halaman/Section</label>
+              <select id="sec-header-page">
+                <option value="">Pilih halaman...</option>
+                <option value="katalog">Katalog</option>
+                <option value="paket">Paket</option>
+                <option value="panduan">Panduan</option>
+                <option value="faq">FAQ</option>
+                <option value="lokasi">Lokasi</option>
+                <option value="tentang">Tentang</option>
+                <option value="stats">Stats Section (Homepage)</option>
+                <option value="lokasi_section">Lokasi Section (Homepage)</option>
+                <option value="booking_band">Booking Band Section (Homepage)</option>
+              </select>
+              <span class="hint">Pilih halaman untuk atur background section headernya</span>
+            </div>
+            <div class="form-group">
+              <label>Background Image URL</label>
+              <input type="url" id="sec-header-image" placeholder="https://... atau Google Drive link">
+              <span class="hint">Link gambar public atau Google Drive (share: "Anyone with link")</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Transparansi (Opacity): <span id="opacity-value">1.0</span></label>
+              <input type="range" id="sec-header-opacity" min="0" max="1" step="0.1" value="1">
+              <span class="hint">0 = transparan penuh, 1 = tidak transparan</span>
+            </div>
+            <div class="form-group">
+              <label>Preview</label>
+              <div id="sec-header-preview" style="aspect-ratio:16/9;background:var(--bg-2);border-radius:8px;border:1px solid var(--bd);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:var(--ink-4);font-size:13px">Preview belum tersedia</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <button class="btn btn-green btn-sm" id="btn-sec-header-add" onclick="addSectionHeader()">+ Tambah/Update</button>
+            <button class="btn btn-danger btn-sm" id="btn-sec-header-remove" onclick="removeSectionHeader()" style="display:none">Hapus</button>
+          </div>
+          <div id="sec-headers-list" style="margin-top:16px;border-top:1px solid var(--bd);padding-top:16px"></div>
+        </div>
+      </div>
+      <div class="card">
         <div class="card-hdr"><div class="card-title">Announcement Bar (atas)</div></div>
         <div class="card-body">
           <div class="form-row full">
@@ -1867,6 +1911,8 @@ async function loadSettings(){
   renderBrands(Array.isArray(_settings.brands) ? _settings.brands : []);
   renderReviews(Array.isArray(_settings.reviews) ? _settings.reviews : []);
   if ($('reviews_google_url')) $('reviews_google_url').value = _settings.reviews_google_url || '';
+  // Section Headers
+  renderSectionHeaders(Array.isArray(_settings.section_headers) ? _settings.section_headers : []);
   updateTypePreview();
 }
 
@@ -1925,6 +1971,92 @@ function renderCarouselPreview(){
       <span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600">${idx+1}</span>`;
     container.appendChild(div);
   });
+}
+
+// Section Headers
+$('sec-header-opacity')?.addEventListener('input', e => {
+  $('opacity-value').textContent = e.target.value;
+  updateSectionHeaderPreview();
+});
+['sec-header-page','sec-header-image'].forEach(k => {
+  $(k)?.addEventListener('change', updateSectionHeaderPreview);
+  $(k)?.addEventListener('input', updateSectionHeaderPreview);
+});
+function updateSectionHeaderPreview(){
+  const page = $('sec-header-page').value;
+  const url = normalizeImageUrl($('sec-header-image').value);
+  const opacity = $('sec-header-opacity').value;
+  const preview = $('sec-header-preview');
+  if (!page || !url) {
+    preview.textContent = 'Pilih halaman dan masukkan URL gambar';
+    preview.style.backgroundImage = '';
+    return;
+  }
+  preview.style.backgroundImage = `url("${url}")`;
+  preview.style.opacity = opacity;
+  preview.textContent = '';
+}
+function renderSectionHeaders(arr){
+  const list = $('sec-headers-list');
+  if (!arr || arr.length === 0) { list.innerHTML = '<p style="color:var(--ink-4);font-size:12px">Belum ada section header background yang diatur</p>'; return; }
+  const pageLabels = {katalog:'Katalog',paket:'Paket',panduan:'Panduan',faq:'FAQ',lokasi:'Lokasi',tentang:'Tentang',stats:'Stats (Home)',lokasi_section:'Lokasi Section (Home)',booking_band:'Booking Band (Home)'};
+  list.innerHTML = arr.map((item,i) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-2);border-radius:6px;margin-bottom:8px;border:1px solid var(--bd)">
+      <div style="flex:1">
+        <strong style="color:var(--ink);font-size:13px">${pageLabels[item.page] || item.page}</strong><br>
+        <span style="color:var(--ink-4);font-size:11px">Opacity: ${item.opacity || 1.0}</span>
+      </div>
+      <button class="btn btn-sm btn-ghost" onclick="editSectionHeader(${i})" style="margin-right:6px">Edit</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteSectionHeader(${i})">Hapus</button>
+    </div>
+  `).join('');
+}
+function editSectionHeader(idx){
+  const headers = Array.isArray(_settings.section_headers) ? _settings.section_headers : [];
+  if (!headers[idx]) return;
+  const item = headers[idx];
+  $('sec-header-page').value = item.page || '';
+  $('sec-header-image').value = item.image_url || '';
+  $('sec-header-opacity').value = item.opacity || 1.0;
+  $('opacity-value').textContent = item.opacity || 1.0;
+  $('btn-sec-header-remove').style.display = 'inline-flex';
+  $('btn-sec-header-remove').dataset.editIdx = idx;
+  updateSectionHeaderPreview();
+  window.scrollTo({top: $('sec-header-page').offsetTop - 200, behavior:'smooth'});
+}
+function addSectionHeader(){
+  const page = $('sec-header-page').value;
+  const image_url = normalizeImageUrl($('sec-header-image').value);
+  const opacity = parseFloat($('sec-header-opacity').value) || 1.0;
+  if (!page || !image_url) { toast('Pilih halaman dan masukkan URL gambar', 'error'); return; }
+  let headers = Array.isArray(_settings.section_headers) ? [..._settings.section_headers] : [];
+  const idx = $('btn-sec-header-remove').dataset.editIdx;
+  if (idx !== undefined) {
+    headers[parseInt(idx)] = {page, image_url, opacity};
+    $('btn-sec-header-remove').style.display = 'none';
+    delete $('btn-sec-header-remove').dataset.editIdx;
+  } else {
+    const exists = headers.findIndex(h => h.page === page);
+    if (exists !== -1) headers[exists] = {page, image_url, opacity};
+    else headers.push({page, image_url, opacity});
+  }
+  _settings.section_headers = headers;
+  renderSectionHeaders(headers);
+  $('sec-header-page').value = '';
+  $('sec-header-image').value = '';
+  $('sec-header-opacity').value = 1.0;
+  $('opacity-value').textContent = 1.0;
+  updateSectionHeaderPreview();
+  toast('Section header ditambahkan!');
+}
+function deleteSectionHeader(idx){
+  if (!confirm('Hapus section header ini?')) return;
+  let headers = Array.isArray(_settings.section_headers) ? [..._settings.section_headers] : [];
+  headers.splice(idx, 1);
+  _settings.section_headers = headers;
+  renderSectionHeaders(headers);
+  $('btn-sec-header-remove').style.display = 'none';
+  toast('Section header dihapus!');
 }
 
 // Typography preview
@@ -1992,6 +2124,8 @@ async function saveAll(){
       .slice(0, 6);
     payload.hero_carousel_images = imgs.length >= 2 ? imgs : [];
   }
+  // Section headers
+  payload.section_headers = _settings.section_headers || [];
   payload.updated_at = new Date().toISOString();
   const { error } = await sb.from('site_settings').upsert(payload, { onConflict:'id' });
   btn.disabled = false; btn.textContent = 'Simpan Perubahan';
